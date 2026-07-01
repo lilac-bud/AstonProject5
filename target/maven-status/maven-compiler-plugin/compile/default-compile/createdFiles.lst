@@ -1,0 +1,11 @@
+com\github\lilacbud\astonproject5\movie\FromFileFiller.class
+com\github\lilacbud\astonproject5\movie\Movie$Builder.class
+com\github\lilacbud\astonproject5\Main.class
+com\github\lilacbud\astonproject5\movie\sort\MoviesSorter.class
+com\github\lilacbud\astonproject5\movie\ManualFiller.class
+com\github\lilacbud\astonproject5\movie\MovieInputValidation.class
+com\github\lilacbud\astonproject5\movie\sort\SortingStrategy.class
+com\github\lilacbud\astonproject5\movie\Movie.class
+com\github\lilacbud\astonproject5\user\Menu.class
+com\github\lilacbud\astonproject5\movie\RandomFiller.class
+com\github\lilacbud\astonproject5\movie\MoviesFiller.class
