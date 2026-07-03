@@ -9,9 +9,7 @@ import com.github.lilacbud.astonproject5.user.ui.SelectMenuItem;
 import com.github.lilacbud.astonproject5.user.ui.UIMenu;
 import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class SortingFieldScreen implements UIScreen {
@@ -68,14 +66,6 @@ public class SortingFieldScreen implements UIScreen {
         public EntityField(String field, String fieldTitle) {
             this.field = field;
             this.fieldTitle = fieldTitle;
-        }
-
-        public String getField() {
-            return field;
-        }
-
-        public String getFieldTitle() {
-            return fieldTitle;
         }
     }
 }

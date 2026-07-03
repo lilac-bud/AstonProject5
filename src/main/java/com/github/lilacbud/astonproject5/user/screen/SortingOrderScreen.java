@@ -41,7 +41,7 @@ public class SortingOrderScreen implements UIScreen {
             sorter.setComparator(comparator.reversed());
         }
 
-        // TODO: запустить сортировку
+        sorter.performSorting(menu.getMovies());
 
         return new ActionsScreen();
     }
