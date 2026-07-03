@@ -1,10 +1,10 @@
-package com.github.lilacbud.astonproject5.user.menu;
+package com.github.lilacbud.astonproject5.user;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
-import com.github.lilacbud.astonproject5.user.menu.screen.MainScreen;
+import com.github.lilacbud.astonproject5.user.screen.MainScreen;
 import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.List;

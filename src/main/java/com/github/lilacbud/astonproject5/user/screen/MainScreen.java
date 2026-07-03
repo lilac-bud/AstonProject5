@@ -1,4 +1,4 @@
-package com.github.lilacbud.astonproject5.user.menu.screen;
+package com.github.lilacbud.astonproject5.user.screen;
 
 import com.github.lilacbud.astonproject5.user.ui.SelectMenu;
 import com.github.lilacbud.astonproject5.user.ui.SelectMenuItem;

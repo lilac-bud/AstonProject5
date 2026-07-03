@@ -1,6 +1,6 @@
 package com.github.lilacbud.astonproject5;
 
-import com.github.lilacbud.astonproject5.user.menu.Menu;
+import com.github.lilacbud.astonproject5.user.Menu;
 
 public class Main {
 
