@@ -14,7 +14,7 @@ public class ActionsScreen implements UIScreen {
         new SelectMenuItem('2', "Отсортировать", (e) -> onSortList()),
         new SelectMenuItem('3', "Поиск", (e) -> onSearch()),
         new SelectMenuItem('4', "Сохранить в файл", (e) -> onSave()),
-        new SelectMenuItem('5', "Начать заново", (e) -> onGoToMain()),
+        new SelectMenuItem('5', "На главный экран", (e) -> onGoToMain()),
         new SelectMenuItem('Q', "Выход", (e) -> onExit())
     );
 
@@ -24,11 +24,11 @@ public class ActionsScreen implements UIScreen {
     }
 
     private UIScreen onDisplayList() {
-        return this;
+        return new MoviesListScreen();
     }
 
     private UIScreen onSortList() {
-        return this;
+        return new SortingFieldScreen();
     }
 
     private UIScreen onSearch() {
@@ -36,7 +36,7 @@ public class ActionsScreen implements UIScreen {
     }
 
     private UIScreen onSave() {
-        return this;
+        return new SaveToFileScreen(this);
     }
 
     private UIScreen onGoToMain() {
@@ -44,6 +44,6 @@ public class ActionsScreen implements UIScreen {
     }
 
     private UIScreen onExit() {
-        return null;
+        return new SaveToFileScreen(null);
     }
 }

@@ -12,7 +12,7 @@ public class SelectMenu implements UIMenu {
         this(title, Arrays.asList(options));
     }
 
-    public SelectMenu(String title, List<UIMenuItemOption> options) {
+    public SelectMenu(String title, List<? extends UIMenuItemOption> options) {
         this.title = title;
         items.clear();
         items.addAll(options);

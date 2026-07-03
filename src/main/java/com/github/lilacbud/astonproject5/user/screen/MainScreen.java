@@ -34,6 +34,6 @@ public class MainScreen implements UIScreen {
     }
 
     private UIScreen onExit() {
-        return null;
+        return new SaveToFileScreen(null);
     }
 }
