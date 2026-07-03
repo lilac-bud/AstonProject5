@@ -1,6 +1,6 @@
 package com.github.lilacbud.astonproject5;
 
-import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.menu.Menu;
 
 public class Main {
 
@@ -10,5 +10,4 @@ public class Main {
     public static void main(String[] args) {
         Menu.getInstance().run();
     }
-    
 }
