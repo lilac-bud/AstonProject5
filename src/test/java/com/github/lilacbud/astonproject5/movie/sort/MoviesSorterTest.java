@@ -24,7 +24,7 @@ class MoviesSorterTest {
         sortWasCalled = false;
         testStrategy = (movies, comp)->{
             sortWasCalled=true;
-            movies.sort(comp);
+            ((List<Movie>)movies).sort(comp);
         };
     }
 
@@ -34,7 +34,7 @@ class MoviesSorterTest {
         boolean[] newStrategyCalled = {false};
         SortingStrategy newStrategy = (movies, comp)->{
             newStrategyCalled[0]=true;
-            movies.sort(comp);
+            ((List<Movie>)movies).sort(comp);
         };
         sorter.setSortingStrategy(newStrategy);
         sorter.performSorting(movies);
@@ -50,7 +50,7 @@ class MoviesSorterTest {
         sorter.setComparator(comparatorByYear);
         sorter.performSorting(movies);
         List<Integer> years=movies.stream().map(Movie::getYearOfRelease).toList();
-        assertEquals(List.of(1997,2000,2009),years);
+        assertEquals(List.of(1994,2010,2014),years);
     }
 
     @Test
@@ -58,7 +58,7 @@ class MoviesSorterTest {
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         sorter.performSorting(movies);
         List<String> names = movies.stream().map(Movie::getName).toList();
-        assertEquals(List.of("Криминальное чтиво","Интерстеллар","Начало"), names);
+        assertEquals(List.of("Интерстеллар", "Криминальное чтиво", "Начало"), names);
         assertTrue(sortWasCalled, "Вызов стратегии сортировки");
     }
 }
