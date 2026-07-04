@@ -16,7 +16,7 @@ public class RandomStrategyScreen implements UIScreen {
     );
 
     @Override
-    public UIScreen show(Scanner scanner) {
+    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
         return menu.prompt(scanner);
     }
 

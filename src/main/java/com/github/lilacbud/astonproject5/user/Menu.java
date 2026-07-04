@@ -5,6 +5,7 @@ import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.user.screen.MainScreen;
+import com.github.lilacbud.astonproject5.user.screen.SaveBeforeExitScreen;
 import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Menu {
+    public static final MenuExitException exitException = new MenuExitException();
     private static Menu menu;
     private UIScreen currentScreen;
     private Scanner scanner = new Scanner(System.in);
@@ -33,16 +35,18 @@ public class Menu {
     }
 
     public void run() {
-        do {
+        while (Objects.nonNull(menu.currentScreen)) {
             try {
                 UIScreen nextScreen = menu.currentScreen.show(scanner);
                 menu.currentScreen = nextScreen;
+            } catch (MenuExitException ex) {
+                menu.currentScreen = new SaveBeforeExitScreen();
             } catch (Throwable ex) {
                 System.out.println(ex);
             }
-        } while (Objects.nonNull(menu.currentScreen));
+        }
 
-        menu.exit();
+        exit();
     }
 
     public void exit() {
@@ -79,5 +83,8 @@ public class Menu {
 
     public void setMoviesSaver(MoviesSaver moviesSaver) {
         this.moviesSaver = moviesSaver;
+    }
+
+    public static class MenuExitException extends Exception {
     }
 }

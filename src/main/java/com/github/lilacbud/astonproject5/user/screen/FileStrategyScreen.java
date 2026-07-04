@@ -11,12 +11,12 @@ import java.util.Scanner;
 
 public class FileStrategyScreen implements UIScreen {
     final private UIMenu menu = new InputMenu(
-        "Путь к файлу:",
+        "Загрузить из файла:",
         new InputMenuItem((str) -> onInput(str))
     );
 
     @Override
-    public UIScreen show(Scanner scanner) {
+    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
         return menu.prompt(scanner);
     }
 

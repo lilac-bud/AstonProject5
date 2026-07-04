@@ -1,5 +1,7 @@
 package com.github.lilacbud.astonproject5.user.ui;
 
+import com.github.lilacbud.astonproject5.user.Menu;
+
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -15,7 +17,7 @@ public class InputMenu implements UIMenu {
     }
 
     @Override
-    public UIScreen prompt(Scanner scanner) {
+    public UIScreen prompt(Scanner scanner) throws Menu.MenuExitException {
         var displayTitle = "%s\n> ".formatted(title);
 
         var text = promptUserInput(

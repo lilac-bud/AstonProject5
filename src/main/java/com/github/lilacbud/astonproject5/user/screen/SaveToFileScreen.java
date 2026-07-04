@@ -9,11 +9,9 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-// TODO: Поделить на сохранение из меню
-// и сохранение с подтверждение при выходе
 public class SaveToFileScreen implements UIScreen {
     final private UIMenu menu = new InputMenu(
-        "Путь к файлу:",
+        "Сохранить в файл:",
         new InputMenuItem((str) -> onInput(str))
     );
 
@@ -24,7 +22,7 @@ public class SaveToFileScreen implements UIScreen {
     }
 
     @Override
-    public UIScreen show(Scanner scanner) {
+    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
         return menu.prompt(scanner);
     }
 

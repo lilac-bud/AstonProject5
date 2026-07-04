@@ -14,7 +14,7 @@ public class FillerScreen implements UIScreen {
     }
 
     @Override
-    public UIScreen show(Scanner scanner) {
+    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
         var menu = Menu.getInstance();
 
         try {

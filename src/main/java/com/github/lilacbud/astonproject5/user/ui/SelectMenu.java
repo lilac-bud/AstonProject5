@@ -1,5 +1,7 @@
 package com.github.lilacbud.astonproject5.user.ui;
 
+import com.github.lilacbud.astonproject5.user.Menu;
+
 import java.util.*;
 
 import static com.github.lilacbud.astonproject5.user.ui.PromptHelpers.promptUserSelect;
@@ -19,7 +21,7 @@ public class SelectMenu implements UIMenu {
     }
 
     @Override
-    public UIScreen prompt(Scanner scanner) {
+    public UIScreen prompt(Scanner scanner) throws Menu.MenuExitException {
         if (items.isEmpty()) {
             System.out.println("Нет элементов для выбора");
             return null;
