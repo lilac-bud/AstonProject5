@@ -18,8 +18,9 @@ public final class PromptHelpers {
         Function<String, T> parser,
         Predicate<T> validator
     ) {
-        while (true) {
-            System.out.print(prompt);
+        System.out.print(prompt);
+
+        while (scanner.hasNext()) {
             String input = scanner.nextLine().strip();
 
             try {
@@ -32,8 +33,11 @@ public final class PromptHelpers {
                 return value;
             } catch (Throwable ex) {
                 System.out.println("Ошибка ввода, попробуйте еще раз.");
+                System.out.print(prompt);
             }
         }
+
+        return null;
     }
 
     public static UIMenuItemOption promptUserSelect(
