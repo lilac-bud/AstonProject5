@@ -1,6 +1,7 @@
 package com.github.lilacbud.astonproject5.user.screen;
 
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.UserExitException;
 import com.github.lilacbud.astonproject5.user.ui.SelectMenu;
 import com.github.lilacbud.astonproject5.user.ui.SelectMenuItem;
 import com.github.lilacbud.astonproject5.user.ui.UIMenu;
@@ -18,7 +19,7 @@ public class MainScreen implements UIScreen {
     );
 
     @Override
-    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
+    public UIScreen show(Scanner scanner) throws UserExitException {
         return menu.prompt(scanner);
     }
 
@@ -34,7 +35,7 @@ public class MainScreen implements UIScreen {
         return new RandomStrategyScreen();
     }
 
-    private UIScreen onExit() throws Menu.MenuExitException {
+    private UIScreen onExit() throws UserExitException {
         throw Menu.exitException;
     }
 }

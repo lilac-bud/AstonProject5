@@ -2,6 +2,7 @@ package com.github.lilacbud.astonproject5.user.screen;
 
 import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.UserExitException;
 import com.github.lilacbud.astonproject5.user.ui.InputMenu;
 import com.github.lilacbud.astonproject5.user.ui.InputMenuItem;
 import com.github.lilacbud.astonproject5.user.ui.UIMenu;
@@ -22,7 +23,7 @@ public class SaveToFileScreen implements UIScreen {
     }
 
     @Override
-    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
+    public UIScreen show(Scanner scanner) throws UserExitException {
         return menu.prompt(scanner);
     }
 

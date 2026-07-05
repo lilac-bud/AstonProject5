@@ -1,6 +1,7 @@
 package com.github.lilacbud.astonproject5.user.screen;
 
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.UserExitException;
 import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class FillerScreen implements UIScreen {
     }
 
     @Override
-    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
+    public UIScreen show(Scanner scanner) throws UserExitException {
         var menu = Menu.getInstance();
 
         try {

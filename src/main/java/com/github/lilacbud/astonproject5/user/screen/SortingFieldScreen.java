@@ -4,47 +4,42 @@ import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.UserExitException;
 import com.github.lilacbud.astonproject5.user.ui.SelectMenu;
 import com.github.lilacbud.astonproject5.user.ui.SelectMenuItem;
 import com.github.lilacbud.astonproject5.user.ui.UIMenu;
 import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
 public class SortingFieldScreen implements UIScreen {
-    private static EntityField[] fields = new EntityField[]{
-        new EntityField("name", "Название"),
-        new EntityField("yearOfRelease", "Год выхода"),
-        new EntityField("hourLength", "Продолжительность"),
+    private static NamedFieldComparator[] comparators = new NamedFieldComparator[]{
+        new NamedFieldComparator("Название", Movie.compareByName),
+        new NamedFieldComparator("Год выхода", Movie.compareByYearOfRelease),
+        new NamedFieldComparator("Продолжительность", Movie.compareHourLength),
     };
 
     final private UIMenu menu = new SelectMenu(
         "Поле для сортировки:",
         IntStream
-            .range(0, fields.length)
+            .range(0, comparators.length)
             .mapToObj(index -> {
-                var field = fields[index];
+                var comparator = comparators[index];
                 var ch = String.valueOf(index + 1).charAt(0);
-                return new SelectMenuItem(ch, field.fieldTitle, (e) -> onInput(field));
+                return new SelectMenuItem(ch, comparator.name, (e) -> onInput(comparator));
             }).toList()
     );
 
     @Override
-    public UIScreen show(Scanner scanner) throws Menu.MenuExitException {
+    public UIScreen show(Scanner scanner) throws UserExitException {
         return menu.prompt(scanner);
     }
 
-    private UIScreen onInput(EntityField entityField) {
-        var comparator = switch (entityField.field) {
-            case "name" -> Movie.compareByName;
-
-            case "yearOfRelease" -> Movie.compareByYearOfRelease;
-
-            case "hourLength" -> Movie.compareHourLength;
-
-            default -> null;
-        };
+    private UIScreen onInput(NamedFieldComparator selected) {
+        var comparator = selected.value;
 
         var sorter = new MoviesSorter(new SortingStrategy() {
             @Override
@@ -59,13 +54,13 @@ public class SortingFieldScreen implements UIScreen {
         return new SortingOrderScreen(comparator);
     }
 
-    private static final class EntityField {
-        private final String field;
-        private final String fieldTitle;
+    private static final class NamedFieldComparator {
+        private final String name;
+        private final Comparator<Movie> value;
 
-        public EntityField(String field, String fieldTitle) {
-            this.field = field;
-            this.fieldTitle = fieldTitle;
+        public NamedFieldComparator(String name, Comparator<Movie> value) {
+            this.name = name;
+            this.value = value;
         }
     }
 }

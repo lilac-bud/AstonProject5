@@ -1,6 +1,6 @@
 package com.github.lilacbud.astonproject5.user.ui;
 
-import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.UserExitException;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ public class SelectMenu implements UIMenu {
     }
 
     @Override
-    public UIScreen prompt(Scanner scanner) throws Menu.MenuExitException {
+    public UIScreen prompt(Scanner scanner) throws UserExitException {
         if (items.isEmpty()) {
             System.out.println("Нет элементов для выбора");
             return null;

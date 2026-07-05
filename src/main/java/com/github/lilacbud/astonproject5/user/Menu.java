@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Menu {
-    public static final MenuExitException exitException = new MenuExitException();
+    public static final UserExitException exitException = new UserExitException();
     private static Menu menu;
     private UIScreen currentScreen;
     private Scanner scanner = new Scanner(System.in);
@@ -39,7 +39,7 @@ public class Menu {
             try {
                 UIScreen nextScreen = menu.currentScreen.show(scanner);
                 menu.currentScreen = nextScreen;
-            } catch (MenuExitException ex) {
+            } catch (UserExitException ex) {
                 menu.currentScreen = new SaveBeforeExitScreen();
             } catch (Throwable ex) {
                 System.out.println(ex);
@@ -83,8 +83,5 @@ public class Menu {
 
     public void setMoviesSaver(MoviesSaver moviesSaver) {
         this.moviesSaver = moviesSaver;
-    }
-
-    public static class MenuExitException extends Exception {
     }
 }

@@ -40,7 +40,7 @@ public class MenuTest {
     }
 
     @Test
-    void showMainScreen() throws Menu.MenuExitException {
+    void showMainScreen() throws UserExitException {
         var screen = new MainScreen();
         var scanner = EOFScanner();
 
@@ -60,7 +60,7 @@ public class MenuTest {
     }
 
     @Test
-    void goToFileStrategyScreen() throws Menu.MenuExitException {
+    void goToFileStrategyScreen() throws UserExitException {
         var screen = new MainScreen();
         var scanner = charScanner("1");
         var nextScreen = screen.show(scanner);
@@ -69,7 +69,7 @@ public class MenuTest {
     }
 
     @Test
-    void showFileStrategyScreen() throws Menu.MenuExitException {
+    void showFileStrategyScreen() throws UserExitException {
         var screen = new FileStrategyScreen();
         var scanner = EOFScanner();
         screen.show(scanner);
@@ -84,7 +84,7 @@ public class MenuTest {
     }
 
     @Test
-    void goToManualStrategyScreen() throws Menu.MenuExitException {
+    void goToManualStrategyScreen() throws UserExitException {
         var screen = new MainScreen();
         var scanner = charScanner("2");
         var nextScreen = screen.show(scanner);
@@ -93,7 +93,7 @@ public class MenuTest {
     }
 
     @Test
-    void showManualStrategyScreen() throws Menu.MenuExitException {
+    void showManualStrategyScreen() throws UserExitException {
         var screen = new ManualStrategyScreen();
         var scanner = EOFScanner();
         screen.show(scanner);
@@ -108,7 +108,7 @@ public class MenuTest {
     }
 
     @Test
-    void showActionsScreen() throws Menu.MenuExitException {
+    void showActionsScreen() throws UserExitException {
         var screen = new ActionsScreen();
         var scanner = EOFScanner();
         screen.show(scanner);
@@ -129,7 +129,7 @@ public class MenuTest {
     }
 
     @Test
-    void goToSortingFieldScreen() throws Menu.MenuExitException {
+    void goToSortingFieldScreen() throws UserExitException {
         var screen = new ActionsScreen();
         var scanner = charScanner("2");
         var nextScreen = screen.show(scanner);
@@ -138,7 +138,7 @@ public class MenuTest {
     }
 
     @Test
-    void showSortingFieldScreen() throws Menu.MenuExitException {
+    void showSortingFieldScreen() throws UserExitException {
         var screen = new SortingFieldScreen();
         var scanner = EOFScanner();
         screen.show(scanner);
@@ -156,7 +156,7 @@ public class MenuTest {
     }
 
     @Test
-    void goToSortingOrderScreen() throws Menu.MenuExitException {
+    void goToSortingOrderScreen() throws UserExitException {
         var screen = new SortingFieldScreen();
         var scanner = charScanner("2");
         var nextScreen = screen.show(scanner);
@@ -165,7 +165,7 @@ public class MenuTest {
     }
 
     @Test
-    void showSortingOrderScreen() throws Menu.MenuExitException {
+    void showSortingOrderScreen() throws UserExitException {
         var screen = new SortingOrderScreen(null);
         var scanner = EOFScanner();
         screen.show(scanner);
@@ -182,7 +182,7 @@ public class MenuTest {
     }
 
     @Test
-    void goToSaveToFileScreen() throws Menu.MenuExitException {
+    void goToSaveToFileScreen() throws UserExitException {
         var screen = new ActionsScreen();
         var scanner = charScanner("4");
         var nextScreen = screen.show(scanner);
@@ -191,7 +191,7 @@ public class MenuTest {
     }
 
     @Test
-    void showSaveToFileScreen() throws Menu.MenuExitException {
+    void showSaveToFileScreen() throws UserExitException {
         var screen = new SaveToFileScreen(null);
         var scanner = EOFScanner();
         screen.show(scanner);
