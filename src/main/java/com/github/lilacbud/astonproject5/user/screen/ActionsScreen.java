@@ -10,14 +10,14 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 import java.util.Scanner;
 
 public class ActionsScreen implements UIScreen {
-    final private UIMenu menu = new SelectMenu(
+    final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Действие:",
-        new SelectMenuItem('1', "Показать список", (e) -> onDisplayList()),
-        new SelectMenuItem('2', "Отсортировать", (e) -> onSortList()),
-        new SelectMenuItem('3', "Поиск", (e) -> onSearch()),
-        new SelectMenuItem('4', "Сохранить в файл", (e) -> onSave()),
-        new SelectMenuItem('5', "На главный экран", (e) -> onGoToMain()),
-        new SelectMenuItem('Q', "Выход", (e) -> onExit())
+        new SelectMenuItem<>('1', "Показать список", (e) -> onDisplayList()),
+        new SelectMenuItem<>('2', "Отсортировать", (e) -> onSortList()),
+        new SelectMenuItem<>('3', "Поиск", (e) -> onSearch()),
+        new SelectMenuItem<>('4', "Сохранить в файл", (e) -> onSave()),
+        new SelectMenuItem<>('5', "На главный экран", (e) -> onGoToMain()),
+        new SelectMenuItem<>('Q', "Выход", (e) -> onExit())
     );
 
     @Override

@@ -22,14 +22,14 @@ public class SortingFieldScreen implements UIScreen {
         new NamedFieldComparator("Продолжительность", Movie.compareHourLength),
     };
 
-    final private UIMenu menu = new SelectMenu(
+    final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Поле для сортировки:",
         IntStream
             .range(0, comparators.length)
             .mapToObj(index -> {
                 var comparator = comparators[index];
                 var ch = String.valueOf(index + 1).charAt(0);
-                return new SelectMenuItem(ch, comparator.name, (e) -> onInput(comparator));
+                return new SelectMenuItem<>(ch, comparator.name, (e) -> onInput(comparator));
             }).toList()
     );
 

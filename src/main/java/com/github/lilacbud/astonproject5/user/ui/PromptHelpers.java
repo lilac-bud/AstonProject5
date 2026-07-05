@@ -40,10 +40,10 @@ public final class PromptHelpers {
         return null;
     }
 
-    public static UIMenuItemOption promptUserSelect(
+    public static <T, R> UIMenuItemOption<T, R> promptUserSelect(
         Scanner scanner,
         String prompt,
-        List<UIMenuItemOption> options
+        List<UIMenuItemOption<T, R>> options
     ) {
         var promptWithOptions = new StringBuilder(prompt);
         promptWithOptions.append("\n");

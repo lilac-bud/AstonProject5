@@ -10,12 +10,12 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 import java.util.Scanner;
 
 public class MainScreen implements UIScreen {
-    final private UIMenu menu = new SelectMenu(
+    final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Выберите источник данных:",
-        new SelectMenuItem('1', "Из файла", (e) -> onFileInputStrategy()),
-        new SelectMenuItem('2', "Ввести вручную", (e) -> onManualInputStrategy()),
-        new SelectMenuItem('3', "Случайные данные", (e) -> onRandomInputStrategy()),
-        new SelectMenuItem('Q', "Выход", (e) -> onExit())
+        new SelectMenuItem<>('1', "Из файла", (e) -> onFileInputStrategy()),
+        new SelectMenuItem<>('2', "Ввести вручную", (e) -> onManualInputStrategy()),
+        new SelectMenuItem<>('3', "Случайные данные", (e) -> onRandomInputStrategy()),
+        new SelectMenuItem<>('Q', "Выход", (e) -> onExit())
     );
 
     @Override

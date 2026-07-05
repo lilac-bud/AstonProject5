@@ -1,9 +1,9 @@
 package com.github.lilacbud.astonproject5.user.ui;
 
-public final class InputMenuItem implements UIMenuItem {
-    private final UIMenuAction<String> action;
+public final class InputMenuItem<R> implements UIMenuItem<String, R> {
+    private final UIMenuAction<String, R> action;
 
-    public InputMenuItem(UIMenuAction<String> action) {
+    public InputMenuItem(UIMenuAction<String, R> action) {
         this.action = action;
     }
 
@@ -13,7 +13,7 @@ public final class InputMenuItem implements UIMenuItem {
     }
 
     @Override
-    public UIMenuAction getAction() {
+    public UIMenuAction<String, R> getAction() {
         return action;
     }
 }

@@ -18,6 +18,14 @@ public class MenuTest {
     private final PrintStream originalSystemOut = System.out;
     private final InputStream originalSystemIn = System.in;
 
+    static Scanner EOFScanner() {
+        return new Scanner(new ByteArrayInputStream(new byte[]{}));
+    }
+
+    static Scanner charScanner(String str) {
+        return new Scanner(new ByteArrayInputStream(str.getBytes()));
+    }
+
     @BeforeEach
     void setUp() {
         System.setOut(new PrintStream(outContent));
@@ -57,6 +65,22 @@ public class MenuTest {
 
         assertTrue(expected.startsWith(outContent.toString().strip()));
 //        assertEquals(expected, outContent.toString().strip());
+    }
+
+    @Test
+    void catchMainScreenExit() throws UserExitException {
+        var screen = new MainScreen();
+        var scanner = charScanner("Q");
+
+        assertThrows(UserExitException.class, () -> screen.show(scanner));
+    }
+
+    @Test
+    void catchActionsScreenExit() throws UserExitException {
+        var screen = new ActionsScreen();
+        var scanner = charScanner("Q");
+
+        assertThrows(UserExitException.class, () -> screen.show(scanner));
     }
 
     @Test
@@ -203,13 +227,5 @@ public class MenuTest {
 
         assertTrue(expected.startsWith(outContent.toString().strip()));
 //        assertEquals(expected, outContent.toString().strip());
-    }
-
-    static Scanner EOFScanner() {
-        return new Scanner(new ByteArrayInputStream(new byte[]{}));
-    }
-
-    static Scanner charScanner(String str) {
-        return new Scanner(new ByteArrayInputStream(str.getBytes()));
     }
 }

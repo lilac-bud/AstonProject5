@@ -2,12 +2,12 @@ package com.github.lilacbud.astonproject5.user.ui;
 
 import java.util.Objects;
 
-public final class SelectMenuItem implements UIMenuItem, UIMenuItemOption {
+public final class SelectMenuItem<R> implements UIMenuItemOption<Void, R> {
     private final Character key;
     private final String title;
-    private final UIMenuAction<Void> action;
+    private final UIMenuAction<Void, R> action;
 
-    public SelectMenuItem(Character key, String title, UIMenuAction<Void> action) {
+    public SelectMenuItem(Character key, String title, UIMenuAction<Void, R> action) {
         this.title = title;
         this.key = key;
         this.action = action;

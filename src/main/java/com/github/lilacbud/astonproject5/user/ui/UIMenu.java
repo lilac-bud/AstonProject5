@@ -4,6 +4,6 @@ import com.github.lilacbud.astonproject5.user.UserExitException;
 
 import java.util.Scanner;
 
-public interface UIMenu {
-    UIScreen prompt(Scanner scanner) throws UserExitException;
+public interface UIMenu<TReturn> {
+    TReturn prompt(Scanner scanner) throws UserExitException;
 }

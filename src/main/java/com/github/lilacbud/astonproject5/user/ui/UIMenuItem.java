@@ -1,7 +1,7 @@
 package com.github.lilacbud.astonproject5.user.ui;
 
-public interface UIMenuItem {
+public interface UIMenuItem<TInput, TReturn> {
     String getTitle();
 
-    UIMenuAction getAction();
+    UIMenuAction<TInput, TReturn> getAction();
 }

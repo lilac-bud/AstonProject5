@@ -6,22 +6,22 @@ import java.util.*;
 
 import static com.github.lilacbud.astonproject5.user.ui.PromptHelpers.promptUserSelect;
 
-public class SelectMenu implements UIMenu {
+public class SelectMenu<R> implements UIMenu<R> {
     final String title;
-    final List<UIMenuItemOption> items = new ArrayList<>();
+    final List<UIMenuItemOption<Void, R>> items = new ArrayList<>();
 
-    public SelectMenu(String title, UIMenuItemOption... options) {
+    public SelectMenu(String title, UIMenuItemOption<Void, R>... options) {
         this(title, Arrays.asList(options));
     }
 
-    public SelectMenu(String title, List<? extends UIMenuItemOption> options) {
+    public SelectMenu(String title, List<? extends UIMenuItemOption<Void, R>> options) {
         this.title = title;
         items.clear();
         items.addAll(options);
     }
 
     @Override
-    public UIScreen prompt(Scanner scanner) throws UserExitException {
+    public R prompt(Scanner scanner) throws UserExitException {
         if (items.isEmpty()) {
             System.out.println("Нет элементов для выбора");
             return null;

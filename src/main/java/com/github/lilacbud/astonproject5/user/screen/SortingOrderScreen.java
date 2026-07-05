@@ -15,10 +15,10 @@ import java.util.Scanner;
 public class SortingOrderScreen implements UIScreen {
     final private Comparator<Movie> comparator;
 
-    final private UIMenu menu = new SelectMenu(
+    final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Порядок сортировки:",
-        new SelectMenuItem('1', "По возрастанию", (e) -> onInput(1)),
-        new SelectMenuItem('2', "По убыванию", (e) -> onInput(-1))
+        new SelectMenuItem<>('1', "По возрастанию", (e) -> onInput(1)),
+        new SelectMenuItem<>('2', "По убыванию", (e) -> onInput(-1))
     );
 
     public SortingOrderScreen(Comparator<Movie> comparator) {
