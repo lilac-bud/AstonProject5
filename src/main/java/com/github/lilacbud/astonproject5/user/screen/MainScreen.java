@@ -9,7 +9,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class MainScreen implements UIScreen {
+public final class MainScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Выберите источник данных:",
         new SelectMenuItem<Void, UIScreen>('1', "Из файла", (e) -> onFileInputStrategy()),

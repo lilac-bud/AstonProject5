@@ -8,7 +8,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class SaveBeforeExitScreen implements UIScreen {
+public final class SaveBeforeExitScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Сохранить изменения в файл?",
         new SelectMenuItem<Void, UIScreen>('Y', "Да (Выбрать файл)", (e) -> onSaveChanges()),

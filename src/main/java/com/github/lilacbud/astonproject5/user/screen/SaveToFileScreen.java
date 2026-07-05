@@ -10,7 +10,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class SaveToFileScreen implements UIScreen {
+public final class SaveToFileScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new InputMenu<>(
         "Сохранить в файл:",
         new InputMenuItem<>((str) -> onInput(str))

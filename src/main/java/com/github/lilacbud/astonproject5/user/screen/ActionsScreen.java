@@ -9,7 +9,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class ActionsScreen implements UIScreen {
+public final class ActionsScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Действие:",
         new SelectMenuItem<Void, UIScreen>('1', "Показать список" , (e) -> onDisplayList()),

@@ -9,7 +9,6 @@ import com.github.lilacbud.astonproject5.user.ui.*;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
@@ -25,10 +24,9 @@ public class SortingFieldScreen implements UIScreen {
         IntStream
             .range(0, comparators.length)
             .mapToObj(index -> {
-                var comparator = comparators[index];
+                var entry = comparators[index];
                 var ch = String.valueOf(index + 1).charAt(0);
-                UIMenuItemOption<NamedFieldComparator, UIScreen> option = new SelectMenuItem<>(ch, comparator.name, comparator, (comp) -> onInput(comp));
-                return option;
+                return new SelectMenuItem<>(ch, entry.name, entry.value, (comp) -> onInput(comp));
             }).toList()
     );
 
@@ -37,9 +35,7 @@ public class SortingFieldScreen implements UIScreen {
         return menu.prompt(scanner);
     }
 
-    private UIScreen onInput(NamedFieldComparator selected) {
-        var comparator = selected.value;
-
+    private UIScreen onInput(Comparator<Movie> comparator) {
         var sorter = new MoviesSorter(new SortingStrategy() {
             @Override
             public void sort(Collection<Movie> movies, Comparator<Movie> comp) {

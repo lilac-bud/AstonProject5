@@ -10,7 +10,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class RandomStrategyScreen implements UIScreen {
+public final class RandomStrategyScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new InputMenu<>(
         "Количество элементов:",
         new InputMenuItem<>((str) -> onInput(str))

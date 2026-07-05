@@ -5,7 +5,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class MoviesListScreen implements UIScreen {
+public final class MoviesListScreen implements UIScreen {
     @Override
     public UIScreen show(Scanner scanner) throws UserExitException {
         // TODO: Вывести список на эран

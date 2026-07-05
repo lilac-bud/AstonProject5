@@ -7,7 +7,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class FillerScreen implements UIScreen {
+public final class FillerScreen implements UIScreen {
     private final UIScreen backScreen;
 
     public FillerScreen(UIScreen backScreen) {

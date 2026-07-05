@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class SortingOrderScreen implements UIScreen {
+public final class SortingOrderScreen implements UIScreen {
     final private Comparator<Movie> comparator;
 
     final private UIMenu<UIScreen> menu = new SelectMenu<>(

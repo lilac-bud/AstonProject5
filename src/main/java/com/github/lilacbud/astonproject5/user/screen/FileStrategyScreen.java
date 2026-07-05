@@ -10,7 +10,7 @@ import com.github.lilacbud.astonproject5.user.ui.UIScreen;
 
 import java.util.Scanner;
 
-public class FileStrategyScreen implements UIScreen {
+public final class FileStrategyScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new InputMenu<>(
         "Загрузить из файла:",
         new InputMenuItem<>((str) -> onInput(str))

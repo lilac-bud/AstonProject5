@@ -17,7 +17,7 @@ public class SelectMenu<T, R> implements UIMenu<R> {
         this(title, Arrays.asList(options));
     }
 
-    public SelectMenu(String title, List<UIMenuItemOption<T, R>> options) {
+    public SelectMenu(String title, List<? extends UIMenuItemOption<T, R>> options) {
         this.title = title;
         this.items = List.copyOf(options);
     }

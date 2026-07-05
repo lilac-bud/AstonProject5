@@ -63,7 +63,7 @@ public class MenuTest {
             [2] - Ввести вручную
             [3] - Случайные данные
             [Q] - Выход
-            > 
+            >
             """;
 
         assertTrue(expected.startsWith(outContent.toString().strip()));
