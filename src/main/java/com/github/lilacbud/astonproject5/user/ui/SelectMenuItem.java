@@ -1,26 +1,39 @@
 package com.github.lilacbud.astonproject5.user.ui;
 
+import com.github.lilacbud.astonproject5.user.UserExitException;
+
 import java.util.Objects;
 
-public final class SelectMenuItem<R> implements UIMenuItemOption<Void, R> {
+public final class SelectMenuItem<T, R> implements UIMenuItemOption<T, R> {
     private final Character key;
     private final String title;
-    private final UIMenuAction<Void, R> action;
+    private final T value;
+    private final UIMenuAction<T, R> action;
 
-    public SelectMenuItem(Character key, String title, UIMenuAction<Void, R> action) {
-        this.title = title;
+    public SelectMenuItem(Character key, String title, T value, UIMenuAction<T, R> action) {
         this.key = key;
+        this.title = title;
+        this.value = value;
         this.action = action;
     }
 
+    public SelectMenuItem(Character key, String title, UIMenuAction<Void, R> action) {
+        this(key, title, null, (UIMenuAction<T, R>) action);
+    }
+
     @Override
-    public UIMenuAction getAction() {
-        return action;
+    public R executeAction(T value) throws UserExitException {
+        return action.execute(value);
     }
 
     @Override
     public String getTitle() {
         return "[%s] - %s".formatted(key, title);
+    }
+
+    @Override
+    public T getValue() {
+        return value;
     }
 
     @Override

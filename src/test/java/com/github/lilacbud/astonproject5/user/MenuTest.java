@@ -52,7 +52,10 @@ public class MenuTest {
         var screen = new MainScreen();
         var scanner = EOFScanner();
 
-        screen.show(scanner);
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Выберите источник данных:
@@ -96,7 +99,11 @@ public class MenuTest {
     void showFileStrategyScreen() throws UserExitException {
         var screen = new FileStrategyScreen();
         var scanner = EOFScanner();
-        screen.show(scanner);
+
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Загрузить из файла:
@@ -120,7 +127,11 @@ public class MenuTest {
     void showManualStrategyScreen() throws UserExitException {
         var screen = new ManualStrategyScreen();
         var scanner = EOFScanner();
-        screen.show(scanner);
+
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Количество элементов:
@@ -135,7 +146,11 @@ public class MenuTest {
     void showActionsScreen() throws UserExitException {
         var screen = new ActionsScreen();
         var scanner = EOFScanner();
-        screen.show(scanner);
+
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Действие:
@@ -165,7 +180,11 @@ public class MenuTest {
     void showSortingFieldScreen() throws UserExitException {
         var screen = new SortingFieldScreen();
         var scanner = EOFScanner();
-        screen.show(scanner);
+
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Поле для сортировки:
@@ -192,7 +211,11 @@ public class MenuTest {
     void showSortingOrderScreen() throws UserExitException {
         var screen = new SortingOrderScreen(null);
         var scanner = EOFScanner();
-        screen.show(scanner);
+
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Порядок сортировки:
@@ -218,7 +241,11 @@ public class MenuTest {
     void showSaveToFileScreen() throws UserExitException {
         var screen = new SaveToFileScreen(null);
         var scanner = EOFScanner();
-        screen.show(scanner);
+
+        assertThrows(
+            UserExitException.class,
+            () -> screen.show(scanner)
+        );
 
         var expected = """
             Сохранить в файл:

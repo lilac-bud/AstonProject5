@@ -2,22 +2,24 @@ package com.github.lilacbud.astonproject5.user.ui;
 
 import com.github.lilacbud.astonproject5.user.UserExitException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Scanner;
 
 import static com.github.lilacbud.astonproject5.user.ui.PromptHelpers.promptUserSelect;
 
-public class SelectMenu<R> implements UIMenu<R> {
+public class SelectMenu<T, R> implements UIMenu<R> {
     final String title;
-    final List<UIMenuItemOption<Void, R>> items = new ArrayList<>();
+    final List<UIMenuItemOption<T, R>> items;
 
-    public SelectMenu(String title, UIMenuItemOption<Void, R>... options) {
+    public SelectMenu(String title, UIMenuItemOption<T, R>... options) {
         this(title, Arrays.asList(options));
     }
 
-    public SelectMenu(String title, List<? extends UIMenuItemOption<Void, R>> options) {
+    public SelectMenu(String title, List<UIMenuItemOption<T, R>> options) {
         this.title = title;
-        items.clear();
-        items.addAll(options);
+        this.items = List.copyOf(options);
     }
 
     @Override
@@ -29,14 +31,11 @@ public class SelectMenu<R> implements UIMenu<R> {
 
         var selected = promptUserSelect(scanner, title, items);
 
-        if (Objects.nonNull(selected)) {
-            var action = selected.getAction();
-
-            if (Objects.nonNull(action)) {
-                return action.execute();
-            }
+        if (Objects.isNull(selected)) {
+            throw new UserExitException(true);
         }
 
-        return null;
+        var value = selected.getValue();
+        return selected.executeAction(value);
     }
 }

@@ -40,6 +40,10 @@ public class Menu {
                 UIScreen nextScreen = menu.currentScreen.show(scanner);
                 menu.currentScreen = nextScreen;
             } catch (UserExitException ex) {
+                if (ex.isForceExit()) {
+                    return;
+                }
+
                 menu.currentScreen = new SaveBeforeExitScreen();
             } catch (Throwable ex) {
                 System.out.println(ex);

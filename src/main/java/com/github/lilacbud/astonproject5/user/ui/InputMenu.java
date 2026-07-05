@@ -27,11 +27,10 @@ public class InputMenu<R> implements UIMenu<R> {
             null
         );
 
-        if (Objects.nonNull(text)) {
-            var action = inputItem.getAction();
-            return action.execute(text);
+        if (Objects.isNull(text)) {
+            throw new UserExitException(true);
         }
 
-        return null;
+        return inputItem.executeAction(text);
     }
 }

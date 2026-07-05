@@ -39,14 +39,16 @@ public class InputMenuTest {
 
     @Test()
     void createInputMenu() throws UserExitException {
-        var menu = new InputMenu<>(
+        var menu = new InputMenu<Void>(
             "Create Test Title",
             new InputMenuItem<>((str) -> null)
         );
 
         var scanner = EOFScanner();
-        var nextScreen = menu.prompt(scanner);
-        assertNull(nextScreen);
+        assertThrows(
+            UserExitException.class,
+            () -> menu.prompt(scanner)
+        );
 
         var expected = """
             Create Test Title

@@ -11,10 +11,10 @@ import java.util.Scanner;
 public class SaveBeforeExitScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Сохранить изменения в файл?",
-        new SelectMenuItem<>('Y', "Да (Выбрать файл)", (e) -> onSaveChanges()),
+        new SelectMenuItem<Void, UIScreen>('Y', "Да (Выбрать файл)", (e) -> onSaveChanges()),
         // TODO: Сохранение в последний открытый файл
         // new SelectMenuItem('S', "Да (В {{LastFileName}})", (e) -> onSaveIntoLastChanges()),
-        new SelectMenuItem<>('N', "Нет", (e) -> onDropChanges())
+        new SelectMenuItem<Void, UIScreen>('N', "Нет", (e) -> onDropChanges())
     );
 
     private UIScreen onDropChanges() {

@@ -17,8 +17,8 @@ public class SortingOrderScreen implements UIScreen {
 
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Порядок сортировки:",
-        new SelectMenuItem<>('1', "По возрастанию", (e) -> onInput(1)),
-        new SelectMenuItem<>('2', "По убыванию", (e) -> onInput(-1))
+        new SelectMenuItem<SortOrder, UIScreen>('1', "По возрастанию", SortOrder.ASC, (e) -> onInput(e)),
+        new SelectMenuItem<SortOrder, UIScreen>('2', "По убыванию", SortOrder.ASC, (e) -> onInput(e))
     );
 
     public SortingOrderScreen(Comparator<Movie> comparator) {
@@ -30,7 +30,7 @@ public class SortingOrderScreen implements UIScreen {
         return menu.prompt(scanner);
     }
 
-    private UIScreen onInput(int order) {
+    private UIScreen onInput(SortOrder order) {
         var menu = Menu.getInstance();
         var sorter = menu.getMoviesSorter();
 
@@ -38,12 +38,17 @@ public class SortingOrderScreen implements UIScreen {
             return new ActionsScreen();
         }
 
-        if (order < 0) {
+        if (order == SortOrder.DESC) {
             sorter.setComparator(comparator.reversed());
         }
 
         sorter.performSorting(menu.getMovies());
 
         return new ActionsScreen();
+    }
+
+    private enum SortOrder {
+        ASC,
+        DESC;
     }
 }

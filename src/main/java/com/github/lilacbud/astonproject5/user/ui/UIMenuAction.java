@@ -5,8 +5,4 @@ import com.github.lilacbud.astonproject5.user.UserExitException;
 @FunctionalInterface
 public interface UIMenuAction<TInput, TReturn> {
     TReturn execute(TInput payload) throws UserExitException;
-
-    default TReturn execute() throws UserExitException {
-        return execute(null);
-    }
 }

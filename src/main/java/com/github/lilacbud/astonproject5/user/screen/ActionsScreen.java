@@ -12,12 +12,12 @@ import java.util.Scanner;
 public class ActionsScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Действие:",
-        new SelectMenuItem<>('1', "Показать список", (e) -> onDisplayList()),
-        new SelectMenuItem<>('2', "Отсортировать", (e) -> onSortList()),
-        new SelectMenuItem<>('3', "Поиск", (e) -> onSearch()),
-        new SelectMenuItem<>('4', "Сохранить в файл", (e) -> onSave()),
-        new SelectMenuItem<>('5', "На главный экран", (e) -> onGoToMain()),
-        new SelectMenuItem<>('Q', "Выход", (e) -> onExit())
+        new SelectMenuItem<Void, UIScreen>('1', "Показать список" , (e) -> onDisplayList()),
+        new SelectMenuItem<Void, UIScreen>('2', "Отсортировать", (e) -> onSortList()),
+        new SelectMenuItem<Void, UIScreen>('3', "Поиск", (e) -> onSearch()),
+        new SelectMenuItem<Void, UIScreen>('4', "Сохранить в файл", (e) -> onSave()),
+        new SelectMenuItem<Void, UIScreen>('5', "На главный экран", (e) -> onGoToMain()),
+        new SelectMenuItem<Void, UIScreen>('Q', "Выход", (e) -> onExit())
     );
 
     @Override

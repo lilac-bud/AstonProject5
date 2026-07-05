@@ -12,10 +12,10 @@ import java.util.Scanner;
 public class MainScreen implements UIScreen {
     final private UIMenu<UIScreen> menu = new SelectMenu<>(
         "Выберите источник данных:",
-        new SelectMenuItem<>('1', "Из файла", (e) -> onFileInputStrategy()),
-        new SelectMenuItem<>('2', "Ввести вручную", (e) -> onManualInputStrategy()),
-        new SelectMenuItem<>('3', "Случайные данные", (e) -> onRandomInputStrategy()),
-        new SelectMenuItem<>('Q', "Выход", (e) -> onExit())
+        new SelectMenuItem<Void, UIScreen>('1', "Из файла", (e) -> onFileInputStrategy()),
+        new SelectMenuItem<Void, UIScreen>('2', "Ввести вручную", (e) -> onManualInputStrategy()),
+        new SelectMenuItem<Void, UIScreen>('3', "Случайные данные", (e) -> onRandomInputStrategy()),
+        new SelectMenuItem<Void, UIScreen>('Q', "Выход", (e) -> onExit())
     );
 
     @Override
