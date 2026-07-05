@@ -5,10 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +34,7 @@ public class MenuTest {
         System.setIn(originalSystemIn);
     }
 
-    @Test()
+    @Test
     void menuIsSingleton() {
         var m1 = Menu.getInstance();
         var m2 = Menu.getInstance();
@@ -45,6 +42,24 @@ public class MenuTest {
         assertNotNull(m1);
         assertNotNull(m2);
         assertEquals(m1, m2);
+    }
+
+    @Test
+    void appRun() {
+        var menu = Menu.getInstance();
+        var scanner = EOFScanner();
+        menu.run(scanner);
+
+        var expected = """
+            Выберите источник данных:
+            [1] - Из файла
+            [2] - Ввести вручную
+            [3] - Случайные данные
+            [Q] - Выход
+            >
+            """.strip();
+
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -64,10 +79,10 @@ public class MenuTest {
             [3] - Случайные данные
             [Q] - Выход
             >
-            """;
+            """.strip();
+        ;
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -108,10 +123,9 @@ public class MenuTest {
         var expected = """
             Загрузить из файла:
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -136,10 +150,9 @@ public class MenuTest {
         var expected = """
             Количество элементов:
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -161,10 +174,9 @@ public class MenuTest {
             [5] - На главный экран
             [Q] - Выход
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -192,10 +204,9 @@ public class MenuTest {
             [2] - Год выхода
             [3] - Продолжительность
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -222,10 +233,9 @@ public class MenuTest {
             [1] - По возрастанию
             [2] - По убыванию
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test
@@ -250,9 +260,8 @@ public class MenuTest {
         var expected = """
             Сохранить в файл:
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 }

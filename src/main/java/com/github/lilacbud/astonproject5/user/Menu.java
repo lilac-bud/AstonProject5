@@ -34,10 +34,14 @@ public class Menu {
         return menu;
     }
 
-    public void run() {
+    public void run(Scanner customScanner) {
         while (Objects.nonNull(menu.currentScreen)) {
             try {
-                UIScreen nextScreen = menu.currentScreen.show(scanner);
+                var appScanner = Objects.isNull(customScanner)
+                    ? scanner
+                    : customScanner;
+
+                UIScreen nextScreen = menu.currentScreen.show(appScanner);
                 menu.currentScreen = nextScreen;
             } catch (UserExitException ex) {
                 if (ex.isForceExit()) {
@@ -53,7 +57,11 @@ public class Menu {
         exit();
     }
 
-    public void exit() {
+    public void run() {
+        run(null);
+    }
+
+    private void exit() {
         scanner.close();
     }
 

@@ -20,7 +20,7 @@ public final class PromptHelpers {
     ) {
         System.out.print(prompt);
 
-        while (scanner.hasNext()) {
+        while (scanner.hasNextLine()) {
             String input = scanner.nextLine().strip();
 
             try {

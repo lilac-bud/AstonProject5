@@ -53,10 +53,9 @@ public class InputMenuTest {
         var expected = """
             Create Test Title
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test()

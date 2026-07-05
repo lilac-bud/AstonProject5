@@ -61,10 +61,9 @@ public class SelectMenuTest {
             [3] - Option 3
             [4] - Option 4
             >
-            """;
+            """.strip();
 
-        assertTrue(expected.startsWith(outContent.toString().strip()));
-//        assertEquals(expected, outContent.toString().strip());
+        assertEquals(expected, outContent.toString().strip());
     }
 
     @Test()
