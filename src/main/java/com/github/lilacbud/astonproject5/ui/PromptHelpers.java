@@ -27,7 +27,7 @@ public final class PromptHelpers {
                 var value = parser.apply(input);
 
                 if (Objects.nonNull(validator) && !validator.test(value)) {
-                    throw new IOException();
+                    throw new Exception();
                 }
 
                 return value;
