@@ -1,0 +1,5 @@
+The Shawshank Redemption;1994;2.4
+The Godfather;1972;2.9
+The Matrix;1999;2.3
+Inception;2010;2.5
+Interstellar;2014;2.8
