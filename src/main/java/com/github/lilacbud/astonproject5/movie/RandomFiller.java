@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class RandomFiller implements MoviesFiller {
     private static final Random RANDOM = new Random();
@@ -21,22 +22,26 @@ public class RandomFiller implements MoviesFiller {
     private final int size;
     
     public RandomFiller(int size) {
+        if (size < 0)
+            size = 0;
         this.size = size;
     }
     @Override
     public void fillMovies(Collection<Movie> movies) {
         movies.clear();
-        for (int i = 0; i < size; ++i)
-        {
-            final Movie movie = new Movie.Builder()
-                    .withName(generateName())
-                    .withYearOfRelease(generateYear())
-                    .withHourLength(generateHourLength())
-                    .build();
-            movies.add(movie);
-        }
+        Stream.generate(this::generateMovie)
+                .limit(size)
+                .forEach(movies::add);
     }
     
+    private Movie generateMovie(){
+        final Movie movie = new Movie.Builder()
+                .withName(generateName())
+                .withYearOfRelease(generateYear())
+                .withHourLength(generateHourLength())
+                .build();
+        return movie;
+    }
     private String generateName() {
         final int length = RANDOM.nextInt(MIN_NAME_LENGTH, MAX_NAME_LENGTH + 1);
         final char[] temp = new char[length];
