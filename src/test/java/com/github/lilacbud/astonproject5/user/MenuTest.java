@@ -1,11 +1,16 @@
 package com.github.lilacbud.astonproject5.user;
 
+import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.user.screen.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -174,6 +179,55 @@ public class MenuTest {
             [5] - На главный экран
             [Q] - Выход
             >
+            """.strip();
+
+        assertEquals(expected, outContent.toString().strip());
+    }
+
+    @Test
+    void goToMoviesListScreenScreen() throws UserExitException {
+        var screen = new ActionsScreen();
+        var scanner = charScanner("1");
+        var nextScreen = screen.show(scanner);
+
+        assertInstanceOf(MoviesListScreen.class, nextScreen);
+    }
+
+    @Test
+    void showEmptyMoviesListScreen() throws UserExitException {
+        var screen = new MoviesListScreen();
+        var scanner = EOFScanner();
+
+        screen.show(scanner);
+
+        var expected = """
+            -------------------------------
+            (Список фильмов пуст)
+            -------------------------------
+            """.strip();
+
+        assertEquals(expected, outContent.toString().strip());
+    }
+
+    @Test
+    void showFilledMoviesListScreen() throws UserExitException {
+        var screen = new MoviesListScreen();
+        var scanner = EOFScanner();
+        var menu = Menu.getInstance();
+
+        List<Movie> moviesMock = List.of(
+            // TODO: Заполнить список тестовыми данными
+        );
+
+        menu.setMovies(moviesMock);
+
+        screen.show(scanner);
+
+        // TODO: !!!
+        var expected = """
+            -------------------------------
+            (Список фильмов пуст)
+            -------------------------------
             """.strip();
 
         assertEquals(expected, outContent.toString().strip());
