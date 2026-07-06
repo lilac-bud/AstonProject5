@@ -1,3 +1,4 @@
+package com.github.lilacbud.astonproject5.movie;
 import static org.junit.jupiter.api.Assertions.*;
 class MovieTest {
     private Movie movie;
