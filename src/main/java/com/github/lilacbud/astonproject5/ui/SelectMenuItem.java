@@ -16,7 +16,7 @@ public final class SelectMenuItem<T, R> implements UIMenuItemOption<T, R> {
     }
 
     public SelectMenuItem(Character key, String title, UIMenuAction<Void, R> action) {
-        this(key, title, null, (UIMenuAction<T, R>) action);
+        this(key, title, null, (_) -> action.execute(null));
     }
 
     @Override

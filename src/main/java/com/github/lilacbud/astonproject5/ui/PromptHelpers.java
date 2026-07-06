@@ -31,7 +31,7 @@ public final class PromptHelpers {
                 }
 
                 return value;
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                 System.out.println("Ошибка ввода, попробуйте еще раз.");
                 System.out.print(prompt);
             }

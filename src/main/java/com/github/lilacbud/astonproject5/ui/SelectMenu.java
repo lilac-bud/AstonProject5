@@ -1,6 +1,5 @@
 package com.github.lilacbud.astonproject5.ui;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
@@ -11,8 +10,9 @@ public class SelectMenu<T, R> implements UIMenu<R> {
     final String title;
     final List<UIMenuItemOption<T, R>> items;
 
+    @SafeVarargs
     public SelectMenu(String title, UIMenuItemOption<T, R>... options) {
-        this(title, Arrays.asList(options));
+        this(title, List.of(options));
     }
 
     public SelectMenu(String title, List<? extends UIMenuItemOption<T, R>> options) {
