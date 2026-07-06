@@ -21,9 +21,9 @@ public class Movie {
     }
 
     public static class Builder{
-        String name;
-        int yearOfRelease;
-        float hourLength;
+        private String name;
+        private int yearOfRelease;
+        private float hourLength;
 
         public Builder withName(String name){
             this.name=name;
