@@ -5,16 +5,19 @@ import java.util.Comparator;
 import java.util.Collection;
 
 public class MoviesSorter {
-    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp){
-        
+    private SortingStrategy sortStrategy;
+    private Comparator<Movie> comp;
+
+    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp) {
+        this.sortStrategy=sortStrategy;
+        this.comp = comp;
     }
-    public void setSortingStrategy(SortingStrategy sortStrategy){
-        
-    }
+
+    public void setSortingStrategy(SortingStrategy sortStrategy) { this.sortStrategy=sortStrategy;}
     public void setComparator(Comparator<Movie> comp){
-        
+        this.comp=comp;
     }
-    public void performSorting(Collection<Movie> movies){
-        
+    public void performSorter(Collection<Movie> movies){
+        sortStrategy.sort(movies,comp);
     }
 }

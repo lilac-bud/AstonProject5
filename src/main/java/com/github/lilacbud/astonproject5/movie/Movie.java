@@ -3,35 +3,48 @@ package com.github.lilacbud.astonproject5.movie;
 import java.util.Comparator;
 
 public class Movie {
-    static class Builder{
-        Builder withName(String name){
+    private final String name;
+    private final int yearOfRelease;
+    private final float hourLength;
+
+    public static final Comparator<Movie> compareByName = Comparator.comparing(Movie::getName);
+    public static final Comparator<Movie> compareByYearOfRelease = Comparator.comparing(Movie::getYearOfRelease);
+    public static final Comparator<Movie> compareByHourLength = Comparator.comparingDouble(Movie::getHourLength);
+
+    public String getName() { return name; }
+    public int getYearOfRelease() { return yearOfRelease; }
+    public float getHourLength() { return hourLength; }
+
+    @Override
+    public String toString() {
+        return String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", name, yearOfRelease, hourLength);
+    }
+
+    public static class Builder{
+        private String name;
+        private int yearOfRelease;
+        private float hourLength;
+
+        public Builder withName(String name){
+            this.name=name;
             return this;
         }
-        Builder withYearOfRelease(int year){
+        public Builder withYearOfRelease(int year){
+            this.yearOfRelease=year;
             return this;
         }
-        Builder withHourLength(float hourLength){
+        public Builder withHourLength(float hourLength){
+            this.hourLength=hourLength;
             return this;
         }
-        Movie build(){
+        public Movie build(){
             return new Movie(this);
         }
     }
-    
-    public static Comparator<Movie> compareByName;
-    public static Comparator<Movie> compareByYearOfRelease;
-    public static Comparator<Movie> compareHourLength;
-    
+
     Movie(Builder builder){
-        
-    }
-    public String getName(){
-        return "";
-    }
-    public int getYearOfRelease(){
-        return 0;
-    }
-    public float getHourLength(){
-        return 0F;
+        this.name= builder.name;
+        this.yearOfRelease=builder.yearOfRelease;
+        this.hourLength= builder.hourLength;
     }
 }
