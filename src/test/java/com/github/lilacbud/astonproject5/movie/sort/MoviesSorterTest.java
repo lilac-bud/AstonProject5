@@ -14,7 +14,7 @@ class MoviesSorterTest {
     private boolean sortWasCalled;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         movies = new ArrayList<>(List.of(
                 new Movie.Builder().withName("Криминальное чтиво").withYearOfRelease(1994).withHourLength(2.5f).build(),
                 new Movie.Builder().withName("Интерстеллар").withYearOfRelease(2014).withHourLength(3).build(),
@@ -29,7 +29,7 @@ class MoviesSorterTest {
     }
 
     @Test
-    void setSortingStrategy() {
+    public void setSortingStrategy() {
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         boolean[] newStrategyCalled = {false};
         SortingStrategy newStrategy = (movies, comp)->{
@@ -44,7 +44,7 @@ class MoviesSorterTest {
     }
 
     @Test
-    void setComparator() {
+    public void setComparator() {
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         Comparator<Movie> comparatorByYear = Comparator.comparing(Movie::getYearOfRelease);
         sorter.setComparator(comparatorByYear);
@@ -54,7 +54,7 @@ class MoviesSorterTest {
     }
 
     @Test
-    void performSorting() {
+    public void performSorting() {
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         sorter.performSorting(movies);
         List<String> names = movies.stream().map(Movie::getName).toList();
