@@ -3,23 +3,39 @@ package com.github.lilacbud.astonproject5.movie.sort;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.*;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
 class MoviesSorterTest {
     private List<Movie> movies;
     private Comparator<Movie> comparatorByName;
     private SortingStrategy testStrategy;
     private boolean sortWasCalled;
+    private static final Movie movie1 = mock(Movie.class);
+    private static final Movie movie2 = mock(Movie.class);
+    private static final Movie movie3 = mock(Movie.class);
+
+    @BeforeAll
+    public static void setUpClass() throws Exception {
+        when(movie1.getName()).thenReturn("Криминальное чтиво");
+        when(movie1.getYearOfRelease()).thenReturn(1994);
+        when(movie1.getHourLength()).thenReturn(2.5f);
+        
+        when(movie2.getName()).thenReturn("Интерстеллар");
+        when(movie2.getYearOfRelease()).thenReturn(2014);
+        when(movie2.getHourLength()).thenReturn(3f);
+        
+        when(movie3.getName()).thenReturn("Начало");
+        when(movie3.getYearOfRelease()).thenReturn(2010);
+        when(movie3.getHourLength()).thenReturn(2.5f);
+    }
 
     @BeforeEach
     public void setUp() {
-        movies = new ArrayList<>(List.of(
-                new Movie.Builder().withName("Криминальное чтиво").withYearOfRelease(1994).withHourLength(2.5f).build(),
-                new Movie.Builder().withName("Интерстеллар").withYearOfRelease(2014).withHourLength(3).build(),
-                new Movie.Builder().withName("Начало").withYearOfRelease(2010).withHourLength(2.5f).build()
-        ));
+        movies = new ArrayList<>(List.of(movie1, movie2, movie3));
         comparatorByName = Comparator.comparing(Movie::getName);
         sortWasCalled = false;
         testStrategy = (movies, comp)->{
