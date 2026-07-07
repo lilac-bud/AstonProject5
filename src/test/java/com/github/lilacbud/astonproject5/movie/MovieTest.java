@@ -17,22 +17,22 @@ class MovieTest {
     }
 
     @Test
-    void getName() {
+    public void getName() {
         assertEquals("Криминальное чтиво", movie.getName());
     }
 
     @Test
-    void getYearOfRelease() {
+    public void getYearOfRelease() {
         assertEquals(1994, movie.getYearOfRelease());
     }
 
     @Test
-    void getHourLength() {
+    public void getHourLength() {
         assertEquals(2.5f, movie.getHourLength());
     }
 
     @Test
-    void testToString() {
+    public void testToString() {
         String expected = String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", "Криминальное чтиво", 1994, 2.5f);
         assertEquals(expected, movie.toString());
     }
