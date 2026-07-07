@@ -8,7 +8,7 @@ class MovieTest {
     private Movie movie;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         movie=new Movie.Builder()
                 .withName("Криминальное чтиво")
                 .withYearOfRelease(1994)
