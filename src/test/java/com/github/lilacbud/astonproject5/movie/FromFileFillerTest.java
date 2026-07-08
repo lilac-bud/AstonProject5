@@ -2,9 +2,9 @@ package com.github.lilacbud.astonproject5.movie;
 
 import org.junit.jupiter.api.Test;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +29,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("correctMovies.txt");
 
-        List<Movie> movies = new ArrayList<>(); //OIGUL тут будет Collection, если реализуем
+        List<Movie> movies = new ArrayList<>();
 
         fff.fillMovies(movies);
 
@@ -61,7 +61,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("emptyFile.txt");
 
-        List<Movie> movies = new ArrayList<>(); //OIGUL тут будет Collection, если реализуем
+        Collection<Movie> movies = new ArrayList<>();
 
         fff.fillMovies(movies);
 
@@ -81,7 +81,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("extraField.txt");
 
-        List<Movie> movies = new ArrayList<>(); //OIGUL тут будет Collection, если реализуем
+        Collection<Movie> movies = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> {
             fff.fillMovies(movies);
@@ -93,7 +93,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("missingField.txt");
 
-        List<Movie> movies = new ArrayList<>(); //OIGUL тут будет Collection, если реализуем
+        Collection<Movie> movies = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> {
             fff.fillMovies(movies);
@@ -105,7 +105,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("invalidSecondField.txt");
 
-        List<Movie> movies = new ArrayList<>(); //OIGUL тут будет Collection, если реализуем
+        Collection<Movie> movies = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> {
             fff.fillMovies(movies);
@@ -117,7 +117,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("invalidThirdField.txt");
 
-        List<Movie> movies = new ArrayList<>(); //OIGUL тут будет Collection, если реализуем
+        Collection<Movie> movies = new ArrayList<>();
 
         assertThrows(IllegalArgumentException.class, () -> {
             fff.fillMovies(movies);

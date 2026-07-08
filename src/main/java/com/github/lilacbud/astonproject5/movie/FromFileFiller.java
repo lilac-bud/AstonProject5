@@ -9,21 +9,20 @@ import java.util.stream.Stream;
 
 public class FromFileFiller implements MoviesFiller{
 
-    private Path path;
+    private final Path path;
 
-    private void setPath(Path path) {
+    public FromFileFiller(String filepath){
+
+        Path path = Paths.get(filepath);
+
         if (!Files.exists(path)) {
-            throw new IllegalArgumentException("File does not exist: " + path);
+            throw new IllegalArgumentException("File does not exist: " + filepath);
         }
         if (!Files.isReadable(path)) {
-            throw new IllegalArgumentException("File is not readable: " + path);
+            throw new IllegalArgumentException("File is not readable: " + filepath);
         }
 
         this.path = path;
-    }
-
-    public FromFileFiller(String filepath){
-        setPath(Paths.get(filepath));
     }
 
     @Override
