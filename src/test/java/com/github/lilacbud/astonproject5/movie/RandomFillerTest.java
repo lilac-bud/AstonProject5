@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RandomFillerTest {
-    
     private final Collection<Movie> movies = new ArrayList<>();
+    
     public RandomFillerTest() {
     }
     
@@ -25,10 +25,14 @@ public class RandomFillerTest {
         assertTrue(movies.isEmpty());
     }
     @Test
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void testFillMoviesWithSizeLessThanZero() {
         System.out.println("fillMovies with size set to less than zero");
-        RandomFiller instance = new RandomFiller(-10);
-        instance.fillMovies(movies);
+        IllegalArgumentException thrown = 
+                assertThrows(IllegalArgumentException.class, () -> { 
+                    new RandomFiller(-10); 
+                });
+        assertEquals(thrown.getMessage(), "Size cannot be negative");
         assertTrue(movies.isEmpty());
     }
     @Test
@@ -36,6 +40,7 @@ public class RandomFillerTest {
         System.out.println("fillMovies with size set to more than zero");
         RandomFiller instance = new RandomFiller(10);
         instance.fillMovies(movies);
-        assertTrue(movies.size() == 10 && !movies.contains(null));
+        assertEquals(movies.size(), 10);
+        assertFalse(movies.contains(null));
     }
 }
