@@ -23,7 +23,7 @@ public class RandomFiller implements MoviesFiller {
     
     public RandomFiller(int size) {
         if (size < 0)
-            size = 0;
+            throw new IllegalArgumentException("Size cannot be negative");
         this.size = size;
     }
     @Override
