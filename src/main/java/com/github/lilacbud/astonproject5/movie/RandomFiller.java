@@ -35,12 +35,11 @@ public class RandomFiller implements MoviesFiller {
     }
     
     private Movie generateMovie(){
-        final Movie movie = new Movie.Builder()
+        return new Movie.Builder()
                 .withName(generateName())
                 .withYearOfRelease(generateYear())
                 .withHourLength(generateHourLength())
                 .build();
-        return movie;
     }
     private String generateName() {
         final int length = RANDOM.nextInt(MIN_NAME_LENGTH, MAX_NAME_LENGTH + 1);
