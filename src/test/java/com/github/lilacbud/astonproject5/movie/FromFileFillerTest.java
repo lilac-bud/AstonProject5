@@ -2,6 +2,8 @@ package com.github.lilacbud.astonproject5.movie;
 
 import org.junit.jupiter.api.Test;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,14 +14,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FromFileFillerTest {
 
     private FromFileFiller createFiller(String filepath) {
+
+        URL resource = getClass().getClassLoader().getResource(filepath);
+
+        if (resource == null) {
+            throw new IllegalStateException("Test resource not found: " + filepath);
+        }
+
         try {
-            String path = Paths.get(
-                    getClass().getClassLoader()
-                            .getResource(filepath)
-                            .toURI()
-            ).toString();
-            return new FromFileFiller(path);
-        } catch (Exception e) {
+            return new FromFileFiller(Paths.get(resource.toURI()).toString());
+        } catch (URISyntaxException e) {
             throw new IllegalStateException("Cannot load test resource: " + filepath, e);
         }
     }
@@ -71,9 +75,7 @@ public class FromFileFillerTest {
     @Test
     void fillMoviesFileNotExistTest() {
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new FromFileFiller("NotExistFile.txt");
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller("NotExistFile.txt"));
     }
 
     @Test
@@ -83,9 +85,12 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             fff.fillMovies(movies);
         });
+
+        String line = "The Shawshank Redemption;1994;2.4;1972";
+        assertEquals("Invalid string format: " + line, exception.getMessage());
     }
 
     @Test
@@ -95,9 +100,10 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            fff.fillMovies(movies);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
+
+        String line = "The Shawshank Redemption;1994";
+        assertEquals("Invalid string format: " + line, exception.getMessage());
     }
 
     @Test
@@ -107,9 +113,10 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            fff.fillMovies(movies);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
+
+        String line = "qwerty";
+        assertEquals("Invalid year: " + line, exception.getMessage());
     }
 
     @Test
@@ -119,8 +126,11 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             fff.fillMovies(movies);
         });
+
+        String line = "qwerty";
+        assertEquals("Invalid hour: " + line, exception.getMessage());
     }
 }

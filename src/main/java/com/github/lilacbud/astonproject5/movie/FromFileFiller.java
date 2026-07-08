@@ -51,7 +51,7 @@ public class FromFileFiller implements MoviesFiller{
                 .orElseThrow(() -> new IllegalArgumentException("Invalid hour: " + arrStrings[2]));
 
         return new Movie.Builder()
-                .withName(name.trim()) //OIGUL .trim() лучше перенести в MovieInputValidation
+                .withName(name)
                 .withYearOfRelease(yearOfRelease)
                 .withHourLength(hourLength)
                 .build();
