@@ -11,7 +11,7 @@ public class FromFileFiller implements MoviesFiller{
 
     private Path path;
 
-    public void setPath(Path path) {
+    private void setPath(Path path) {
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("File does not exist: " + path);
         }
