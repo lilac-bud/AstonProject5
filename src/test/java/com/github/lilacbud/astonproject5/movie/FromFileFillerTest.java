@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
+import org.mockito.MockedStatic;
+import static org.mockito.ArgumentMatchers.anyString;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FromFileFillerTest {
@@ -28,6 +34,31 @@ public class FromFileFillerTest {
         }
     }
 
+    private void fillMovies(FromFileFiller fff, Collection<Movie> movies) {
+        try (MockedStatic<MovieInputValidation> validation =
+                     mockStatic(MovieInputValidation.class)) {
+            validation.when(() -> MovieInputValidation
+                            .validateName(anyString()))
+                    .thenAnswer(i -> Optional.of(i.getArgument(0)));
+            validation.when(() -> MovieInputValidation
+                            .validateYearOfRelease(anyString()))
+                    .thenAnswer(i ->
+                            Optional.of(Integer.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation
+                            .validateYearOfRelease("qwerty"))
+                    .thenReturn(Optional.empty());
+            validation.when(() -> MovieInputValidation
+                            .validateHourLength(anyString()))
+                    .thenAnswer(i ->
+                            Optional.of(Float.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation
+                            .validateHourLength("qwerty"))
+                    .thenReturn(Optional.empty());
+
+            fff.fillMovies(movies);
+        }
+    }
+
     @Test
     void fillMoviesCorrectTest() {
 
@@ -35,7 +66,7 @@ public class FromFileFillerTest {
 
         List<Movie> movies = new ArrayList<>();
 
-        fff.fillMovies(movies);
+        fillMovies(fff, movies);
 
         assertEquals(5, movies.size());
         assertEquals("The Shawshank Redemption", movies.get(0).getName());
@@ -113,7 +144,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "qwerty";
         assertEquals("Invalid year: " + line, exception.getMessage());
@@ -126,9 +157,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            fff.fillMovies(movies);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "qwerty";
         assertEquals("Invalid hour: " + line, exception.getMessage());
