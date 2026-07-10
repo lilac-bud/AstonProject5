@@ -22,7 +22,7 @@ class MoviesSorterTest {
         ));
         comparatorByName = Comparator.comparing(Movie::getName);
         sortWasCalled = false;
-        testStrategy = (movies, comp)->{
+        testStrategy = (movieList, comp)->{
             sortWasCalled=true;
             ((List<Movie>)movies).sort(comp);
         };
@@ -32,7 +32,7 @@ class MoviesSorterTest {
     public void setSortingStrategy() {
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         boolean[] newStrategyCalled = {false};
-        SortingStrategy newStrategy = (movies, comp)->{
+        SortingStrategy newStrategy = (movieList, comp)->{
             newStrategyCalled[0]=true;
             ((List<Movie>)movies).sort(comp);
         };
