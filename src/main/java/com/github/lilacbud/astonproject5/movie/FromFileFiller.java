@@ -13,16 +13,16 @@ public class FromFileFiller implements MoviesFiller{
 
     public FromFileFiller(String filepath){
 
-        Path path = Paths.get(filepath);
+        Path resultPath = Paths.get(filepath);
 
-        if (!Files.exists(path)) {
+        if (!Files.exists(resultPath)) {
             throw new IllegalArgumentException("File does not exist: " + filepath);
         }
-        if (!Files.isReadable(path)) {
+        if (!Files.isReadable(resultPath)) {
             throw new IllegalArgumentException("File is not readable: " + filepath);
         }
 
-        this.path = path;
+        this.path = resultPath;
     }
 
     @Override
