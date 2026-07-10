@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -106,7 +105,9 @@ public class FromFileFillerTest {
     @Test
     void fillMoviesFileNotExistTest() {
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller("NotExistFile.txt"));
+        String filepath = "NotExistFile.txt";
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller(filepath));
+        assertEquals("File does not exist: " + filepath, exception.getMessage());
     }
 
     @Test
