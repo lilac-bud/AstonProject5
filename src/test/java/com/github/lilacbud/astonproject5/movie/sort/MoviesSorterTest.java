@@ -40,7 +40,7 @@ class MoviesSorterTest {
         sortWasCalled = false;
         testStrategy = (movieList, comp)->{
             sortWasCalled=true;
-            ((List<Movie>)movies).sort(comp);
+            ((List<Movie>)movieList).sort(comp);
         };
     }
 
@@ -50,7 +50,7 @@ class MoviesSorterTest {
         boolean[] newStrategyCalled = {false};
         SortingStrategy newStrategy = (movieList, comp)->{
             newStrategyCalled[0]=true;
-            ((List<Movie>)movies).sort(comp);
+            ((List<Movie>)movieList).sort(comp);
         };
         sorter.setSortingStrategy(newStrategy);
         sorter.performSorting(movies);
