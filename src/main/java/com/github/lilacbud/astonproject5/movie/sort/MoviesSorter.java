@@ -8,16 +8,17 @@ public class MoviesSorter {
     private SortingStrategy sortStrategy;
     private Comparator<Movie> comp;
 
-    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp) {
+    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp){
         this.sortStrategy=sortStrategy;
-        this.comp = comp;
+        this.comp=comp;
     }
-
-    public void setSortingStrategy(SortingStrategy sortStrategy) { this.sortStrategy=sortStrategy;}
+    public void setSortingStrategy(SortingStrategy sortStrategy){
+        this.sortStrategy=sortStrategy;
+    }
     public void setComparator(Comparator<Movie> comp){
         this.comp=comp;
     }
-    public void performSorter(Collection<Movie> movies){
-        sortStrategy.sort(movies,comp);
+    public void performSorting(Collection<Movie> movies){
+        sortStrategy.sort(movies, comp);
     }
 }
