@@ -45,10 +45,11 @@ public class MovieInputValidationTest {
     @Test
     public void testValidateNameGivenValidString() {
         System.out.println("validateName given valid string");
-        String input = "Correct input\n";
+        String input = "Correct     input\n";
+        Optional<String> expectedResult = Optional.of("Correct input");
         Optional<String> result = MovieInputValidation.validateName(input);
         assertTrue(result.isPresent());
-        assertEquals(input.trim(), result.get());
+        assertEquals(expectedResult, result);
         assertTrue(errContent.toString().isEmpty());
     }
 

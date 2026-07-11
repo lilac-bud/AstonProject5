@@ -19,7 +19,7 @@ final class MovieInputValidation {
     }
     
     static Optional<String> validateName(String input){
-        return validateInput(input);
+        return validateInput(input).map(s -> s.replaceAll("\\s+", " "));
     }
     static Optional<Integer> validateYearOfRelease(String input){
         final Optional<String> validatedInput = validateInput(input);
