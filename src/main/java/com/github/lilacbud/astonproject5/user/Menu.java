@@ -34,7 +34,9 @@ public class Menu {
                 getSortMenu().run();
             }),
             new MenuOption("Сохранить фильмы", () -> {
-                new DefaultSaver(getFilepath()).save(movies);
+                if (movies.isEmpty())
+                    getFillMenu().run();
+                saveMovies();
             }),
             new MenuOption("Закончить работу", () -> {
                 running = false;
@@ -55,6 +57,13 @@ public class Menu {
     }
     private void printMovies() {
         movies.forEach(System.out::println);
+    }
+    private void saveMovies() {
+        try {
+            new DefaultSaver(getFilepath()).save(movies);
+        } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
+        }
     }
     
     public static Menu getInstance(){
