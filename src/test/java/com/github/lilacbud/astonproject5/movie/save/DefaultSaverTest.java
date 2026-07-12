@@ -39,7 +39,7 @@ class DefaultSaverTest {
     }
 
     @Test
-    public void saveCreate() throws Exception {
+    public void saveOverwrite() throws Exception {
         Path file = tempDir.resolve("movies.txt");
         Files.writeString(file, "old text\n");
 
