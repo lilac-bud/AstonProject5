@@ -18,6 +18,12 @@ public class DefaultSaver implements MoviesSaver{
         this.filePath=Path.of(filepath);
         this.scanner = new Scanner(System.in);
     }
+
+    public DefaultSaver(String filepath, Scanner scanner){
+        this.filePath = Path.of(filepath);
+        this.scanner = scanner;
+    }
+
     @Override
     public void save(Collection<Movie> movies){
         StandardOpenOption option = StandardOpenOption.CREATE;
