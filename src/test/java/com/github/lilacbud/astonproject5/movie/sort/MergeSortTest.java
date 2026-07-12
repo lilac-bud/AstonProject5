@@ -44,7 +44,8 @@ public class MergeSortTest {
     @Test
     void MergeSortNameCorrectTest() {
 
-        Comparator<Movie> comparator = Movie.compareByName;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getName);
+
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
@@ -56,7 +57,7 @@ public class MergeSortTest {
     @Test
     void MergeSortYearCorrectTest() {
 
-        Comparator<Movie> comparator = Movie.compareByYearOfRelease;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
@@ -68,7 +69,7 @@ public class MergeSortTest {
     @Test
     void MergeSortHourCorrectTest() {
 
-        Comparator<Movie> comparator = Movie.compareByHourLength;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
@@ -80,7 +81,7 @@ public class MergeSortTest {
     @Test
     void MergeSortIdenticalValuesCorrectTest() {
 
-        Comparator<Movie> comparator = Movie.compareByHourLength;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
@@ -94,7 +95,7 @@ public class MergeSortTest {
     void MergeSortEmptyCollectionTest() {
 
         movies.clear();
-        Comparator<Movie> comparator = Movie.compareByYearOfRelease;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
@@ -106,7 +107,7 @@ public class MergeSortTest {
     void MergeSortMoviesIsNullTest() {
 
         movies = null;
-        Comparator<Movie> comparator = Movie.compareByYearOfRelease;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
@@ -118,7 +119,7 @@ public class MergeSortTest {
     void MergeSortSingleElementTest() {
 
         movies.subList(1, movies.size()).clear();
-        Comparator<Movie> comparator = Movie.compareByYearOfRelease;
+        Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
         mergeSort.sort(movies, comparator);
