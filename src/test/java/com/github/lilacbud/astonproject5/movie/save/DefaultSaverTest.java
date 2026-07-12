@@ -4,7 +4,12 @@ import com.github.lilacbud.astonproject5.movie.Movie;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Scanner;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,9 +39,15 @@ class DefaultSaverTest {
     }
 
     @Test
-    void save() throws Exception {
+    public void saveCreate() throws Exception {
         Path file = tempDir.resolve("movies.txt");
+        Files.writeString(file, "old text\n");
 
+        new DefaultSaver(file.toString(), new Scanner("1\n")).save(List.of(movie1));
+
+        List<String> lines = Files.readAllLines(file);
+        assertEquals(1, lines.size());
+        assertEquals("Криминальное чтиво;1994;2.5",lines.get(0));
     }
 
     @Test
