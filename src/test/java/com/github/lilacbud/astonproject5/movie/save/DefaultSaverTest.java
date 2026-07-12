@@ -25,7 +25,7 @@ class DefaultSaverTest {
     private static final Movie movie3 = mock(Movie.class);
 
     @BeforeAll
-    static void setUp(){
+    public static void setUp(){
         when(movie1.getName()).thenReturn("Криминальное чтиво");
         when(movie1.getYearOfRelease()).thenReturn(1994);
         when(movie1.getHourLength()).thenReturn(2.5f);
@@ -47,7 +47,8 @@ class DefaultSaverTest {
         new DefaultSaver(file.toString(), new Scanner("")).save(movies);
 
         assertTrue(Files.exists(file));
-        assertEquals(List.of("Криминальное чтиво;1994;2.5", "Интерстеллар;2014;3.0","Начало;2010;2.5"), Files.readAllLines(file));
+        assertEquals(List.of("Криминальное чтиво;1994;2.5", "Интерстеллар;2014;3.0","Начало;2010;2.5"),
+                Files.readAllLines(file));
     }
 
     @Test
@@ -76,7 +77,9 @@ class DefaultSaverTest {
     }
 
     @Test
-    void testSavePath() {
-        assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:\0InvalidFile.txt", new Scanner("")));
+    @SuppressWarnings("ThrowableResultIgnored")
+    public void testSavePath() {
+        assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:\0InvalidFile.txt",
+                new Scanner("")));
     }
 }
