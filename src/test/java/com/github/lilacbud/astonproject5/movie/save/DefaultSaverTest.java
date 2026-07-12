@@ -39,6 +39,17 @@ class DefaultSaverTest {
     }
 
     @Test
+    public void saveCreate() throws Exception {
+        Path file = tempDir.resolve("movies.txt");
+        List<Movie> movies = List.of(movie1,movie2,movie3);
+
+        new DefaultSaver(file.toString(), new Scanner("")).save(movies);
+
+        assertTrue(Files.exists(file));
+        assertEquals(List.of("Криминальное чтиво;1994;2.5", "Интерстеллар;2014;3.0","Начало;2010;2.5"), Files.readAllLines(file));
+    }
+
+    @Test
     public void saveOverwrite() throws Exception {
         Path file = tempDir.resolve("movies.txt");
         Files.writeString(file, "old text\n");
