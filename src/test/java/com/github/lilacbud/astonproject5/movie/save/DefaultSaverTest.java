@@ -62,6 +62,19 @@ class DefaultSaverTest {
     }
 
     @Test
+    public void saveAdd() throws Exception {
+        Path file = tempDir.resolve("movies.txt");
+        Files.writeString(file, "Дюна; 2021; 2.6\n");
+
+        new DefaultSaver(file.toString(), new Scanner("2\n")).save(List.of(movie1));
+
+        List<String> lines = Files.readAllLines(file);
+        assertEquals(2,lines.size());
+        assertEquals("Дюна;2021;2.6", lines.get(0));
+        assertEquals("Криминальное чтиво;1994;2.5", lines.get(1));
+    }
+
+    @Test
     void testSave() {
     }
 }
