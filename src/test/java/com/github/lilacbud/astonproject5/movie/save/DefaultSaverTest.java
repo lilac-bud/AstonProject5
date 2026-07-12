@@ -13,6 +13,7 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import java.nio.file.InvalidPathException;
 
 class DefaultSaverTest {
 
@@ -64,7 +65,7 @@ class DefaultSaverTest {
     @Test
     public void saveAdd() throws Exception {
         Path file = tempDir.resolve("movies.txt");
-        Files.writeString(file, "Дюна; 2021; 2.6\n");
+        Files.writeString(file,"Дюна;2021;2.6\n");
 
         new DefaultSaver(file.toString(), new Scanner("2\n")).save(List.of(movie1));
 
@@ -75,6 +76,7 @@ class DefaultSaverTest {
     }
 
     @Test
-    void testSave() {
+    void testSavePath() {
+        assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:\0InvalidFile.txt", new Scanner("")));
     }
 }
