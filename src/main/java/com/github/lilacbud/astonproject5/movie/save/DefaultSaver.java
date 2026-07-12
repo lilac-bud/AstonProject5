@@ -14,11 +14,6 @@ public class DefaultSaver implements MoviesSaver{
     private final Path filePath;
     private final Scanner scanner;
 
-    public DefaultSaver(String filepath){
-        this.filePath=Path.of(filepath);
-        this.scanner = new Scanner(System.in);
-    }
-
     public DefaultSaver(String filepath, Scanner scanner){
         this.filePath = Path.of(filepath);
         this.scanner = scanner;
