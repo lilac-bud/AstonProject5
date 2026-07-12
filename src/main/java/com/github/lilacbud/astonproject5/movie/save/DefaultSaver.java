@@ -24,7 +24,7 @@ public class DefaultSaver implements MoviesSaver{
 
         if (Files.exists(filePath)){
             while(true){
-                System.out.println("The file already exists. 1 - overwrite, 2 - add");
+                System.out.println("Файл уже существует. 1 - перезаписать, 2 - добавить");
 
                 String answer = scanner.nextLine();
                 if(answer.equals("1")){
