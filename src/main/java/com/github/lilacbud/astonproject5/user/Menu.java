@@ -189,9 +189,7 @@ public class Menu {
     
     private class SortMenu {
         private MoviesSorter sorter;
-        private final SortingStrategy sortStrategy = (movieList, comp) -> {
-                    ((List<Movie>)movieList).sort(comp);
-                };
+        private final SortingStrategy sortStrategy = new MergeSort();
         private String curComp;
         
         private final List<MenuOption> compOptions = List.of(
