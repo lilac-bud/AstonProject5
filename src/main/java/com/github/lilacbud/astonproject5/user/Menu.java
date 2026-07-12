@@ -60,7 +60,7 @@ public class Menu {
     }
     private void saveMovies() {
         try {
-            new DefaultSaver(getFilepath()).save(movies);
+            new DefaultSaver(getFilepath(), scanner).save(movies);
         } catch (RuntimeException e) {
             System.err.println(e.getMessage());
         }
