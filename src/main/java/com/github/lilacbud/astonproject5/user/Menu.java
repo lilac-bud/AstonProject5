@@ -172,20 +172,10 @@ public class Menu {
             } while (validatedSize.isEmpty());
             return validatedSize.get();
         }
-        private void chooseFiller() {
-            while (filler == null) {
-                try {
-                    chooseOption("Как заполнить список:", fillOptions).execute();
-                } catch (IllegalArgumentException e) {
-                    System.err.println(e.getMessage());
-                    filler = null;
-                }
-            }
-        }
         private void run() {
             while (true) {
-                chooseFiller();
                 try {
+                    chooseOption("Как заполнить список:", fillOptions).execute();
                     filler.fillMovies(movies);
                 } catch (RuntimeException e) {
                     System.err.println(e.getMessage());
