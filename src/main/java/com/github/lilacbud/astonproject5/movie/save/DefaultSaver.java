@@ -12,10 +12,11 @@ import java.nio.file.StandardOpenOption;
 
 public class DefaultSaver implements MoviesSaver{
     private final Path filePath;
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
     public DefaultSaver(String filepath){
         this.filePath=Path.of(filepath);
+        this.scanner = new Scanner(System.in);
     }
     @Override
     public void save(Collection<Movie> movies){
@@ -23,7 +24,7 @@ public class DefaultSaver implements MoviesSaver{
 
         if (Files.exists(filePath)){
             while(true){
-                System.out.println("Файл уже существует. 1 - перезаписать, 2 - добавить");
+                System.out.println("The file already exists. 1 - overwrite, 2 - add");
 
                 String answer = scanner.nextLine();
                 if(answer.equals("1")){
@@ -34,7 +35,7 @@ public class DefaultSaver implements MoviesSaver{
                     option = StandardOpenOption.APPEND;
                     break;
                 }
-                System.err.println("некорректный ввод");
+                System.err.println("incorrect input");
             }
         }
 
@@ -44,7 +45,7 @@ public class DefaultSaver implements MoviesSaver{
                 writer.newLine();
             }
         } catch (IOException e){
-            throw new RuntimeException("Ошибка сохранения файла", e);
+            throw new RuntimeException("File Save Error", e);
         }
     }
 }
