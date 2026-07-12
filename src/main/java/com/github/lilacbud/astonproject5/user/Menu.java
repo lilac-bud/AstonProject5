@@ -3,6 +3,7 @@ package com.github.lilacbud.astonproject5.user;
 import com.github.lilacbud.astonproject5.movie.*;
 import com.github.lilacbud.astonproject5.movie.save.*;
 import com.github.lilacbud.astonproject5.movie.sort.*;
+import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -75,34 +76,6 @@ public class Menu {
             chooseOption("Главное меню: ", mainOptions).execute();
     }
     
-    private static final class InputValidation {
-        private InputValidation() {
-            throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-        }
-        private static Optional<String> validateInput(String input) {
-            if (input == null || input.isBlank()) {
-                System.err.println("Input cannot be empty");
-                return Optional.empty();
-            } 
-            return Optional.of(input.trim());
-        }
-        private static Optional<Integer> validateIntegerInput(String input) {
-            final Optional<String> validatedInput = validateInput(input);
-            if (validatedInput.isEmpty())
-                return Optional.empty();
-            try {
-                final Integer convertedInput = Integer.valueOf(validatedInput.get());
-                if (convertedInput < 0)
-                    throw new IllegalArgumentException();
-                return Optional.of(convertedInput);
-            } catch (NumberFormatException e) {
-                System.err.println("Input must be a whole number");
-            } catch (IllegalArgumentException e) {
-                System.err.println("Input cannot be negative");
-            }
-            return Optional.empty();
-        }
-    }
     private String getFilepath() {
             Optional<String> validatedFilepath;
             do {
