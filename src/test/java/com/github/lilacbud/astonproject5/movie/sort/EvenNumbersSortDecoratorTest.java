@@ -61,7 +61,7 @@ public class EvenNumbersSortDecoratorTest {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),movie -> movie.getYearOfRelease() );
+        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
         assertEquals(6, movies.size());

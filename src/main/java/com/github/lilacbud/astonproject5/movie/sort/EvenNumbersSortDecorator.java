@@ -55,4 +55,11 @@ public class EvenNumbersSortDecorator  extends SortDecorator {
 
         return evenResult;
     }
+
+    @FunctionalInterface
+    public static interface IntegerFieldExtractor {
+
+        int getValue(Movie movie);
+
+    }
 }

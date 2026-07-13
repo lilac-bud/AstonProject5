@@ -6,9 +6,10 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public abstract class SortDecorator implements SortingStrategy {
+
     protected final SortingStrategy sortingStrategy;
 
-    protected SortDecorator(SortingStrategy sortingStrategy) {
+    public SortDecorator(SortingStrategy sortingStrategy) {
         this.sortingStrategy = sortingStrategy;
     }
 
