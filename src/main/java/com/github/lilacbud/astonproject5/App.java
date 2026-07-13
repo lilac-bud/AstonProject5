@@ -22,7 +22,7 @@ public class App {
     private MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private Menu.SubMenu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+    private Menu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
     
     private App() {}
     
@@ -116,23 +116,23 @@ public class App {
     }
     
     public static class Builder {
-        public Builder withMainMenu(Menu.SubMenu menu) {
+        public Builder withMainMenu(Menu menu) {
             App.getInstance().mainMenu = menu;
             return this;
         }
-        public Builder withFillMenu(Menu.SubMenu menu) {
+        public Builder withFillMenu(Menu menu) {
             App.getInstance().fillMenu = menu;
             return this;
         }
-        public Builder withSortMenu(Menu.SubMenu menu) {
+        public Builder withSortMenu(Menu menu) {
             App.getInstance().sortMenu = menu;
             return this;
         }
-        public Builder withCompMenu(Menu.SubMenu menu) {
+        public Builder withCompMenu(Menu menu) {
             App.getInstance().compMenu = menu;
             return this;
         }
-        public Builder withSaveMenu(Menu.SubMenu menu) {
+        public Builder withSaveMenu(Menu menu) {
             App.getInstance().saveMenu = menu;
             return this;
         }

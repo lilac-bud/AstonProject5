@@ -17,7 +17,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Menu.SubMenu mainMenu = new Menu.SubMenu("Главное меню:", "Выберите одну из опций: ",
+        Menu mainMenu = new Menu("Главное меню:", "Выберите одну из опций: ",
             List.of(
                     new Menu.MenuOption("Заполнить список фильмов", () 
                             -> App.getInstance().fillMovies("Список успешно заполнен")),
@@ -39,7 +39,7 @@ public class Main {
                     new Menu.MenuOption("Закончить работу", () -> App.getInstance().exit())  
             )
         );
-        Menu.SubMenu fillMenu = new Menu.SubMenu("Как заполнить список:", "Выберите одну из опций: ",
+        Menu fillMenu = new Menu("Как заполнить список:", "Выберите одну из опций: ",
                 List.of(
                         new Menu.MenuOption("Из файла", () -> {
                             String filepath = App.getInstance().getFilepath("Укажите путь к файлу: ");
@@ -55,7 +55,7 @@ public class Main {
                         })
                 )
         );
-        Menu.SubMenu sortMenu = new Menu.SubMenu("Нужно отсортировать:", "Выберите одну из опций: ", 
+        Menu sortMenu = new Menu("Нужно отсортировать:", "Выберите одну из опций: ", 
                 List.of(
                         new Menu.MenuOption("Все фильмы", () 
                                 -> App.getInstance().setSortingStrategy(new MergeSort())),
@@ -64,7 +64,7 @@ public class Main {
                                         Movie::getYearOfRelease)))
                 )
         );
-        Menu.SubMenu compMenu = new Menu.SubMenu("Отсортировать список фильмов:", "Выберите одну из опций: ",
+        Menu compMenu = new Menu("Отсортировать список фильмов:", "Выберите одну из опций: ",
                 List.of(
                         new Menu.MenuOption("По названию", () -> App.getInstance().setComparator(Movie.compareByName)),
                         new Menu.MenuOption("По году выпуска", ()
@@ -73,7 +73,7 @@ public class Main {
                                 App.getInstance().setComparator(Movie.compareByHourLength))
                 )
         );
-        Menu.SubMenu saveMenu = new Menu.SubMenu("Сохранить список фильмов:", "Выберите одну из опций: ",
+        Menu saveMenu = new Menu("Сохранить список фильмов:", "Выберите одну из опций: ",
                 List.of(
                         new Menu.MenuOption("В текстовый файл", () -> {
                             String filepath = App.getInstance().getFilepath("Укажите путь к файлу: ");

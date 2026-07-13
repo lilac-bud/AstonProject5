@@ -7,14 +7,46 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 
 public class Menu {
-    private static Menu instance;
+    private final String title;
+    private final String prompt;
+    private final List<MenuOption> options;
     
-    private Menu() {}
-    public static Menu getInstance(){
-        if (instance == null)
-            instance = new Menu();
-        return instance;
+    public Menu(String title, String prompt, List<MenuOption> options) {
+        if (title == null)
+            throw new IllegalArgumentException("Title cannot be null");
+        if (prompt == null)
+            throw new IllegalArgumentException("Choosing prompt cannot be null");
+        if (options == null)
+            throw new IllegalArgumentException("Options cannot be null");
+        if (options.isEmpty())
+            throw new IllegalArgumentException("Options cannot be empty");
+        this.title = title;
+        this.prompt = prompt;
+        this.options = options;
     }
+    
+    public MenuOption chooseOption(Scanner scanner) {
+        if (options.size() == 1) {
+            return options.get(0);
+        }
+        Optional<Integer> validatedInput;
+        while (true) {
+            do {
+                System.out.println(title);
+                IntStream.range(0, options.size())
+                        .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
+                        .forEach(System.out::println);
+                System.out.print(prompt);
+                validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
+            } while (validatedInput.isEmpty());
+            try {
+                return options.get(validatedInput.get() - 1);
+            } catch (IndexOutOfBoundsException e) {
+                System.err.println("No such option");
+            }
+        }
+    }
+    
     public static interface MenuCommand {
         void execute();
     }
@@ -31,45 +63,6 @@ public class Menu {
         }
         public void execute() {
             command.execute();
-        }
-    }
-    public static class SubMenu {
-        private final String title;
-        private final String prompt;
-        private final List<MenuOption> options;
-        
-        public SubMenu(String title, String prompt, List<MenuOption> options) {
-            if (title == null)
-                throw new IllegalArgumentException("Title cannot be null");
-            if (prompt == null)
-                throw new IllegalArgumentException("Choosing prompt cannot be null");
-            if (options == null)
-                throw new IllegalArgumentException("Options cannot be null");
-            if (options.isEmpty())
-                throw new IllegalArgumentException("Options cannot be empty");
-            this.title = title;
-            this.prompt = prompt;
-            this.options = options;
-        }
-        public MenuOption chooseOption(Scanner scanner) {
-            if (options.size() == 1)
-                return options.get(0);
-            Optional<Integer> validatedInput;
-            while (true) {
-                do {
-                    System.out.println(title);
-                    IntStream.range(0, options.size())
-                            .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
-                            .forEach(System.out::println);
-                    System.out.print(prompt);
-                    validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
-                } while (validatedInput.isEmpty());
-                try {
-                    return options.get(validatedInput.get() - 1);
-                } catch (IndexOutOfBoundsException e) {
-                    System.err.println("No such option");
-                }
-            }
         }
     }
 }
