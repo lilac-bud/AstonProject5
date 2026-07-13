@@ -49,6 +49,8 @@ public class Menu {
         private final MenuCommand command;
         
         public MenuOption(String title, MenuCommand command) {
+            if (title == null || command == null)
+                throw new IllegalArgumentException("Both title and command cannot be null");
             this.title = title;
             this.command = command;
         }
