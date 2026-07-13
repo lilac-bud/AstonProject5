@@ -80,16 +80,16 @@ public class Menu {
             mainMenu.chooseOption(scanner).execute();
     }
     
-    private void setFiller(MoviesFiller filler) {
+    public void setFiller(MoviesFiller filler) {
         this.filler = filler;
     }
-    private void setComparator(Comparator<Movie> comp) {
+    public void setComparator(Comparator<Movie> comp) {
         if (sorter == null)
             sorter = new MoviesSorter(sortStrategy, comp);
         else
             sorter.setComparator(comp);
     }
-    private String getFilepath() {
+    public String getFilepath() {
         Optional<String> validatedFilepath;
         do {
             System.out.print("Укажите путь к файлу: ");
@@ -97,7 +97,7 @@ public class Menu {
         } while (validatedFilepath.isEmpty());
         return validatedFilepath.get();
     }
-    private int getSize() {
+    public int getSize() {
         Optional<Integer> validatedSize;
         do {
             System.out.print("Укажите количество фильмов: ");
@@ -105,17 +105,17 @@ public class Menu {
         } while (validatedSize.isEmpty());
         return validatedSize.get();
     }
-    private void printMovies() {
+    public void printMovies() {
         movies.forEach(System.out::println);
     }
-    private void saveMovies() {
+    public void saveMovies() {
         try {
             new DefaultSaver(getFilepath(), scanner).save(movies);
         } catch (RuntimeException e) {
             System.err.println(e.getMessage());
         }
     }
-    private void fillMovies() {
+    public void fillMovies() {
         while (true) {
             try {
                 fillMenu.chooseOption(scanner).execute();
@@ -128,11 +128,11 @@ public class Menu {
             break;
         }
     }
-    private void checkIfMoviesEmpty() {
+    public void checkIfMoviesEmpty() {
         if (movies.isEmpty())
             fillMovies();
     }
-    private void sortMovies() {
+    public void sortMovies() {
         if (sorter == null)
             chooseComparator();
         else
@@ -140,24 +140,24 @@ public class Menu {
         sorter.performSorting(movies);
         System.out.println("Список успешно отсортирован");
     }
-    private void chooseComparator() {
+    public void chooseComparator() {
         MenuOption compOption = compMenu.chooseOption(scanner);
         String title = String.format("Сейчас фильмы сортируются %s. Поменять?", compOption.getTitle().toLowerCase());
         changeCompMenu.setTitle(title);
         compOption.execute();
     }
-    private void exit() {
+    public void exit() {
         running = false;
     }
     
-    private static interface MenuCommand {
+    public static interface MenuCommand {
         void execute();
     }
-    private static class MenuOption {
+    public static class MenuOption {
         private final String title;
         private final MenuCommand command;
         
-        private MenuOption(String title, MenuCommand command) {
+        public MenuOption(String title, MenuCommand command) {
             this.title = title;
             this.command = command;
         }
@@ -168,11 +168,11 @@ public class Menu {
             command.execute();
         }
     }
-    private static class SubMenu {
+    public static class SubMenu {
         private String title;
         private final List<MenuOption> options;
         
-        private SubMenu(String title, List<MenuOption> options) {
+        public SubMenu(String title, List<MenuOption> options) {
             this.title = title;
             this.options = options;
         }
