@@ -86,7 +86,7 @@ public class Main {
                 }))
                 .build();
         
-        new App.Builder()
+        App.StepBuilder.newBuilder()
                .withMainMenu(mainMenu)
                .withFillMenu(fillMenu)
                .withSortMenu(sortMenu)

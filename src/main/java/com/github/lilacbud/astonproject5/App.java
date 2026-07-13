@@ -22,13 +22,19 @@ public class App {
     private MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private Menu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+    private final Menu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
     
-    private App() {}
+    private App(StepBuilder builder) {
+        this.mainMenu = builder.mainMenu;
+        this.fillMenu = builder.fillMenu;
+        this.sortMenu = builder.sortMenu;
+        this.compMenu = builder.compMenu;
+        this.saveMenu = builder.saveMenu;
+    }
     
     public static App getInstance() {
         if (INSTANCE == null)
-            INSTANCE = new App();
+            throw new IllegalStateException("App instance has to be built first");
         return INSTANCE;
     }
     public void run(){
@@ -115,29 +121,69 @@ public class App {
         running = false;
     }
     
-    public static class Builder {
-        public Builder withMainMenu(Menu menu) {
-            App.getInstance().mainMenu = menu;
+    public static interface MainMenuBuilder {
+        public FillMenuBuilder withMainMenu(Menu menu);
+    }
+    public static interface FillMenuBuilder {
+        public SortMenuBuilder withFillMenu(Menu menu);
+    }
+    public static interface SortMenuBuilder {
+        public CompMenuBuilder withSortMenu(Menu menu);
+    }
+    public static interface CompMenuBuilder {
+        public SaveMenuBuilder withCompMenu(Menu menu);
+    }
+    public static interface SaveMenuBuilder {
+        public StepBuilder withSaveMenu(Menu menu);
+    }
+    public static class StepBuilder implements MainMenuBuilder, FillMenuBuilder, 
+            SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder{
+        private Menu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+        
+        private StepBuilder() {}
+        
+        public static MainMenuBuilder newBuilder() {
+            return new StepBuilder();
+        }
+        @Override
+        public FillMenuBuilder withMainMenu(Menu menu) {
+            validateMenu(menu);
+            this.mainMenu = menu;
             return this;
         }
-        public Builder withFillMenu(Menu menu) {
-            App.getInstance().fillMenu = menu;
+        @Override
+        public SortMenuBuilder withFillMenu(Menu menu) {
+            validateMenu(menu);
+            this.fillMenu = menu;
             return this;
         }
-        public Builder withSortMenu(Menu menu) {
-            App.getInstance().sortMenu = menu;
+        @Override
+        public CompMenuBuilder withSortMenu(Menu menu) {
+            validateMenu(menu);
+            this.sortMenu = menu;
             return this;
         }
-        public Builder withCompMenu(Menu menu) {
-            App.getInstance().compMenu = menu;
+        @Override
+        public SaveMenuBuilder withCompMenu(Menu menu) {
+            validateMenu(menu);
+            this.compMenu = menu;
             return this;
         }
-        public Builder withSaveMenu(Menu menu) {
-            App.getInstance().saveMenu = menu;
+        @Override
+        public StepBuilder withSaveMenu(Menu menu) {
+            validateMenu(menu);
+            this.saveMenu = menu;
             return this;
         }
         public App build() {
-            return App.getInstance();
+            if (INSTANCE != null)
+                throw new IllegalStateException("App instance can be built only once");
+            INSTANCE = new App(this);
+            return INSTANCE;
+        }
+        private void validateMenu(Menu menu) {
+            if (menu == null)
+                throw new IllegalArgumentException("Menu cannot be null");
         }
     }
 }
