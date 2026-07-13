@@ -20,56 +20,59 @@ public class Menu {
     private MoviesSorter sorter;
     private final SortingStrategy sortStrategy = new MergeSort();
     private String curComp;
-    private FillMenu fillMenu;
-    private SortMenu sortMenu;
     
     private final List<MenuOption> mainOptions = List.of(
             new MenuOption("Заполнить список фильмов", () -> {
-                getFillMenu().run();
+                fillMovies();
             }),
             new MenuOption("Вывести список фильмов на экран", () -> {
                 if (movies.isEmpty())
-                    getFillMenu().run();
+                    fillMovies();
                 printMovies();
             }),
             new MenuOption("Отсортировать список фильмов", () -> {
                 if (movies.isEmpty())
-                    getFillMenu().run();
-                getSortMenu().run();
+                    fillMovies();
+                sortMovies();
             }),
             new MenuOption("Сохранить фильмы", () -> {
                 if (movies.isEmpty())
-                    getFillMenu().run();
+                    fillMovies();
                 saveMovies();
             }),
             new MenuOption("Закончить работу", () -> {
                 running = false;
             })
     );
+    private final List<MenuOption> fillOptions = List.of(
+            new MenuOption("Из файла", () -> {
+                filler = new FromFileFiller(getFilepath());
+            }),
+            new MenuOption("Случайно", () -> {
+                filler = new RandomFiller(getSize());
+            }),
+            new MenuOption("Вручную", () -> {
+                filler = new ManualFiller(getSize());
+            })
+    );
+    private final List<MenuOption> compOptions = List.of(
+            new MenuOption("По названию", () -> {
+                setComparator(Movie.compareByName);
+            }),
+            new MenuOption("По году выпуска", () -> {
+                setComparator(Movie.compareByYearOfRelease);
+            }),
+            new MenuOption("По длительности", () -> {
+                setComparator(Movie.compareByHourLength);
+            })
+    );
+    private final List<MenuOption> changeCompOptions = List.of(
+            new MenuOption("Да", () -> chooseComparator()),
+            new MenuOption("Нет", () -> {
+            })
+    );
     
-    private Menu(){
-    }
-    private FillMenu getFillMenu() {
-        if (fillMenu == null)
-            fillMenu = new FillMenu();
-        return fillMenu;
-    }
-    private SortMenu getSortMenu() {
-        if (sortMenu == null)
-            sortMenu = new SortMenu();
-        return sortMenu;
-    }
-    private void printMovies() {
-        movies.forEach(System.out::println);
-    }
-    private void saveMovies() {
-        try {
-            new DefaultSaver(getFilepath(), scanner).save(movies);
-        } catch (RuntimeException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-    
+    private Menu() {}
     public static Menu getInstance(){
         if (instance == null)
             instance = new Menu();
@@ -81,13 +84,70 @@ public class Menu {
     }
     
     private String getFilepath() {
-            Optional<String> validatedFilepath;
-            do {
-                System.out.print("Укажите путь к файлу: ");
-                validatedFilepath = InputValidation.validateInput(scanner.nextLine());
-            } while (validatedFilepath.isEmpty());
-            return validatedFilepath.get();
+        Optional<String> validatedFilepath;
+        do {
+            System.out.print("Укажите путь к файлу: ");
+            validatedFilepath = InputValidation.validateInput(scanner.nextLine());
+        } while (validatedFilepath.isEmpty());
+        return validatedFilepath.get();
+    }
+    private int getSize() {
+        Optional<Integer> validatedSize;
+        do {
+            System.out.print("Укажите количество фильмов: ");
+            validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
+        } while (validatedSize.isEmpty());
+        return validatedSize.get();
+    }
+    private void printMovies() {
+        movies.forEach(System.out::println);
+    }
+    private void saveMovies() {
+        try {
+            new DefaultSaver(getFilepath(), scanner).save(movies);
+        } catch (RuntimeException e) {
+            System.err.println(e.getMessage());
         }
+    }
+    private void fillMovies() {
+        while (true) {
+            try {
+                chooseOption("Как заполнить список:", fillOptions).execute();
+                filler.fillMovies(movies);
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage());
+                continue;
+            }
+            System.out.println("Список успешно заполнен");
+            break;
+        }
+    }
+    private void sortMovies() {
+        if (sorter == null) {
+            chooseComparator();
+        } else {
+            chooseChangingComparator();
+        }
+        sorter.performSorting(movies);
+        System.out.println("Список успешно отсортирован");
+    }
+    private void setComparator(Comparator<Movie> comp) {
+        if (sorter == null) {
+            sorter = new MoviesSorter(sortStrategy, comp);
+        } else {
+            sorter.setComparator(comp);
+        }
+    }
+    private void chooseComparator() {
+        MenuOption compOption = chooseOption("Отсортировать список фильмов: ", compOptions);
+        curComp = compOption.getTitle().toLowerCase();
+        compOption.execute();
+    }
+
+    private void chooseChangingComparator() {
+        String title = String.format("Сейчас фильмы сортируются %s. Поменять?", curComp);
+        chooseOption(title, changeCompOptions).execute();
+    }
     
     private interface MenuCommand {
         void execute();
@@ -123,84 +183,6 @@ public class Menu {
             } catch (IndexOutOfBoundsException e) {
                 System.err.println("No such option");
             }
-        }
-    }
-    
-    private class FillMenu {
-        private final List<MenuOption> fillOptions = List.of(
-                new MenuOption("Из файла", () -> {
-                    filler = new FromFileFiller(getFilepath());
-                }),
-                new MenuOption("Случайно", () -> {
-                    filler = new RandomFiller(getSize());
-                }),
-                new MenuOption("Вручную", () -> {
-                    filler = new ManualFiller(getSize());
-                })
-        );
-        
-        private int getSize() {
-            Optional<Integer> validatedSize;
-            do {
-                System.out.print("Укажите количество фильмов: ");
-                validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
-            } while (validatedSize.isEmpty());
-            return validatedSize.get();
-        }
-        private void run() {
-            while (true) {
-                try {
-                    chooseOption("Как заполнить список:", fillOptions).execute();
-                    filler.fillMovies(movies);
-                } catch (RuntimeException e) {
-                    System.err.println(e.getMessage());
-                    continue;
-                }
-                System.out.println("Список успешно заполнен");
-                break;
-            }
-        }
-    }
-    
-    private class SortMenu {
-        private final List<MenuOption> compOptions = List.of(
-                new MenuOption("По названию", () -> {
-                    setComparator(Movie.compareByName);
-                }),
-                new MenuOption("По году выпуска", () -> {
-                    setComparator(Movie.compareByYearOfRelease);
-                }),
-                new MenuOption("По длительности", () -> {
-                    setComparator(Movie.compareByHourLength);
-                })
-        );
-        private final List<MenuOption> changeCompOptions = List.of(
-                new MenuOption("Да", () -> chooseComparator()),
-                new MenuOption("Нет", () -> {})
-        );
-        
-        private void setComparator(Comparator<Movie> comp) {
-            if (sorter == null)
-                sorter = new MoviesSorter(sortStrategy, comp);
-            else
-                sorter.setComparator(comp);
-        }
-        private void chooseComparator() {
-            MenuOption compOption = chooseOption("Отсортировать список фильмов: ", compOptions);
-            curComp = compOption.getTitle().toLowerCase();
-            compOption.execute();
-        }
-        private void chooseChangingComparator() {
-            String title = String.format("Сейчас фильмы сортируются %s. Поменять?", curComp);
-            chooseOption(title, changeCompOptions).execute();
-        }
-        private void run() {
-            if (sorter == null)
-                chooseComparator();
-            else
-                chooseChangingComparator();
-            sorter.performSorting(movies);
-            System.out.println("Список успешно отсортирован");
         }
     }
 }
