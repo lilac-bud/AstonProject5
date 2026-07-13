@@ -1,6 +1,7 @@
 package com.github.lilacbud.astonproject5.user;
 
-import com.github.lilacbud.astonproject5.movie.*;
+import com.github.lilacbud.astonproject5.movie.Movie;
+import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.*;
 import com.github.lilacbud.astonproject5.movie.sort.*;
 import com.github.lilacbud.astonproject5.util.InputValidation;
@@ -20,52 +21,13 @@ public class Menu {
     private MoviesSorter sorter;
     private final SortingStrategy sortStrategy = new MergeSort();
     
-    private final SubMenu mainMenu = new SubMenu("Главное меню:",
-            List.of(
-                    new MenuOption("Заполнить список фильмов", () -> Menu.getInstance().fillMovies()),
-                    new MenuOption("Вывести список фильмов на экран", () -> {
-                        Menu.getInstance().checkIfMoviesEmpty();
-                        Menu.getInstance().printMovies();
-                    }),
-                    new MenuOption("Отсортировать список фильмов", () -> {
-                        Menu.getInstance().checkIfMoviesEmpty();
-                        Menu.getInstance().sortMovies();
-                    }),
-                    new MenuOption("Сохранить фильмы", () -> {
-                        Menu.getInstance().checkIfMoviesEmpty();
-                        Menu.getInstance().saveMovies();
-                    }),
-                    new MenuOption("Закончить работу", () -> Menu.getInstance().exit())  
-            )
-    );
-    private final SubMenu fillMenu = new SubMenu("Как заполнить список:",
-            List.of(
-                    new MenuOption("Из файла", () -> {
-                        MoviesFiller filler = new FromFileFiller(Menu.getInstance().getFilepath());
-                        Menu.getInstance().setFiller(filler);
-                    }),
-                    new MenuOption("Случайно", () -> {
-                        MoviesFiller filler = new RandomFiller(Menu.getInstance().getSize());
-                        Menu.getInstance().setFiller(filler);
-                    }),
-                    new MenuOption("Вручную", () -> {
-                        MoviesFiller filler = new ManualFiller(Menu.getInstance().getSize());
-                        Menu.getInstance().setFiller(filler);
-                    })
-            )
-    );
-    private final SubMenu changeCompMenu = new SubMenu("",
+    private SubMenu mainMenu;
+    private SubMenu fillMenu;
+    private SubMenu compMenu;
+    private final SubMenu changeCompMenu = new SubMenu("Поменять?",
             List.of(
                     new MenuOption("Да", () -> Menu.getInstance().chooseComparator()),
                     new MenuOption("Нет", () -> {})
-            )
-    );
-    private final SubMenu compMenu = new SubMenu("Отсортировать список фильмов:",
-            List.of(
-                    new MenuOption("По названию", () -> Menu.getInstance().setComparator(Movie.compareByName)),
-                    new MenuOption("По году выпуска", () -> 
-                            Menu.getInstance().setComparator(Movie.compareByYearOfRelease)),
-                    new MenuOption("По длительности", () -> Menu.getInstance().setComparator(Movie.compareByHourLength))
             )
     );
     
@@ -173,6 +135,12 @@ public class Menu {
         private final List<MenuOption> options;
         
         public SubMenu(String title, List<MenuOption> options) {
+            if (title == null)
+                throw new IllegalArgumentException("Title cannot be null");
+            if (options == null)
+                throw new IllegalArgumentException("Options cannot be null");
+            if (options.isEmpty())
+                throw new IllegalArgumentException("Options cannot be empty");
             this.title = title;
             this.options = options;
         }
@@ -196,6 +164,23 @@ public class Menu {
                     System.err.println("No such option");
                 }
             }
+        }
+    }
+    public static class Builder {
+        public Builder withMainMenu(SubMenu menu) {
+            Menu.getInstance().mainMenu = menu;
+            return this;
+        }
+        public Builder withFillMenu(SubMenu menu) {
+            Menu.getInstance().fillMenu = menu;
+            return this;
+        }
+        public Builder withCompMenu(SubMenu menu) {
+            Menu.getInstance().compMenu = menu;
+            return this;
+        }
+        public Menu build() {
+            return Menu.getInstance();
         }
     }
 }
