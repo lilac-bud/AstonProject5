@@ -1,6 +1,7 @@
 package com.github.lilacbud.astonproject5.user;
 
 import com.github.lilacbud.astonproject5.util.InputValidation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -11,18 +12,10 @@ public class Menu {
     private final String prompt;
     private final List<MenuOption> options;
     
-    public Menu(String title, String prompt, List<MenuOption> options) {
-        if (title == null)
-            throw new IllegalArgumentException("Title cannot be null");
-        if (prompt == null)
-            throw new IllegalArgumentException("Choosing prompt cannot be null");
-        if (options == null)
-            throw new IllegalArgumentException("Options cannot be null");
-        if (options.isEmpty())
-            throw new IllegalArgumentException("Options cannot be empty");
-        this.title = title;
-        this.prompt = prompt;
-        this.options = options;
+    private Menu(StepBuilder builder) {
+        this.title = builder.title;
+        this.prompt = builder.prompt;
+        this.options = builder.options;
     }
     
     public MenuOption chooseOption(Scanner scanner) {
@@ -47,6 +40,7 @@ public class Menu {
         }
     }
     
+    @FunctionalInterface
     public static interface MenuCommand {
         void execute();
     }
@@ -63,6 +57,51 @@ public class Menu {
         }
         public void execute() {
             command.execute();
+        }
+    }
+    
+    public static interface TitleBuilder {
+        public PromptBuilder withTitle(String title);
+    }
+    public static interface PromptBuilder {
+        public OptionBuilder withPrompt(String prompt);
+    }
+    public static interface OptionBuilder {
+        public StepBuilder withOption(MenuOption option);
+    }
+    public static class StepBuilder implements TitleBuilder, PromptBuilder, OptionBuilder {
+        private String title;
+        private String prompt;
+        private final List<MenuOption> options = new ArrayList<>();
+        
+        private StepBuilder() {}
+        
+        public static TitleBuilder newBuilder() {
+            return new StepBuilder();
+        }
+        @Override
+        public PromptBuilder withTitle(String title) {
+            if (title == null)
+                throw new IllegalArgumentException("Title cannot be null");
+            this.title = title;
+            return this;
+        }
+        @Override
+        public OptionBuilder withPrompt(String prompt) {
+            if (prompt == null)
+                throw new IllegalArgumentException("Prompt cannot be null");
+            this.prompt = prompt;
+            return this;
+        }
+        @Override
+        public StepBuilder withOption(MenuOption option) {
+            if (options.contains(null))
+                throw new IllegalArgumentException("None of options can be null");
+            options.add(option);
+            return this;
+        }
+        public Menu build() {
+            return new Menu(this);
         }
     }
 }
