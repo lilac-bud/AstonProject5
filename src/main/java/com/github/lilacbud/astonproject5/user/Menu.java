@@ -2,7 +2,7 @@ package com.github.lilacbud.astonproject5.user;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.MoviesFiller;
-import com.github.lilacbud.astonproject5.movie.save.*;
+import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.*;
 import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
@@ -19,17 +19,13 @@ public class Menu {
     private final Scanner scanner = new Scanner(System.in);
     private MoviesFiller filler;
     private MoviesSorter sorter;
-    private final SortingStrategy sortStrategy = new MergeSort();
+    private MoviesSaver saver;
     
     private SubMenu mainMenu;
     private SubMenu fillMenu;
+    private SubMenu sortMenu;
     private SubMenu compMenu;
-    private final SubMenu changeCompMenu = new SubMenu("Поменять?",
-            List.of(
-                    new MenuOption("Да", () -> Menu.getInstance().chooseComparator()),
-                    new MenuOption("Нет", () -> {})
-            )
-    );
+    private SubMenu saveMenu;
     
     private Menu() {}
     public static Menu getInstance(){
@@ -42,42 +38,64 @@ public class Menu {
             mainMenu.chooseOption(scanner).execute();
     }
     
+    public Scanner getScanner() {
+        return scanner;
+    }
     public void setFiller(MoviesFiller filler) {
         this.filler = filler;
     }
-    public void setComparator(Comparator<Movie> comp) {
-        if (sorter == null)
+    public void setSaver(MoviesSaver saver) {
+        this.saver = saver;
+    }
+    public void setSortingStrategy(SortingStrategy sortStrategy) {
+        if (sorter == null) {
+            Comparator<Movie> comp = Comparator.comparing(Movie::hashCode);
             sorter = new MoviesSorter(sortStrategy, comp);
+        }
+        else
+            sorter.setSortingStrategy(sortStrategy);
+    }
+    public void setComparator(Comparator<Movie> comp) {
+        if (sorter == null) {
+            SortingStrategy sortStrategy = (moviesList, comparator) -> ((List<Movie>)moviesList).sort(comparator);
+            sorter = new MoviesSorter(sortStrategy, comp);
+        }
         else
             sorter.setComparator(comp);
     }
-    public String getFilepath() {
+    public String getFilepath(String prompt) {
         Optional<String> validatedFilepath;
         do {
-            System.out.print("Укажите путь к файлу: ");
+            System.out.print(prompt);
             validatedFilepath = InputValidation.validateInput(scanner.nextLine());
         } while (validatedFilepath.isEmpty());
         return validatedFilepath.get();
     }
-    public int getSize() {
+    public int getSize(String prompt) {
         Optional<Integer> validatedSize;
         do {
-            System.out.print("Укажите количество фильмов: ");
+            System.out.print(prompt);
             validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
         } while (validatedSize.isEmpty());
         return validatedSize.get();
     }
-    public void printMovies() {
-        movies.forEach(System.out::println);
+    public boolean moviesIsEmpty() {
+        return movies.isEmpty();
     }
-    public void saveMovies() {
+    public void printMovies(String successMessage) {
+        movies.forEach(System.out::println);
+        System.out.println(successMessage);
+    }
+    public void saveMovies(String successMessage) {
         try {
-            new DefaultSaver(getFilepath(), scanner).save(movies);
+            saveMenu.chooseOption(scanner).execute();
+            saver.save(movies);
         } catch (RuntimeException e) {
             System.err.println(e.getMessage());
         }
+        System.out.println(successMessage);
     }
-    public void fillMovies() {
+    public void fillMovies(String successMessage) {
         while (true) {
             try {
                 fillMenu.chooseOption(scanner).execute();
@@ -86,27 +104,15 @@ public class Menu {
                 System.err.println(e.getMessage());
                 continue;
             }
-            System.out.println("Список успешно заполнен");
+            System.out.println(successMessage);
             break;
         }
     }
-    public void checkIfMoviesEmpty() {
-        if (movies.isEmpty())
-            fillMovies();
-    }
-    public void sortMovies() {
-        if (sorter == null)
-            chooseComparator();
-        else
-            changeCompMenu.chooseOption(scanner).execute();
+    public void sortMovies(String successMessage) {
+        sortMenu.chooseOption(scanner).execute();
+        compMenu.chooseOption(scanner).execute();
         sorter.performSorting(movies);
-        System.out.println("Список успешно отсортирован");
-    }
-    public void chooseComparator() {
-        MenuOption compOption = compMenu.chooseOption(scanner);
-        String title = String.format("Сейчас фильмы сортируются %s. Поменять?", compOption.getTitle().toLowerCase());
-        changeCompMenu.setTitle(title);
-        compOption.execute();
+        System.out.println(successMessage);
     }
     public void exit() {
         running = false;
@@ -131,23 +137,26 @@ public class Menu {
         }
     }
     public static class SubMenu {
-        private String title;
+        private final String title;
+        private final String prompt;
         private final List<MenuOption> options;
         
-        public SubMenu(String title, List<MenuOption> options) {
+        public SubMenu(String title, String prompt, List<MenuOption> options) {
             if (title == null)
                 throw new IllegalArgumentException("Title cannot be null");
+            if (prompt == null)
+                throw new IllegalArgumentException("Choosing prompt cannot be null");
             if (options == null)
                 throw new IllegalArgumentException("Options cannot be null");
             if (options.isEmpty())
                 throw new IllegalArgumentException("Options cannot be empty");
             this.title = title;
+            this.prompt = prompt;
             this.options = options;
         }
-        private void setTitle(String title) {
-            this.title = title;
-        }
         private MenuOption chooseOption(Scanner scanner) {
+            if (options.size() == 1)
+                return options.get(0);
             Optional<Integer> validatedInput;
             while (true) {
                 do {
@@ -155,7 +164,7 @@ public class Menu {
                     IntStream.range(0, options.size())
                             .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
                             .forEach(System.out::println);
-                    System.out.print("Выберите одну из опций: ");
+                    System.out.print(prompt);
                     validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
                 } while (validatedInput.isEmpty());
                 try {
@@ -175,8 +184,16 @@ public class Menu {
             Menu.getInstance().fillMenu = menu;
             return this;
         }
+        public Builder withSortMenu(SubMenu menu) {
+            Menu.getInstance().sortMenu = menu;
+            return this;
+        }
         public Builder withCompMenu(SubMenu menu) {
             Menu.getInstance().compMenu = menu;
+            return this;
+        }
+        public Builder withSaveMenu(SubMenu menu) {
+            Menu.getInstance().saveMenu = menu;
             return this;
         }
         public Menu build() {
