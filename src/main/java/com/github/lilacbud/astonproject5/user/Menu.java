@@ -19,57 +19,68 @@ public class Menu {
     private MoviesFiller filler;
     private MoviesSorter sorter;
     private final SortingStrategy sortStrategy = new MergeSort();
-    private String curComp;
     
-    private final List<MenuOption> mainOptions = List.of(
-            new MenuOption("Заполнить список фильмов", () -> {
-                fillMovies();
-            }),
-            new MenuOption("Вывести список фильмов на экран", () -> {
-                if (movies.isEmpty())
-                    fillMovies();
-                printMovies();
-            }),
-            new MenuOption("Отсортировать список фильмов", () -> {
-                if (movies.isEmpty())
-                    fillMovies();
-                sortMovies();
-            }),
-            new MenuOption("Сохранить фильмы", () -> {
-                if (movies.isEmpty())
-                    fillMovies();
-                saveMovies();
-            }),
-            new MenuOption("Закончить работу", () -> {
-                running = false;
-            })
+    private final MenuImpl mainMenu = new MenuImpl("Главное меню:",
+            List.of(
+                    new MenuOption("Заполнить список фильмов", () -> {
+                        fillMovies();
+                    }),
+                    new MenuOption("Вывести список фильмов на экран", () -> {
+                        if (movies.isEmpty()) {
+                            fillMovies();
+                        }
+                        printMovies();
+                    }),
+                    new MenuOption("Отсортировать список фильмов", () -> {
+                        if (movies.isEmpty()) {
+                            fillMovies();
+                        }
+                        sortMovies();
+                    }),
+                    new MenuOption("Сохранить фильмы", () -> {
+                        if (movies.isEmpty()) {
+                            fillMovies();
+                        }
+                        saveMovies();
+                    }),
+                    new MenuOption("Закончить работу", () -> {
+                        running = false;
+                    })  
+            )
     );
-    private final List<MenuOption> fillOptions = List.of(
-            new MenuOption("Из файла", () -> {
-                filler = new FromFileFiller(getFilepath());
-            }),
-            new MenuOption("Случайно", () -> {
-                filler = new RandomFiller(getSize());
-            }),
-            new MenuOption("Вручную", () -> {
-                filler = new ManualFiller(getSize());
-            })
+    private final MenuImpl fillMenu = new MenuImpl("Как заполнить список:",
+            List.of(
+                    new MenuOption("Из файла", () -> {
+                        filler = new FromFileFiller(getFilepath());
+                    }),
+                    new MenuOption("Случайно", () -> {
+                        filler = new RandomFiller(getSize());
+                    }),
+                    new MenuOption("Вручную", () -> {
+                        filler = new ManualFiller(getSize());
+                    })
+            )
     );
-    private final List<MenuOption> compOptions = List.of(
-            new MenuOption("По названию", () -> {
-                setComparator(Movie.compareByName);
-            }),
-            new MenuOption("По году выпуска", () -> {
-                setComparator(Movie.compareByYearOfRelease);
-            }),
-            new MenuOption("По длительности", () -> {
-                setComparator(Movie.compareByHourLength);
-            })
+    private final MenuImpl changeCompMenu = new MenuImpl("",
+            List.of(
+                    new MenuOption("Да", () -> chooseComparator()),
+                    new MenuOption("Нет", () -> {
+                    })
+            )
     );
-    private final List<MenuOption> changeCompOptions = List.of(
-            new MenuOption("Да", () -> chooseComparator()),
-            new MenuOption("Нет", () -> {
-            })
+    private final MenuImpl compMenu = new MenuImpl("Отсортировать список фильмов:",
+            List.of(
+                    new MenuOption("По названию", () -> {
+                        setComparator(Movie.compareByName);
+                    }),
+                    new MenuOption("По году выпуска", () -> {
+                        setComparator(Movie.compareByYearOfRelease);
+                        
+                    }),
+                    new MenuOption("По длительности", () -> {
+                        setComparator(Movie.compareByHourLength);
+                    })
+            )
     );
     
     private Menu() {}
@@ -80,7 +91,7 @@ public class Menu {
     }
     public void run(){
         while (running)
-            chooseOption("Главное меню: ", mainOptions).execute();
+            mainMenu.chooseOption(scanner).execute();
     }
     
     private String getFilepath() {
@@ -112,7 +123,7 @@ public class Menu {
     private void fillMovies() {
         while (true) {
             try {
-                chooseOption("Как заполнить список:", fillOptions).execute();
+                fillMenu.chooseOption(scanner).execute();
                 filler.fillMovies(movies);
             } catch (RuntimeException e) {
                 System.err.println(e.getMessage());
@@ -126,7 +137,7 @@ public class Menu {
         if (sorter == null) {
             chooseComparator();
         } else {
-            chooseChangingComparator();
+            changeCompMenu.chooseOption(scanner).execute();
         }
         sorter.performSorting(movies);
         System.out.println("Список успешно отсортирован");
@@ -139,20 +150,16 @@ public class Menu {
         }
     }
     private void chooseComparator() {
-        MenuOption compOption = chooseOption("Отсортировать список фильмов: ", compOptions);
-        curComp = compOption.getTitle().toLowerCase();
+        MenuOption compOption = compMenu.chooseOption(scanner);
+        String title = String.format("Сейчас фильмы сортируются %s. Поменять?", compOption.getTitle().toLowerCase());
+        changeCompMenu.setTitle(title);
         compOption.execute();
     }
-
-    private void chooseChangingComparator() {
-        String title = String.format("Сейчас фильмы сортируются %s. Поменять?", curComp);
-        chooseOption(title, changeCompOptions).execute();
-    }
     
-    private interface MenuCommand {
+    private static interface MenuCommand {
         void execute();
     }
-    private class MenuOption {
+    private static class MenuOption {
         private final String title;
         private final MenuCommand command;
         
@@ -167,21 +174,33 @@ public class Menu {
             command.execute();
         }
     }
-    private MenuOption chooseOption(String title, List<MenuOption> options) {
-        Optional<Integer> validatedInput;
-        while (true) {
-            do {
-                System.out.println(title);
-                IntStream.range(0, options.size())
-                         .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
-                         .forEach(System.out::println);
-                System.out.print("Выберите одну из опций: ");
-                validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
-            } while (validatedInput.isEmpty());
-            try {
-                return options.get(validatedInput.get() - 1);
-            } catch (IndexOutOfBoundsException e) {
-                System.err.println("No such option");
+    private static class MenuImpl {
+        private String title;
+        private final List<MenuOption> options;
+        
+        private MenuImpl(String title, List<MenuOption> options) {
+            this.title = title;
+            this.options = options;
+        }
+        private void setTitle(String title) {
+            this.title = title;
+        }
+        private MenuOption chooseOption(Scanner scanner) {
+            Optional<Integer> validatedInput;
+            while (true) {
+                do {
+                    System.out.println(title);
+                    IntStream.range(0, options.size())
+                            .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
+                            .forEach(System.out::println);
+                    System.out.print("Выберите одну из опций: ");
+                    validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
+                } while (validatedInput.isEmpty());
+                try {
+                    return options.get(validatedInput.get() - 1);
+                } catch (IndexOutOfBoundsException e) {
+                    System.err.println("No such option");
+                }
             }
         }
     }
