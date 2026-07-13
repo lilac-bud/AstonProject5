@@ -20,7 +20,7 @@ public class Menu {
     private MoviesSorter sorter;
     private final SortingStrategy sortStrategy = new MergeSort();
     
-    private final MenuImpl mainMenu = new MenuImpl("Главное меню:",
+    private final SubMenu mainMenu = new SubMenu("Главное меню:",
             List.of(
                     new MenuOption("Заполнить список фильмов", () -> {
                         fillMovies();
@@ -48,7 +48,7 @@ public class Menu {
                     })  
             )
     );
-    private final MenuImpl fillMenu = new MenuImpl("Как заполнить список:",
+    private final SubMenu fillMenu = new SubMenu("Как заполнить список:",
             List.of(
                     new MenuOption("Из файла", () -> {
                         filler = new FromFileFiller(getFilepath());
@@ -61,14 +61,14 @@ public class Menu {
                     })
             )
     );
-    private final MenuImpl changeCompMenu = new MenuImpl("",
+    private final SubMenu changeCompMenu = new SubMenu("",
             List.of(
                     new MenuOption("Да", () -> chooseComparator()),
                     new MenuOption("Нет", () -> {
                     })
             )
     );
-    private final MenuImpl compMenu = new MenuImpl("Отсортировать список фильмов:",
+    private final SubMenu compMenu = new SubMenu("Отсортировать список фильмов:",
             List.of(
                     new MenuOption("По названию", () -> {
                         setComparator(Movie.compareByName);
@@ -174,11 +174,11 @@ public class Menu {
             command.execute();
         }
     }
-    private static class MenuImpl {
+    private static class SubMenu {
         private String title;
         private final List<MenuOption> options;
         
-        private MenuImpl(String title, List<MenuOption> options) {
+        private SubMenu(String title, List<MenuOption> options) {
             this.title = title;
             this.options = options;
         }
