@@ -16,6 +16,10 @@ public class Menu {
     private boolean running = true;
     private final List<Movie> movies = new ArrayList<>();
     private final Scanner scanner = new Scanner(System.in);
+    private MoviesFiller filler;
+    private MoviesSorter sorter;
+    private final SortingStrategy sortStrategy = new MergeSort();
+    private String curComp;
     private FillMenu fillMenu;
     private SortMenu sortMenu;
     
@@ -123,8 +127,6 @@ public class Menu {
     }
     
     private class FillMenu {
-        private MoviesFiller filler;
-        
         private final List<MenuOption> fillOptions = List.of(
                 new MenuOption("Из файла", () -> {
                     filler = new FromFileFiller(getFilepath());
@@ -161,10 +163,6 @@ public class Menu {
     }
     
     private class SortMenu {
-        private MoviesSorter sorter;
-        private final SortingStrategy sortStrategy = new MergeSort();
-        private String curComp;
-        
         private final List<MenuOption> compOptions = List.of(
                 new MenuOption("По названию", () -> {
                     setComparator(Movie.compareByName);
