@@ -43,7 +43,7 @@ public class Menu {
     
     @FunctionalInterface
     public static interface MenuCommand {
-        void execute();
+        public void execute();
     }
     public static class MenuOption {
         private final String title;
