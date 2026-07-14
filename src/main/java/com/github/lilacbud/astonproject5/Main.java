@@ -90,10 +90,10 @@ public class Main {
         App.StepBuilder.newBuilder()
                 .withScanner(scanner)
                 .withMainMenu(mainMenu)
-                .withFillMenu(setFillerMenu)
-                .withSortMenu(setSortMenu)
-                .withCompMenu(setCompMenu)
-                .withSaveMenu(setSaverMenu)
+                .withSetFillerMenu(setFillerMenu)
+                .withSetSortMenu(setSortMenu)
+                .withSetCompMenu(setCompMenu)
+                .withSetSaverMenu(setSaverMenu)
                 .build()
                 .run();
     }

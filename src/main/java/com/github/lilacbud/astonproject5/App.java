@@ -117,16 +117,16 @@ public class App {
         public FillMenuBuilder withMainMenu(Menu<App> menu);
     }
     public static interface FillMenuBuilder {
-        public SortMenuBuilder withFillMenu(Menu<App> menu);
+        public SortMenuBuilder withSetFillerMenu(Menu<App> menu);
     }
     public static interface SortMenuBuilder {
-        public CompMenuBuilder withSortMenu(Menu<App> menu);
+        public CompMenuBuilder withSetSortMenu(Menu<App> menu);
     }
     public static interface CompMenuBuilder {
-        public SaveMenuBuilder withCompMenu(Menu<App> menu);
+        public SaveMenuBuilder withSetCompMenu(Menu<App> menu);
     }
     public static interface SaveMenuBuilder {
-        public StepBuilder withSaveMenu(Menu<App> menu);
+        public StepBuilder withSetSaverMenu(Menu<App> menu);
     }
     public static class StepBuilder implements ScannerBuilder, MainMenuBuilder, FillMenuBuilder, 
             SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder {
@@ -149,22 +149,22 @@ public class App {
             return this;
         }
         @Override
-        public SortMenuBuilder withFillMenu(Menu<App> menu) {
+        public SortMenuBuilder withSetFillerMenu(Menu<App> menu) {
             this.setFillerMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public CompMenuBuilder withSortMenu(Menu<App> menu) {
+        public CompMenuBuilder withSetSortMenu(Menu<App> menu) {
             this.setSortMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public SaveMenuBuilder withCompMenu(Menu<App> menu) {
+        public SaveMenuBuilder withSetCompMenu(Menu<App> menu) {
             this.setCompMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public StepBuilder withSaveMenu(Menu<App> menu) {
+        public StepBuilder withSetSaverMenu(Menu<App> menu) {
             this.setSaverMenu = validateMenu(menu);
             return this;
         }
