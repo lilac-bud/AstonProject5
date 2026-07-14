@@ -7,10 +7,11 @@ import java.util.stream.IntStream;
 
 public class ManualFiller implements MoviesFiller {
     private final int size;
-    static Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
 
-    public ManualFiller(int size) {
+    public ManualFiller(int size, Scanner scanner) {
         this.size = size;
+        this.scanner = scanner;
     }
 
     @Override
@@ -18,15 +19,15 @@ public class ManualFiller implements MoviesFiller {
         System.out.println("ЗАПОЛНЕНИЕ СПИСКА ФИЛЬМОВ ВРУЧНУЮ");
 
         IntStream.range(0, size) //создаем поток чисел от 0 до size-1
-                 .mapToObj(i -> ManualFiller.fillMovie()) //заменяем каждое число на результат вызова метода
+                 .mapToObj(i -> this.fill()) //заменяем каждое число на результат вызова метода
                  .forEach(movies::add); //добавляем фильм в коллекцию
 
-        //System.out.println("\nСПИСОК ДОБАВЛЕННЫХ ФИЛЬМОВ");
-        //movies.stream().forEach(System.out::println);
+        System.out.println("\nСПИСОК ДОБАВЛЕННЫХ ФИЛЬМОВ");
+        movies.stream().forEach(System.out::println);
     }
 
     //получаем данные о фильме
-    private static Movie fillMovie() {
+    private Movie fill() {
         //получаем название фильма
         String name;
         do {
