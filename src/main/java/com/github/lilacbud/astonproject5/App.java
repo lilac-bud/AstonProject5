@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class App {
-    private static App INSTANCE;
     private boolean running = true;
     private final List<Movie> movies = new ArrayList<>();
     private final Scanner scanner = new Scanner(System.in);
@@ -34,11 +33,6 @@ public class App {
         this.saveMenu = builder.saveMenu;
     }
     
-    public static App getInstance() {
-        if (INSTANCE == null)
-            throw new IllegalStateException("App instance has to be built first");
-        return INSTANCE;
-    }
     public void run(){
         while (running)
             mainMenu.chooseOption(scanner).execute(this);
@@ -178,10 +172,7 @@ public class App {
             return this;
         }
         public App build() {
-            if (INSTANCE != null)
-                throw new IllegalStateException("App instance can be built only once");
-            INSTANCE = new App(this);
-            return INSTANCE;
+            return new App(this);
         }
         private Menu<App> validateMenu(Menu<App> menu) {
             return requireNonNull(menu, "Menu cannot be null");
