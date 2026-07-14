@@ -43,15 +43,15 @@ public class Main {
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption("Из файла", () -> {
-                    String filepath = App.getInstance().getFilepath("Укажите путь к файлу: ");
+                    String filepath = App.getInstance().askFilepath("Укажите путь к файлу: ");
                     App.getInstance().setFiller(new FromFileFiller(filepath));
                 }))
                 .withOption(new Menu.MenuOption("Случайно", () -> {
-                    int size = App.getInstance().getSize("Укажите количество фильмов: ");
+                    int size = App.getInstance().askSize("Укажите количество фильмов: ");
                     App.getInstance().setFiller(new RandomFiller(size));
                 }))
                 .withOption(new Menu.MenuOption("Вручную", () -> {
-                    int size = App.getInstance().getSize("Укажите количество фильмов: ");
+                    int size = App.getInstance().askSize("Укажите количество фильмов: ");
                     App.getInstance().setFiller(new ManualFiller(size));
                 }))
                 .build();
@@ -80,7 +80,7 @@ public class Main {
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption("В текстовый файл", () -> {
-                    String filepath = App.getInstance().getFilepath("Укажите путь к файлу: ");
+                    String filepath = App.getInstance().askFilepath("Укажите путь к файлу: ");
                     Scanner scanner = App.getInstance().getScanner();
                     App.getInstance().setSaver(new DefaultSaver(filepath, scanner));
                 }))

@@ -66,7 +66,10 @@ public class App {
         else
             sorter.setComparator(comp);
     }
-    public String getFilepath(String prompt) {
+    public boolean moviesIsEmpty() {
+        return movies.isEmpty();
+    }
+    public String askFilepath(String prompt) {
         Optional<String> validatedFilepath;
         do {
             System.out.print(prompt);
@@ -74,16 +77,13 @@ public class App {
         } while (validatedFilepath.isEmpty());
         return validatedFilepath.get();
     }
-    public int getSize(String prompt) {
+    public int askSize(String prompt) {
         Optional<Integer> validatedSize;
         do {
             System.out.print(prompt);
             validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
         } while (validatedSize.isEmpty());
         return validatedSize.get();
-    }
-    public boolean moviesIsEmpty() {
-        return movies.isEmpty();
     }
     public void printMovies(String successMessage) {
         movies.forEach(System.out::println);
