@@ -92,47 +92,40 @@ public class App {
         System.out.println(requireNonNullElse(successMessage, ""));
     }
     public void saveMovies(String successMessage) {
-        while (true) {
-            try {
-                saveMenu.chooseOption(scanner).execute();
-                saver.save(movies);
-            } catch (RuntimeException e) {
-                System.err.println(e.getMessage());
-                continue;
-            }
-            System.out.println(requireNonNullElse(successMessage, ""));
-            break;
-        }
+        tryCommandTillSuccess(successMessage, () -> {
+            saveMenu.chooseOption(scanner).execute();
+            saver.save(movies);
+        });
     }
     public void fillMovies(String successMessage) {
-        while (true) {
-            try {
-                fillMenu.chooseOption(scanner).execute();
-                filler.fillMovies(movies);
-            } catch (RuntimeException e) {
-                System.err.println(e.getMessage());
-                continue;
-            }
-            System.out.println(requireNonNullElse(successMessage, ""));
-            break;
-        }
+        tryCommandTillSuccess(successMessage, () -> {
+            fillMenu.chooseOption(scanner).execute();
+            filler.fillMovies(movies);
+        });
     }
     public void sortMovies(String successMessage) {
-        while (true) {
-            try {
-                sortMenu.chooseOption(scanner).execute();
-                compMenu.chooseOption(scanner).execute();
-                sorter.performSorting(movies);
-            } catch (RuntimeException e) {
-                System.err.println(e.getMessage());
-                continue;
-            }
-            System.out.println(requireNonNullElse(successMessage, ""));
-            break;
-        }
+        tryCommandTillSuccess(successMessage, () -> {
+            sortMenu.chooseOption(scanner).execute();
+            compMenu.chooseOption(scanner).execute();
+            sorter.performSorting(movies);
+        });
     }
     public void exit() {
         running = false;
+    }
+    
+    private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand command) {
+        requireNonNull(command, "Command cannot be null");
+        while (true) {
+            try {
+                command.execute();
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage());
+                continue;
+            }
+            System.out.println(requireNonNullElse(successMessage, ""));
+            break;
+        }
     }
     
     public static interface MainMenuBuilder {
