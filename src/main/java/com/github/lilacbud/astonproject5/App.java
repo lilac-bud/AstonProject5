@@ -70,6 +70,10 @@ public class App {
         } while (validatedSize.isEmpty());
         return validatedSize.get();
     }
+    public void clearMovies(String successMessage) {
+        movies.clear();
+        System.out.println(requireNonNullElse(successMessage, ""));
+    }
     public void printMovies(String successMessage, String printFormat) {
         try {
             movies.forEach(movie -> System.out.println(String.format(printFormat, 
