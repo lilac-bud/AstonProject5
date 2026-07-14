@@ -9,6 +9,7 @@ import com.github.lilacbud.astonproject5.user.Menu;
 import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.IllegalFormatException;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
@@ -69,8 +70,15 @@ public class App {
         } while (validatedSize.isEmpty());
         return validatedSize.get();
     }
-    public void printMovies(String successMessage) {
-        movies.forEach(System.out::println);
+    public void printMovies(String successMessage, String printFormat) {
+        try {
+            movies.forEach(movie -> System.out.println(String.format(printFormat, 
+                    movie.getName(), 
+                    movie.getYearOfRelease(), 
+                    movie.getHourLength())));
+        } catch (NullPointerException | IllegalFormatException e) {
+            movies.forEach(System.out::println);
+        }
         System.out.println(requireNonNullElse(successMessage, ""));
     }
     public void saveMovies(String successMessage) {
