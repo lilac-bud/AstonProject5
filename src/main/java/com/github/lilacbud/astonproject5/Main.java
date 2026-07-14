@@ -39,7 +39,7 @@ public class Main {
                 }))
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
-        Menu<App> fillMenu = Menu.StepBuilder.<App>newBuilder()
+        Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("Из файла", (client) -> {
@@ -55,7 +55,7 @@ public class Main {
                     client.setFiller(new ManualFiller(size));
                 }))
                 .build();
-        Menu<App> sortMenu = Menu.StepBuilder.<App>newBuilder()
+        Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Нужно отсортировать:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("Все фильмы", (client)
@@ -66,7 +66,7 @@ public class Main {
                     client.setSortingStrategy(sortStrategy);
                 }))
                 .build();
-        Menu<App> compMenu = Menu.StepBuilder.<App>newBuilder()
+        Menu<App> setCompMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Отсортировать список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("По названию", (client) 
@@ -76,7 +76,7 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("По длительности", (client)
                         -> client.setComparator(Movie.compareByHourLength)))
                 .build();
-        Menu<App> saveMenu = Menu.StepBuilder.<App>newBuilder()
+        Menu<App> setSaverMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
@@ -88,10 +88,10 @@ public class Main {
         
         App.StepBuilder.newBuilder()
                .withMainMenu(mainMenu)
-               .withFillMenu(fillMenu)
-               .withSortMenu(sortMenu)
-               .withCompMenu(compMenu)
-               .withSaveMenu(saveMenu)
+               .withFillMenu(setFillerMenu)
+               .withSortMenu(setSortMenu)
+               .withCompMenu(setCompMenu)
+               .withSaveMenu(setSaverMenu)
                .build()
                .run();
     }

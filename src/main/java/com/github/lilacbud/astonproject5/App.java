@@ -23,14 +23,14 @@ public class App {
     private MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private final Menu<App> mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+    private final Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
     
     private App(StepBuilder builder) {
         this.mainMenu = builder.mainMenu;
-        this.fillMenu = builder.fillMenu;
-        this.sortMenu = builder.sortMenu;
-        this.compMenu = builder.compMenu;
-        this.saveMenu = builder.saveMenu;
+        this.setFillerMenu = builder.setFillerMenu;
+        this.setSortMenu = builder.setSortMenu;
+        this.setCompMenu = builder.setCompMenu;
+        this.setSaverMenu = builder.setSaverMenu;
     }
     
     public void run(){
@@ -87,20 +87,20 @@ public class App {
     }
     public void saveMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
-            client.saveMenu.chooseOption(scanner).execute(client);
+            client.setSaverMenu.chooseOption(scanner).execute(client);
             client.saver.save(movies);
         });
     }
     public void fillMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
-            client.fillMenu.chooseOption(scanner).execute(client);
+            client.setFillerMenu.chooseOption(scanner).execute(client);
             client.filler.fillMovies(movies);
         });
     }
     public void sortMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
-            client.sortMenu.chooseOption(scanner).execute(client);
-            client.compMenu.chooseOption(scanner).execute(client);
+            client.setSortMenu.chooseOption(scanner).execute(client);
+            client.setCompMenu.chooseOption(scanner).execute(client);
             client.sorter.performSorting(movies);
         });
     }
@@ -139,7 +139,7 @@ public class App {
     }
     public static class StepBuilder implements MainMenuBuilder, FillMenuBuilder, 
             SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder{
-        private Menu<App> mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+        private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
         
         private StepBuilder() {}
         
@@ -153,22 +153,22 @@ public class App {
         }
         @Override
         public SortMenuBuilder withFillMenu(Menu<App> menu) {
-            this.fillMenu = validateMenu(menu);
+            this.setFillerMenu = validateMenu(menu);
             return this;
         }
         @Override
         public CompMenuBuilder withSortMenu(Menu<App> menu) {
-            this.sortMenu = validateMenu(menu);
+            this.setSortMenu = validateMenu(menu);
             return this;
         }
         @Override
         public SaveMenuBuilder withCompMenu(Menu<App> menu) {
-            this.compMenu = validateMenu(menu);
+            this.setCompMenu = validateMenu(menu);
             return this;
         }
         @Override
         public StepBuilder withSaveMenu(Menu<App> menu) {
-            this.saveMenu = validateMenu(menu);
+            this.setSaverMenu = validateMenu(menu);
             return this;
         }
         public App build() {
