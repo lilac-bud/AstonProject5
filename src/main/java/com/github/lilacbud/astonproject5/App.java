@@ -18,7 +18,7 @@ import java.util.Scanner;
 public class App {
     private boolean running = true;
     private final List<Movie> movies = new ArrayList<>();
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
     private MoviesFiller filler;
     private final MoviesSorter sorter = new MoviesSorter(null, null);
     private MoviesSaver saver;
@@ -26,6 +26,7 @@ public class App {
     private final Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
     
     private App(StepBuilder builder) {
+        this.scanner = builder.scanner;
         this.mainMenu = builder.mainMenu;
         this.setFillerMenu = builder.setFillerMenu;
         this.setSortMenu = builder.setSortMenu;
@@ -36,9 +37,6 @@ public class App {
     public void run(){
         while (running)
             mainMenu.chooseOption(scanner).execute(this);
-    }
-    public Scanner getScanner() {
-        return scanner;
     }
     public void setFiller(MoviesFiller filler) {
         this.filler = requireNonNull(filler, "Filler cannot be null");
@@ -112,6 +110,9 @@ public class App {
         }
     }
     
+    public static interface ScannerBuilder {
+        public MainMenuBuilder withScanner(Scanner scanner);
+    }
     public static interface MainMenuBuilder {
         public FillMenuBuilder withMainMenu(Menu<App> menu);
     }
@@ -127,15 +128,21 @@ public class App {
     public static interface SaveMenuBuilder {
         public StepBuilder withSaveMenu(Menu<App> menu);
     }
-    public static class StepBuilder implements MainMenuBuilder, FillMenuBuilder, 
-            SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder{
+    public static class StepBuilder implements ScannerBuilder, MainMenuBuilder, FillMenuBuilder, 
+            SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder {
+        private Scanner scanner;
         private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
         
         private StepBuilder() {}
         
-        public static MainMenuBuilder newBuilder() {
+        public static ScannerBuilder newBuilder() {
             return new StepBuilder();
         }
+        @Override
+        public MainMenuBuilder withScanner(Scanner scanner) {
+            this.scanner = requireNonNull(scanner, "Scanner cannot be null");
+            return this;
+        } 
         @Override
         public FillMenuBuilder withMainMenu(Menu<App> menu) {
             this.mainMenu = validateMenu(menu);

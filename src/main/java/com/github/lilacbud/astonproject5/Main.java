@@ -17,6 +17,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
         Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Главное меню:")
                 .withPrompt("Выберите одну из опций: ")
@@ -81,19 +83,19 @@ public class Main {
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
                     String filepath = client.askFilepath("Укажите путь к файлу: ");
-                    Scanner scanner = client.getScanner();
                     client.setSaver(new DefaultSaver(filepath, scanner));
                 }))
                 .build();
         
         App.StepBuilder.newBuilder()
-               .withMainMenu(mainMenu)
-               .withFillMenu(setFillerMenu)
-               .withSortMenu(setSortMenu)
-               .withCompMenu(setCompMenu)
-               .withSaveMenu(setSaverMenu)
-               .build()
-               .run();
+                .withScanner(scanner)
+                .withMainMenu(mainMenu)
+                .withFillMenu(setFillerMenu)
+                .withSortMenu(setSortMenu)
+                .withCompMenu(setCompMenu)
+                .withSaveMenu(setSaverMenu)
+                .build()
+                .run();
     }
     
 }
