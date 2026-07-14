@@ -98,8 +98,8 @@ public class Menu {
         }
         @Override
         public StepBuilder withOption(MenuOption option) {
-            if (options.contains(null))
-                throw new IllegalArgumentException("None of options can be null");
+            if (option == null)
+                throw new IllegalArgumentException("Option cannot be null");
             options.add(option);
             return this;
         }
