@@ -20,7 +20,7 @@ public class App {
     private final List<Movie> movies = new ArrayList<>();
     private final Scanner scanner = new Scanner(System.in);
     private MoviesFiller filler;
-    private MoviesSorter sorter;
+    private final MoviesSorter sorter = new MoviesSorter(null, null);
     private MoviesSaver saver;
     
     private final Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
@@ -47,20 +47,10 @@ public class App {
         this.saver = requireNonNull(saver, "Saver cannot be null");
     }
     public void setSortingStrategy(SortingStrategy sortStrategy) {
-        requireNonNull(sortStrategy, "Sorting strategy cannot be null");
-        if (sorter == null) {
-            sorter = new MoviesSorter(sortStrategy, null);
-        }
-        else
-            sorter.setSortingStrategy(sortStrategy);
+        sorter.setSortingStrategy(requireNonNull(sortStrategy, "Sorting strategy cannot be null"));
     }
     public void setComparator(Comparator<Movie> comp) {
-        requireNonNull(comp, "Comparator cannot be null");
-        if (sorter == null) {
-            sorter = new MoviesSorter(null, comp);
-        }
-        else
-            sorter.setComparator(comp);
+        sorter.setComparator(requireNonNull(comp, "Comparator cannot be null"));
     }
     public boolean moviesIsEmpty() {
         return movies.isEmpty();
