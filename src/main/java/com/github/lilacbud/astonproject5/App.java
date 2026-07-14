@@ -10,6 +10,8 @@ import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -45,23 +47,23 @@ public class App {
         return scanner;
     }
     public void setFiller(MoviesFiller filler) {
-        this.filler = filler;
+        this.filler = requireNonNull(filler, "Filler cannot be null");
     }
     public void setSaver(MoviesSaver saver) {
-        this.saver = saver;
+        this.saver = requireNonNull(saver, "Saver cannot be null");
     }
     public void setSortingStrategy(SortingStrategy sortStrategy) {
+        requireNonNull(sortStrategy, "Sorting strategy cannot be null");
         if (sorter == null) {
-            Comparator<Movie> comp = Comparator.comparing(Movie::hashCode);
-            sorter = new MoviesSorter(sortStrategy, comp);
+            sorter = new MoviesSorter(sortStrategy, null);
         }
         else
             sorter.setSortingStrategy(sortStrategy);
     }
     public void setComparator(Comparator<Movie> comp) {
+        requireNonNull(comp, "Comparator cannot be null");
         if (sorter == null) {
-            SortingStrategy sortStrategy = (moviesList, comparator) -> ((List<Movie>)moviesList).sort(comparator);
-            sorter = new MoviesSorter(sortStrategy, comp);
+            sorter = new MoviesSorter(null, comp);
         }
         else
             sorter.setComparator(comp);
@@ -72,7 +74,7 @@ public class App {
     public String askFilepath(String prompt) {
         Optional<String> validatedFilepath;
         do {
-            System.out.print(prompt);
+            System.out.print(requireNonNullElse(prompt, ""));
             validatedFilepath = InputValidation.validateInput(scanner.nextLine());
         } while (validatedFilepath.isEmpty());
         return validatedFilepath.get();
@@ -80,23 +82,27 @@ public class App {
     public int askSize(String prompt) {
         Optional<Integer> validatedSize;
         do {
-            System.out.print(prompt);
+            System.out.print(requireNonNullElse(prompt, ""));
             validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
         } while (validatedSize.isEmpty());
         return validatedSize.get();
     }
     public void printMovies(String successMessage) {
         movies.forEach(System.out::println);
-        System.out.println(successMessage);
+        System.out.println(requireNonNullElse(successMessage, ""));
     }
     public void saveMovies(String successMessage) {
-        try {
-            saveMenu.chooseOption(scanner).execute();
-            saver.save(movies);
-        } catch (RuntimeException e) {
-            System.err.println(e.getMessage());
+        while (true) {
+            try {
+                saveMenu.chooseOption(scanner).execute();
+                saver.save(movies);
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage());
+                continue;
+            }
+            System.out.println(requireNonNullElse(successMessage, ""));
+            break;
         }
-        System.out.println(successMessage);
     }
     public void fillMovies(String successMessage) {
         while (true) {
@@ -107,15 +113,23 @@ public class App {
                 System.err.println(e.getMessage());
                 continue;
             }
-            System.out.println(successMessage);
+            System.out.println(requireNonNullElse(successMessage, ""));
             break;
         }
     }
     public void sortMovies(String successMessage) {
-        sortMenu.chooseOption(scanner).execute();
-        compMenu.chooseOption(scanner).execute();
-        sorter.performSorting(movies);
-        System.out.println(successMessage);
+        while (true) {
+            try {
+                sortMenu.chooseOption(scanner).execute();
+                compMenu.chooseOption(scanner).execute();
+                sorter.performSorting(movies);
+            } catch (RuntimeException e) {
+                System.err.println(e.getMessage());
+                continue;
+            }
+            System.out.println(requireNonNullElse(successMessage, ""));
+            break;
+        }
     }
     public void exit() {
         running = false;
@@ -147,32 +161,27 @@ public class App {
         }
         @Override
         public FillMenuBuilder withMainMenu(Menu menu) {
-            validateMenu(menu);
-            this.mainMenu = menu;
+            this.mainMenu = validateMenu(menu);
             return this;
         }
         @Override
         public SortMenuBuilder withFillMenu(Menu menu) {
-            validateMenu(menu);
-            this.fillMenu = menu;
+            this.fillMenu = validateMenu(menu);
             return this;
         }
         @Override
         public CompMenuBuilder withSortMenu(Menu menu) {
-            validateMenu(menu);
-            this.sortMenu = menu;
+            this.sortMenu = validateMenu(menu);
             return this;
         }
         @Override
         public SaveMenuBuilder withCompMenu(Menu menu) {
-            validateMenu(menu);
-            this.compMenu = menu;
+            this.compMenu = validateMenu(menu);
             return this;
         }
         @Override
         public StepBuilder withSaveMenu(Menu menu) {
-            validateMenu(menu);
-            this.saveMenu = menu;
+            this.saveMenu = validateMenu(menu);
             return this;
         }
         public App build() {
@@ -181,9 +190,8 @@ public class App {
             INSTANCE = new App(this);
             return INSTANCE;
         }
-        private void validateMenu(Menu menu) {
-            if (menu == null)
-                throw new IllegalArgumentException("Menu cannot be null");
+        private Menu validateMenu(Menu menu) {
+            return requireNonNull(menu, "Menu cannot be null");
         }
     }
 }
