@@ -17,72 +17,72 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Menu mainMenu = Menu.StepBuilder.newBuilder()
+        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Главное меню:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption("Заполнить список фильмов", () 
-                        -> App.getInstance().fillMovies("Список успешно заполнен")))
-                .withOption(new Menu.MenuOption("Вывести список фильмов на экран", () -> {
-                    if (App.getInstance().moviesIsEmpty())
-                        App.getInstance().fillMovies("Список успешно заполнен");
-                    App.getInstance().printMovies("Список успешно выведен на экран");
+                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) 
+                        -> client.fillMovies("Список успешно заполнен")))
+                .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.fillMovies("Список успешно заполнен");
+                    client.printMovies("Список успешно выведен на экран");
                 }))
-                .withOption(new Menu.MenuOption("Отсортировать список фильмов", () -> {
-                    if (App.getInstance().moviesIsEmpty())
-                        App.getInstance().fillMovies("Список успешно заполнен");
-                    App.getInstance().sortMovies("Список успешно отсортирован");
+                .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.fillMovies("Список успешно заполнен");
+                    client.sortMovies("Список успешно отсортирован");
                 }))
-                .withOption(new Menu.MenuOption("Сохранить фильмы", () -> {
-                    if (App.getInstance().moviesIsEmpty())
-                        App.getInstance().fillMovies("Список успешно заполнен");
-                    App.getInstance().saveMovies("Список успешно сохранён");
+                .withOption(new Menu.MenuOption<>("Сохранить фильмы", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.fillMovies("Список успешно заполнен");
+                    client.saveMovies("Список успешно сохранён");
                 }))
-                .withOption(new Menu.MenuOption("Закончить работу", () -> App.getInstance().exit()))
+                .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
-        Menu fillMenu = Menu.StepBuilder.newBuilder()
+        Menu<App> fillMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption("Из файла", () -> {
-                    String filepath = App.getInstance().askFilepath("Укажите путь к файлу: ");
-                    App.getInstance().setFiller(new FromFileFiller(filepath));
+                .withOption(new Menu.MenuOption<>("Из файла", (client) -> {
+                    String filepath = client.askFilepath("Укажите путь к файлу: ");
+                    client.setFiller(new FromFileFiller(filepath));
                 }))
-                .withOption(new Menu.MenuOption("Случайно", () -> {
-                    int size = App.getInstance().askSize("Укажите количество фильмов: ");
-                    App.getInstance().setFiller(new RandomFiller(size));
+                .withOption(new Menu.MenuOption<>("Случайно", (client) -> {
+                    int size = client.askSize("Укажите количество фильмов: ");
+                    client.setFiller(new RandomFiller(size));
                 }))
-                .withOption(new Menu.MenuOption("Вручную", () -> {
-                    int size = App.getInstance().askSize("Укажите количество фильмов: ");
-                    App.getInstance().setFiller(new ManualFiller(size));
+                .withOption(new Menu.MenuOption<>("Вручную", (client) -> {
+                    int size = client.askSize("Укажите количество фильмов: ");
+                    client.setFiller(new ManualFiller(size));
                 }))
                 .build();
-        Menu sortMenu = Menu.StepBuilder.newBuilder()
+        Menu<App> sortMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Нужно отсортировать:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption("Все фильмы", ()
-                        -> App.getInstance().setSortingStrategy(new MergeSort())))
-                .withOption(new Menu.MenuOption("Фильмы с чётным годом выпуска", () -> {
+                .withOption(new Menu.MenuOption<>("Все фильмы", (client)
+                        -> client.setSortingStrategy(new MergeSort())))
+                .withOption(new Menu.MenuOption<>("Фильмы с чётным годом выпуска", (client) -> {
                     SortingStrategy sortStrategy = 
                             new EvenNumbersSortDecorator(new MergeSort(), Movie::getYearOfRelease);
-                    App.getInstance().setSortingStrategy(sortStrategy);
+                    client.setSortingStrategy(sortStrategy);
                 }))
                 .build();
-        Menu compMenu = Menu.StepBuilder.newBuilder()
+        Menu<App> compMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Отсортировать список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption("По названию", () 
-                        -> App.getInstance().setComparator(Movie.compareByName)))
-                .withOption(new Menu.MenuOption("По году выпуска", ()
-                        -> App.getInstance().setComparator(Movie.compareByYearOfRelease)))
-                .withOption(new Menu.MenuOption("По длительности", ()
-                        -> App.getInstance().setComparator(Movie.compareByHourLength)))
+                .withOption(new Menu.MenuOption<>("По названию", (client) 
+                        -> client.setComparator(Movie.compareByName)))
+                .withOption(new Menu.MenuOption<>("По году выпуска", (client)
+                        -> client.setComparator(Movie.compareByYearOfRelease)))
+                .withOption(new Menu.MenuOption<>("По длительности", (client)
+                        -> client.setComparator(Movie.compareByHourLength)))
                 .build();
-        Menu saveMenu = Menu.StepBuilder.newBuilder()
+        Menu<App> saveMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption("В текстовый файл", () -> {
-                    String filepath = App.getInstance().askFilepath("Укажите путь к файлу: ");
-                    Scanner scanner = App.getInstance().getScanner();
-                    App.getInstance().setSaver(new DefaultSaver(filepath, scanner));
+                .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
+                    String filepath = client.askFilepath("Укажите путь к файлу: ");
+                    Scanner scanner = client.getScanner();
+                    client.setSaver(new DefaultSaver(filepath, scanner));
                 }))
                 .build();
         

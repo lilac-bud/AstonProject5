@@ -17,21 +17,23 @@ public class MenuTest {
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private final Menu.MenuOption option1 = new Menu.MenuOption("Set value to 1", () -> setValue(1));
-    private final Menu.MenuOption option2 = new Menu.MenuOption("Set value to 2", () -> setValue(2));
-    private final Menu menu = Menu.StepBuilder.newBuilder()
+    private final Menu.MenuOption<MenuTest> option1 = 
+            new Menu.MenuOption<>("Set value to 1", (client) -> client.setValue(1));
+    private final Menu.MenuOption<MenuTest> option2 = 
+            new Menu.MenuOption<>("Set value to 2", (client) -> client.setValue(2));
+    private final Menu<MenuTest> menu = Menu.StepBuilder.<MenuTest>newBuilder()
             .withTitle("Title")
             .withPrompt("Prompt")
             .withOption(option1)
             .withOption(option2)
             .build();
-    private static int VALUE = 0;
+    private int value = 0;
     
-    private static void setValue(int value) {
-        VALUE = value;
+    private void setValue(int value) {
+        this.value = value;
     }
     
-    private Menu.MenuOption chooseOption(Menu menu, Scanner scanner) {
+    private Menu.MenuOption<MenuTest> chooseOption(Menu<MenuTest> menu, Scanner scanner) {
         try (MockedStatic<InputValidation> validation = mockStatic(InputValidation.class)) {
             validation.when(() -> InputValidation.validateIntegerInput(anyString()))
                     .thenAnswer(i -> Optional.of(Integer.valueOf(i.getArgument(0))));
@@ -55,21 +57,21 @@ public class MenuTest {
     public void testCreateMenuOptionWithNullTitle() {
         System.out.println("MenuOption given null title");
         final var thrown = assertThrows(NullPointerException.class, () 
-                -> new Menu.MenuOption(null, () -> setValue(1)));
+                -> new Menu.MenuOption<MenuTest>(null, (client) -> client.setValue(1)));
         assertEquals("Title cannot be null", thrown.getMessage());
     }
     @Test
     public void testCreateMenuOptionWithNullCommand() {
         System.out.println("MenuOption given null command");
-        final var thrown = assertThrows(NullPointerException.class, () -> new Menu.MenuOption("Title", null));
+        final var thrown = assertThrows(NullPointerException.class, () -> new Menu.MenuOption<MenuTest>("Title", null));
         assertEquals("Command cannot be null", thrown.getMessage());
     }
     @Test
     public void testMenuOptionExecute() {
         System.out.println("MenuOption.execute");
-        final Menu.MenuOption option = new Menu.MenuOption("Title", () -> setValue(1));
-        option.execute();
-        assertEquals(1, VALUE);
+        final Menu.MenuOption<MenuTest> option = new Menu.MenuOption<>("Title", (client) -> client.setValue(1));
+        option.execute(this);
+        assertEquals(1, value);
     }
     @Test
     public void testStepBuilderWithNullTitle() {
@@ -95,16 +97,17 @@ public class MenuTest {
     @Test
     public void testChooseOptionWithOneOption() {
         System.out.println("chooseOption with one option");
-        final Menu.MenuOption expectedOption = new Menu.MenuOption("Option title", () -> setValue(1));
-        final Menu.MenuOption option = Menu.StepBuilder.newBuilder()
+        final Menu.MenuOption<MenuTest> expectedOption = 
+                new Menu.MenuOption<>("Option title", (client) -> client.setValue(1));
+        final Menu.MenuOption<MenuTest> option = Menu.StepBuilder.<MenuTest>newBuilder()
                 .withTitle("Title")
                 .withPrompt("Prompt")
                 .withOption(expectedOption)
                 .build()
                 .chooseOption(null);
-        option.execute();
+        option.execute(this);
         assertEquals(expectedOption, option);
-        assertEquals(1, VALUE);
+        assertEquals(1, value);
     }
     @Test
     public void testChooseOptionGivenNullScanner() {
@@ -125,10 +128,10 @@ public class MenuTest {
                                           2. Set value to 2
                                           Prompt""";
         final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
-        final Menu.MenuOption option = chooseOption(menu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
-        option.execute();
+        final Menu.MenuOption<MenuTest> option = chooseOption(menu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
+        option.execute(this);
         assertEquals(option2, option);
-        assertEquals(2, VALUE);
+        assertEquals(2, value);
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());
     }

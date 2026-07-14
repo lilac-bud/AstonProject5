@@ -24,7 +24,7 @@ public class App {
     private MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private final Menu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+    private final Menu<App> mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
     
     private App(StepBuilder builder) {
         this.mainMenu = builder.mainMenu;
@@ -41,7 +41,7 @@ public class App {
     }
     public void run(){
         while (running)
-            mainMenu.chooseOption(scanner).execute();
+            mainMenu.chooseOption(scanner).execute(this);
     }
     public Scanner getScanner() {
         return scanner;
@@ -92,33 +92,33 @@ public class App {
         System.out.println(requireNonNullElse(successMessage, ""));
     }
     public void saveMovies(String successMessage) {
-        tryCommandTillSuccess(successMessage, () -> {
-            saveMenu.chooseOption(scanner).execute();
-            saver.save(movies);
+        tryCommandTillSuccess(successMessage, (client) -> {
+            client.saveMenu.chooseOption(scanner).execute(client);
+            client.saver.save(movies);
         });
     }
     public void fillMovies(String successMessage) {
-        tryCommandTillSuccess(successMessage, () -> {
-            fillMenu.chooseOption(scanner).execute();
-            filler.fillMovies(movies);
+        tryCommandTillSuccess(successMessage, (client) -> {
+            client.fillMenu.chooseOption(scanner).execute(client);
+            client.filler.fillMovies(movies);
         });
     }
     public void sortMovies(String successMessage) {
-        tryCommandTillSuccess(successMessage, () -> {
-            sortMenu.chooseOption(scanner).execute();
-            compMenu.chooseOption(scanner).execute();
-            sorter.performSorting(movies);
+        tryCommandTillSuccess(successMessage, (client) -> {
+            client.sortMenu.chooseOption(scanner).execute(client);
+            client.compMenu.chooseOption(scanner).execute(client);
+            client.sorter.performSorting(movies);
         });
     }
     public void exit() {
         running = false;
     }
     
-    private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand command) {
+    private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
         requireNonNull(command, "Command cannot be null");
         while (true) {
             try {
-                command.execute();
+                command.execute(this);
             } catch (RuntimeException e) {
                 System.err.println(e.getMessage());
                 continue;
@@ -129,23 +129,23 @@ public class App {
     }
     
     public static interface MainMenuBuilder {
-        public FillMenuBuilder withMainMenu(Menu menu);
+        public FillMenuBuilder withMainMenu(Menu<App> menu);
     }
     public static interface FillMenuBuilder {
-        public SortMenuBuilder withFillMenu(Menu menu);
+        public SortMenuBuilder withFillMenu(Menu<App> menu);
     }
     public static interface SortMenuBuilder {
-        public CompMenuBuilder withSortMenu(Menu menu);
+        public CompMenuBuilder withSortMenu(Menu<App> menu);
     }
     public static interface CompMenuBuilder {
-        public SaveMenuBuilder withCompMenu(Menu menu);
+        public SaveMenuBuilder withCompMenu(Menu<App> menu);
     }
     public static interface SaveMenuBuilder {
-        public StepBuilder withSaveMenu(Menu menu);
+        public StepBuilder withSaveMenu(Menu<App> menu);
     }
     public static class StepBuilder implements MainMenuBuilder, FillMenuBuilder, 
             SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder{
-        private Menu mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
+        private Menu<App> mainMenu, fillMenu, sortMenu, compMenu, saveMenu;
         
         private StepBuilder() {}
         
@@ -153,27 +153,27 @@ public class App {
             return new StepBuilder();
         }
         @Override
-        public FillMenuBuilder withMainMenu(Menu menu) {
+        public FillMenuBuilder withMainMenu(Menu<App> menu) {
             this.mainMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public SortMenuBuilder withFillMenu(Menu menu) {
+        public SortMenuBuilder withFillMenu(Menu<App> menu) {
             this.fillMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public CompMenuBuilder withSortMenu(Menu menu) {
+        public CompMenuBuilder withSortMenu(Menu<App> menu) {
             this.sortMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public SaveMenuBuilder withCompMenu(Menu menu) {
+        public SaveMenuBuilder withCompMenu(Menu<App> menu) {
             this.compMenu = validateMenu(menu);
             return this;
         }
         @Override
-        public StepBuilder withSaveMenu(Menu menu) {
+        public StepBuilder withSaveMenu(Menu<App> menu) {
             this.saveMenu = validateMenu(menu);
             return this;
         }
@@ -183,7 +183,7 @@ public class App {
             INSTANCE = new App(this);
             return INSTANCE;
         }
-        private Menu validateMenu(Menu menu) {
+        private Menu<App> validateMenu(Menu<App> menu) {
             return requireNonNull(menu, "Menu cannot be null");
         }
     }
