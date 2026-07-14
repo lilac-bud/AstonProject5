@@ -19,9 +19,10 @@ public class Menu {
     }
     
     public MenuOption chooseOption(Scanner scanner) {
-        if (options.size() == 1) {
+        if (options.size() == 1)
             return options.get(0);
-        }
+        if (scanner == null)
+            throw new IllegalArgumentException("Scanner cannot be null");
         Optional<Integer> validatedInput;
         while (true) {
             do {
