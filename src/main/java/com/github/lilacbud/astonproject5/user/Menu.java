@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
+import static java.util.Objects.requireNonNull;
 
 public class Menu {
     private final String title;
@@ -21,8 +22,7 @@ public class Menu {
     public MenuOption chooseOption(Scanner scanner) {
         if (options.size() == 1)
             return options.get(0);
-        if (scanner == null)
-            throw new IllegalArgumentException("Scanner cannot be null");
+        requireNonNull(scanner, "Scanner cannot be null");
         Optional<Integer> validatedInput;
         while (true) {
             do {
@@ -50,10 +50,8 @@ public class Menu {
         private final MenuCommand command;
         
         public MenuOption(String title, MenuCommand command) {
-            if (title == null || command == null)
-                throw new IllegalArgumentException("Both title and command cannot be null");
-            this.title = title;
-            this.command = command;
+            this.title = requireNonNull(title, "Title cannot be null");
+            this.command = requireNonNull(command, "Command cannot be null");
         }
         private String getTitle() {
             return title;
@@ -84,23 +82,17 @@ public class Menu {
         }
         @Override
         public PromptBuilder withTitle(String title) {
-            if (title == null)
-                throw new IllegalArgumentException("Title cannot be null");
-            this.title = title;
+            this.title = requireNonNull(title, "Title cannot be null");
             return this;
         }
         @Override
         public OptionBuilder withPrompt(String prompt) {
-            if (prompt == null)
-                throw new IllegalArgumentException("Prompt cannot be null");
-            this.prompt = prompt;
+            this.prompt = requireNonNull(prompt, "Prompt cannot be null");
             return this;
         }
         @Override
         public StepBuilder withOption(MenuOption option) {
-            if (option == null)
-                throw new IllegalArgumentException("Option cannot be null");
-            options.add(option);
+            options.add(requireNonNull(option, "Option cannot be null"));
             return this;
         }
         public Menu build() {

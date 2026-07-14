@@ -25,11 +25,6 @@ public class MenuTest {
             .withOption(option1)
             .withOption(option2)
             .build();
-    private final String expectedMenuOutput = """
-                                              Title
-                                              1. Set value to 1
-                                              2. Set value to 2
-                                              Prompt""";
     private static int VALUE = 0;
     
     private static void setValue(int value) {
@@ -59,15 +54,15 @@ public class MenuTest {
     @Test
     public void testCreateMenuOptionWithNullTitle() {
         System.out.println("MenuOption given null title");
-        final var thrown = assertThrows(IllegalArgumentException.class, () 
+        final var thrown = assertThrows(NullPointerException.class, () 
                 -> new Menu.MenuOption(null, () -> setValue(1)));
-        assertEquals("Both title and command cannot be null", thrown.getMessage());
+        assertEquals("Title cannot be null", thrown.getMessage());
     }
     @Test
     public void testCreateMenuOptionWithNullCommand() {
         System.out.println("MenuOption given null command");
-        final var thrown = assertThrows(IllegalArgumentException.class, () -> new Menu.MenuOption("Title", null));
-        assertEquals("Both title and command cannot be null", thrown.getMessage());
+        final var thrown = assertThrows(NullPointerException.class, () -> new Menu.MenuOption("Title", null));
+        assertEquals("Command cannot be null", thrown.getMessage());
     }
     @Test
     public void testMenuOptionExecute() {
@@ -79,21 +74,21 @@ public class MenuTest {
     @Test
     public void testStepBuilderWithNullTitle() {
         System.out.println("StepBuilder with null title");
-        final var thrown = assertThrows(IllegalArgumentException.class, () 
+        final var thrown = assertThrows(NullPointerException.class, () 
                 -> Menu.StepBuilder.newBuilder().withTitle(null));
         assertEquals("Title cannot be null", thrown.getMessage());
     }
     @Test
     public void testStepBuilderWithNullPrompt() {
         System.out.println("StepBuilder with null prompt");
-        final var thrown = assertThrows(IllegalArgumentException.class, () 
+        final var thrown = assertThrows(NullPointerException.class, () 
                 -> Menu.StepBuilder.newBuilder().withTitle("Title").withPrompt(null));
         assertEquals("Prompt cannot be null", thrown.getMessage());
     }
     @Test
     public void testStepBuilderWithNullOption() {
         System.out.println("StepBuilder with null prompt");
-        final var thrown = assertThrows(IllegalArgumentException.class, () 
+        final var thrown = assertThrows(NullPointerException.class, () 
                 -> Menu.StepBuilder.newBuilder().withTitle("Title").withPrompt("Prompt").withOption(null));
         assertEquals("Option cannot be null", thrown.getMessage());
     }
@@ -114,7 +109,7 @@ public class MenuTest {
     @Test
     public void testChooseOptionGivenNullScanner() {
         System.out.println("chooseOption given null scanner");
-        final var thrown = assertThrows(IllegalArgumentException.class, () -> menu.chooseOption(null));
+        final var thrown = assertThrows(NullPointerException.class, () -> menu.chooseOption(null));
         assertEquals("Scanner cannot be null", thrown.getMessage());
     }
     @Test
@@ -124,6 +119,11 @@ public class MenuTest {
         System.setOut(new PrintStream(outContent));
         final String newline = System.lineSeparator();
         final String expectedErrContent = ("No such option" + newline).repeat(2);
+        final String expectedMenuOutput = """
+                                          Title
+                                          1. Set value to 1
+                                          2. Set value to 2
+                                          Prompt""";
         final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
         final Menu.MenuOption option = chooseOption(menu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
         option.execute();
