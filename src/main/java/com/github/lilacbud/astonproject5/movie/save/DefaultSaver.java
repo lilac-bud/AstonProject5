@@ -13,26 +13,28 @@ import java.nio.file.StandardOpenOption;
 
 import static java.util.Objects.requireNonNull;
 
-public class DefaultSaver implements MoviesSaver{
+public class DefaultSaver implements MoviesSaver {
     private final Path filePath;
     private final Scanner scanner;
-    private final Menu<DefaultSaver> setSaveOptionMenu = Menu.StepBuilder.<DefaultSaver>newBuilder()
+    private final Menu<MoviesSaver> setSaveOptionMenu = Menu.StepBuilder.<MoviesSaver>newBuilder()
             .withTitle("Файл уже существует.")
             .withPrompt("Выберите одну из опций: ")
-            .withOption(new Menu.MenuOption<>("Перезаписать", (client) -> {
-                saveOption = StandardOpenOption.TRUNCATE_EXISTING;
-            }))
-            .withOption(new Menu.MenuOption<>("Добавить", (client) -> {
-                saveOption = StandardOpenOption.APPEND;
-            }))
+            .withOption(new Menu.MenuOption<>("Перезаписать", (client) -> 
+                    client.setSaveOption(StandardOpenOption.TRUNCATE_EXISTING)))
+            .withOption(new Menu.MenuOption<>("Добавить", (client) -> 
+                    client.setSaveOption(StandardOpenOption.APPEND)))
             .build();
     private StandardOpenOption saveOption = StandardOpenOption.TRUNCATE_EXISTING;
 
-    public DefaultSaver(String filepath, Scanner scanner){
+    public DefaultSaver(String filepath, Scanner scanner) {
         this.filePath = Path.of(filepath);
         this.scanner = scanner;
     }
 
+    @Override
+    public void setSaveOption(StandardOpenOption saveOption) {
+        this.saveOption = saveOption;
+    }
     @Override
     public void save(Collection<Movie> movies){
 
