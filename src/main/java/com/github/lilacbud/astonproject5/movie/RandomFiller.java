@@ -3,9 +3,10 @@ package com.github.lilacbud.astonproject5.movie;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Stream;
+
+import static java.util.Objects.requireNonNull;
 
 public class RandomFiller implements MoviesFiller {
     private static final Random RANDOM = new Random();
@@ -29,7 +30,7 @@ public class RandomFiller implements MoviesFiller {
     }
     @Override
     public void fillMovies(Collection<Movie> movies) {
-        Objects.requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
+        requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
 
         movies.clear();
         Stream.generate(this::generateMovie)

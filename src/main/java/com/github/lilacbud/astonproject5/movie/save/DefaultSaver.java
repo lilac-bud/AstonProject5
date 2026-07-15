@@ -7,9 +7,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Scanner;
 import java.nio.file.StandardOpenOption;
+
+import static java.util.Objects.requireNonNull;
 
 public class DefaultSaver implements MoviesSaver{
     private final Path filePath;
@@ -23,7 +24,7 @@ public class DefaultSaver implements MoviesSaver{
     @Override
     public void save(Collection<Movie> movies){
 
-        Objects.requireNonNull(movies, "Collection<Movie> movies must be non null to save");
+        requireNonNull(movies, "Collection<Movie> movies must be non null to save");
 
         StandardOpenOption option = StandardOpenOption.CREATE;
 

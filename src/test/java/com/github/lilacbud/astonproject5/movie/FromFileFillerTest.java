@@ -1,11 +1,19 @@
 package com.github.lilacbud.astonproject5.movie;
 
+import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.*;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
+
+import static java.util.Objects.requireNonNull;
 
 import static org.mockito.Mockito.*;
 import org.mockito.MockedStatic;
@@ -19,7 +27,7 @@ public class FromFileFillerTest {
 
         URL resource = getClass().getClassLoader().getResource(filepath);
 
-        Objects.requireNonNull(resource, "resource must be non null to save");
+        requireNonNull(resource, "resource must be non null to save");
 
         try {
             return new FromFileFiller(Paths.get(resource.toURI()).toString());
@@ -58,6 +66,11 @@ public class FromFileFillerTest {
 
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new FromFileFiller(null));
         assertEquals("Filepath must not be null", exception.getMessage());
+    }
+
+    @Test
+    public void fromFileFillerInvalidPathTest() {
+        assertThrows(InvalidPathException.class, () -> new FromFileFiller("Name:\0InvalidFile.txt"));
     }
 
     @Test
@@ -119,9 +132,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            fff.fillMovies(movies);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "The Shawshank Redemption;1994;2.4;1972";
         assertEquals("Invalid string format: " + line, exception.getMessage());
@@ -134,7 +145,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "The Shawshank Redemption;1994";
         assertEquals("Invalid string format: " + line, exception.getMessage());
@@ -147,7 +158,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "qwerty";
         assertEquals("Invalid year: " + line, exception.getMessage());
@@ -160,7 +171,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "qwerty";
         assertEquals("Invalid hour: " + line, exception.getMessage());
@@ -171,7 +182,7 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("correctMovies.txt");
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> fff.fillMovies(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
 
         assertEquals("Collection<Movie> movies must be non null to fillMovies", exception.getMessage());
     }
