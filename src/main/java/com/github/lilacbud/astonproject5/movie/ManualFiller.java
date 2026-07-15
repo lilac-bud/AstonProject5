@@ -21,6 +21,9 @@ public class ManualFiller implements MoviesFiller {
 
     @Override
     public void fillMovies(Collection<Movie> movies) {
+
+        requireNonNull(movies, "Collection<Movie> movies must be non null to sort");
+
         movies.clear();
         IntStream.range(0, size) //создаем поток чисел от 0 до size-1
                  .mapToObj(i -> this.fill()) //заменяем каждое число на результат вызова метода
