@@ -7,6 +7,8 @@ import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
 import com.github.lilacbud.astonproject5.util.InputValidation;
+import com.github.lilacbud.astonproject5.util.MovieCounter;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IllegalFormatException;
@@ -14,10 +16,6 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class App {
     private boolean running = true;
@@ -111,44 +109,17 @@ public class App {
         running = false;
     }
 
-    public void countMovie (String successMessage){  //многопоточный метод считает вхождения фильмов и выводит результат
-        if (movies.isEmpty()){
+    public void countMovie(String successMessage){
+        if(movies.isEmpty()){
             System.err.println("Список фильмов пуст");
             return;
         }
-        System.out.println("Введите название фильма для поиска");
+        System.out.println("Введите название фильма для поиска:");
         String target = scanner.nextLine().trim();
+        int count = MovieCounter.countInsert(movies, target);
 
-        int threadCount = Runtime.getRuntime().availableProcessors();
-        AtomicInteger totalCount = new AtomicInteger(0);
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        int chunkSize = (int) Math.ceil((double) movies.size()/threadCount);
-
-        for (int i=0; i<threadCount; i++){
-            int from=i*chunkSize;
-            int to = Math.min(from+chunkSize, movies.size());
-            if (from>=movies.size()) break;
-
-            executor.submit(()->{
-                int localCount = 0;
-                for (int j=from; j<to; j++){
-                    if(target.equals(movies.get(j).getName())){
-                        localCount++;
-                    }
-                }
-                totalCount.addAndGet(localCount);
-            });
-        }
-        executor.shutdown();
-        try {
-            executor.awaitTermination(1,TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Подсчет прерван");
-            return;
-        }
-        System.out.println("Фильм \""+target+"\" встречается "+totalCount.get()+"раз(а)");
-        if (successMessage !=null) System.out.println(successMessage);
+        System.out.println("Фильм \""+target+ "\" встречается " + count + " раз(а)");
+        if (successMessage != null) System.out.println(successMessage);
     }
     
     private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
