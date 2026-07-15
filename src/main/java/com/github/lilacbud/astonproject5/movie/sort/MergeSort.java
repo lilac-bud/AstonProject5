@@ -9,7 +9,9 @@ public class MergeSort implements SortingStrategy {
     @Override
     public void sort(Collection<Movie> movies, Comparator<Movie> comp) {
 
-        if (movies == null || movies.isEmpty()) return;
+        Objects.requireNonNull(movies, "Collection<Movie> movies must be non null to sort");
+
+        if (movies.isEmpty()) return;
 
         List<Movie> listMovies = new ArrayList<>(movies);
         List<Movie> result = doMergeSort(listMovies, comp);

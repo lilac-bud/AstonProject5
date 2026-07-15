@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import org.mockito.MockedStatic;
@@ -22,9 +19,7 @@ public class FromFileFillerTest {
 
         URL resource = getClass().getClassLoader().getResource(filepath);
 
-        if (resource == null) {
-            throw new IllegalStateException("Test resource not found: " + filepath);
-        }
+        Objects.requireNonNull(resource, "resource must be non null to save");
 
         try {
             return new FromFileFiller(Paths.get(resource.toURI()).toString());
@@ -56,6 +51,13 @@ public class FromFileFillerTest {
 
             fff.fillMovies(movies);
         }
+    }
+
+    @Test
+    void fromFileFillerFilepathIsNullTest() {
+
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> new FromFileFiller(null));
+        assertEquals("Filepath must not be null", exception.getMessage());
     }
 
     @Test
@@ -145,7 +147,7 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
 
         String line = "qwerty";
         assertEquals("Invalid year: " + line, exception.getMessage());
@@ -158,9 +160,19 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fff.fillMovies(movies));
 
         String line = "qwerty";
         assertEquals("Invalid hour: " + line, exception.getMessage());
+    }
+
+    @Test
+    void fillMoviesWithNullMoviesArgumentTest() {
+
+        FromFileFiller fff = createFiller("correctMovies.txt");
+
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> fff.fillMovies(null));
+
+        assertEquals("Collection<Movie> movies must be non null to fillMovies", exception.getMessage());
     }
 }
