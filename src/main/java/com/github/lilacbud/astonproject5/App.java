@@ -110,16 +110,15 @@ public class App {
     }
 
     public void countMovie(String successMessage){
-        if(movies.isEmpty()){
-            System.err.println("Список фильмов пуст");
-            return;
+        tryCommandTillSuccess(successMessage, (client) -> {
+        if(client.movies.isEmpty()){
+            throw new IllegalStateException("Список фильмов пуст");
         }
         System.out.println("Введите название фильма для поиска:");
-        String target = scanner.nextLine().trim();
-        int count = MovieCounter.countInsert(movies, target);
-
+        String target = client.scanner.nextLine().trim();
+        int count = MovieCounter.countInsert(client.movies, target);
         System.out.println("Фильм \""+target+ "\" встречается " + count + " раз(а)");
-        if (successMessage != null) System.out.println(successMessage);
+    });
     }
     
     private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
