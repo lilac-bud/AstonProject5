@@ -1,6 +1,7 @@
 package com.github.lilacbud.astonproject5.movie;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 public class Movie {
     private final String name;
@@ -26,7 +27,7 @@ public class Movie {
         private float hourLength;
 
         public Builder withName(String name){
-            this.name=name;
+            this.name= Objects.requireNonNullElse(name, "");;
             return this;
         }
         public Builder withYearOfRelease(int year){
