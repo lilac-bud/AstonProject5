@@ -11,6 +11,8 @@ import static java.util.Objects.requireNonNull;
 public class ManualFiller implements MoviesFiller {
     private final int size;
     private final Scanner scanner;
+    private final Prompts prompts = 
+            new Prompts("Введите название фильма: ", "Введите год выпуска: ", "Введите продолжительность фильма: ");
 
     public ManualFiller(int size, Scanner scanner) {
         if (size < 0)
@@ -38,7 +40,7 @@ public class ManualFiller implements MoviesFiller {
         String name; //название фильма
         Optional<String> verifiedName; //результат метода валидации
         do {
-            System.out.print("Введите название фильма: ");
+            System.out.print(prompts.movieNamePrompt);
             name = scanner.nextLine();
             verifiedName = MovieInputValidation.validateName(name);
         }
@@ -50,7 +52,7 @@ public class ManualFiller implements MoviesFiller {
         String yearStr; //год выпуска в строковом представлении
         Optional<Integer> verifiedYear; //результат метода валидации
         do {
-            System.out.print("Введите год выпуска: ");
+            System.out.print(prompts.movieYearPrompt);
             yearStr = scanner.nextLine();
             verifiedYear = MovieInputValidation.validateYearOfRelease(yearStr);
         }
@@ -62,7 +64,7 @@ public class ManualFiller implements MoviesFiller {
         String hourStr; //продолжительность в строковом представлении
         Optional<Float> verifiedHour; //результат метода валидации
         do {
-            System.out.print("Введите продолжительность фильма: ");
+            System.out.print(prompts.movieHourLengthPrompt);
             hourStr = scanner.nextLine();
             verifiedHour = MovieInputValidation.validateHourLength(hourStr);
         }
@@ -74,5 +76,17 @@ public class ManualFiller implements MoviesFiller {
                 .withYearOfRelease(yearOfRelease)
                 .withHourLength(hourLength)
                 .build();
+    }
+    
+    public static class Prompts {
+        private final String movieNamePrompt;
+        private final String movieYearPrompt;
+        private final String movieHourLengthPrompt;
+        
+        public Prompts(String movieNamePrompt, String movieYearPrompt, String movieHourLengthPrompt) {
+            this.movieNamePrompt = movieNamePrompt;
+            this.movieYearPrompt = movieYearPrompt;
+            this.movieHourLengthPrompt = movieHourLengthPrompt;
+        }
     }
 }
