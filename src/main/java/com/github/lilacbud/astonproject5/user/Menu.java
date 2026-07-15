@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 public class Menu<T> {
     private final String title;
@@ -27,12 +28,13 @@ public class Menu<T> {
         Optional<Integer> validatedInput;
         while (true) {
             do {
-                System.out.println(title);
+                if (title != null)
+                    System.out.println(title);
                 IntStream.range(0, options.size())
                         .filter(i -> Objects.nonNull(options.get(i).getTitle()))
                         .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
                         .forEach(System.out::println);
-                System.out.print(prompt);
+                System.out.print(requireNonNullElse(prompt, ""));
                 validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
             } while (validatedInput.isEmpty());
             try {
@@ -84,12 +86,12 @@ public class Menu<T> {
         }
         @Override
         public PromptBuilder<T> withTitle(String title) {
-            this.title = requireNonNull(title, "Title cannot be null");
+            this.title = title;
             return this;
         }
         @Override
         public OptionBuilder<T> withPrompt(String prompt) {
-            this.prompt = requireNonNull(prompt, "Prompt cannot be null");
+            this.prompt = prompt;
             return this;
         }
         @Override

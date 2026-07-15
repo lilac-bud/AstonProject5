@@ -67,20 +67,6 @@ public class MenuTest {
         assertEquals(1, value);
     }
     @Test
-    public void testStepBuilderWithNullTitle() {
-        System.out.println("StepBuilder with null title");
-        final var thrown = assertThrows(NullPointerException.class, () 
-                -> Menu.StepBuilder.newBuilder().withTitle(null));
-        assertEquals("Title cannot be null", thrown.getMessage());
-    }
-    @Test
-    public void testStepBuilderWithNullPrompt() {
-        System.out.println("StepBuilder with null prompt");
-        final var thrown = assertThrows(NullPointerException.class, () 
-                -> Menu.StepBuilder.newBuilder().withTitle("Title").withPrompt(null));
-        assertEquals("Prompt cannot be null", thrown.getMessage());
-    }
-    @Test
     public void testStepBuilderWithNullOption() {
         System.out.println("StepBuilder with null prompt");
         final var thrown = assertThrows(NullPointerException.class, () 
@@ -121,8 +107,10 @@ public class MenuTest {
                                           2. Set value to 2
                                           Prompt""";
         final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
+        
         final Menu.MenuOption<MenuTest> option = chooseOption(menu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
         option.execute(this);
+        
         assertEquals(option2, option);
         assertEquals(2, value);
         assertEquals(expectedErrContent, errContent.toString());
@@ -147,9 +135,37 @@ public class MenuTest {
                 .withOption(tempOption1)
                 .withOption(tempOption2)
                 .build();
+        
         final Menu.MenuOption<MenuTest> option = chooseOption(tempMmenu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
         option.execute(this);
+        
         assertEquals(tempOption2, option);
+        assertEquals(2, value);
+        assertEquals(expectedErrContent, errContent.toString());
+        assertEquals(expectedOutContent, outContent.toString());
+    }
+    @Test
+    public void testChooseOptionWithNullTitleAndPromptGivenValidScanner() {
+        System.out.println("chooseOption with null title and prompt given correct scanner");
+        System.setErr(new PrintStream(errContent));
+        System.setOut(new PrintStream(outContent));
+        final String newline = System.lineSeparator();
+        final String expectedErrContent = ("No such option" + newline).repeat(2);
+        final String expectedMenuOutput = """
+                                          1. Set value to 1
+                                          2. Set value to 2\n""";
+        final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
+        final Menu<MenuTest> tempMmenu = Menu.StepBuilder.<MenuTest>newBuilder()
+                .withTitle(null)
+                .withPrompt(null)
+                .withOption(option1)
+                .withOption(option2)
+                .build();
+        
+        final Menu.MenuOption<MenuTest> option = chooseOption(tempMmenu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
+        option.execute(this);
+        
+        assertEquals(option2, option);
         assertEquals(2, value);
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());
