@@ -1,6 +1,7 @@
 package com.github.lilacbud.astonproject5.movie.save;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
+import com.github.lilacbud.astonproject5.user.Menu;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,6 +16,17 @@ import static java.util.Objects.requireNonNull;
 public class DefaultSaver implements MoviesSaver{
     private final Path filePath;
     private final Scanner scanner;
+    private final Menu<DefaultSaver> setSaveOptionMenu = Menu.StepBuilder.<DefaultSaver>newBuilder()
+            .withTitle("Файл уже существует.")
+            .withPrompt("Выберите одну из опций: ")
+            .withOption(new Menu.MenuOption<>("Перезаписать", (client) -> {
+                saveOption = StandardOpenOption.TRUNCATE_EXISTING;
+            }))
+            .withOption(new Menu.MenuOption<>("Добавить", (client) -> {
+                saveOption = StandardOpenOption.APPEND;
+            }))
+            .build();
+    private StandardOpenOption saveOption = StandardOpenOption.TRUNCATE_EXISTING;
 
     public DefaultSaver(String filepath, Scanner scanner){
         this.filePath = Path.of(filepath);
@@ -25,27 +37,11 @@ public class DefaultSaver implements MoviesSaver{
     public void save(Collection<Movie> movies){
 
         requireNonNull(movies, "Collection<Movie> movies must be non null to save");
+        
+        if (Files.exists(filePath) && setSaveOptionMenu != null)
+            setSaveOptionMenu.chooseOption(scanner).execute(this);
 
-        StandardOpenOption option = StandardOpenOption.CREATE;
-
-        if (Files.exists(filePath)){
-            while(true){
-                System.out.println("Файл уже существует. 1 - перезаписать, 2 - добавить");
-
-                String answer = scanner.nextLine();
-                if(answer.equals("1")){
-                    option = StandardOpenOption.TRUNCATE_EXISTING;
-                    break;
-                }
-                if (answer.equals("2")){
-                    option = StandardOpenOption.APPEND;
-                    break;
-                }
-                System.err.println("incorrect input");
-            }
-        }
-
-        try (BufferedWriter writer=Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, option)){
+        try (BufferedWriter writer=Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, saveOption)){
             for (Movie movie:movies){
                 writer.write(movie.getName()+";"+movie.getYearOfRelease()+";"+movie.getHourLength());
                 writer.newLine();
