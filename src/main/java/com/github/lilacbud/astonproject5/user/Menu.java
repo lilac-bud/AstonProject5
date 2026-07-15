@@ -65,27 +65,23 @@ public class Menu<T> {
         }
     }
     
-    public static interface TitleBuilder<T> {
-        public PromptBuilder<T> withTitle(String title);
-    }
-    public static interface PromptBuilder<T> {
-        public OptionBuilder<T> withPrompt(String prompt);
-    }
     public static interface OptionBuilder<T> {
+        public OptionBuilder<T> withTitle(String title);
+        public OptionBuilder<T> withPrompt(String prompt);
         public StepBuilder<T> withOption(MenuOption<T> option);
     }
-    public static class StepBuilder<T> implements TitleBuilder<T>, PromptBuilder<T>, OptionBuilder<T> {
+    public static class StepBuilder<T> implements OptionBuilder<T> {
         private String title;
         private String prompt;
         private final List<MenuOption<T>> options = new ArrayList<>();
         
         private StepBuilder() {}
         
-        public static <T> TitleBuilder<T> newBuilder() {
+        public static <T> OptionBuilder<T> newBuilder() {
             return new StepBuilder<>();
         }
         @Override
-        public PromptBuilder<T> withTitle(String title) {
+        public OptionBuilder<T> withTitle(String title) {
             this.title = title;
             return this;
         }

@@ -17,6 +17,7 @@ public class MenuTest {
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final String validInput = "qwerty\n-2\n0\n3\n2\n";
     private final Menu.MenuOption<MenuTest> option1 = 
             new Menu.MenuOption<>("Set value to 1", (client) -> client.setValue(1));
     private final Menu.MenuOption<MenuTest> option2 = 
@@ -44,8 +45,6 @@ public class MenuTest {
         }
     }
     
-    public MenuTest() {}
-
     @AfterEach
     public void tearDown() {
         System.setErr(originalErr);
@@ -79,8 +78,6 @@ public class MenuTest {
         final Menu.MenuOption<MenuTest> expectedOption = 
                 new Menu.MenuOption<>("Option title", (client) -> client.setValue(1));
         final Menu.MenuOption<MenuTest> option = Menu.StepBuilder.<MenuTest>newBuilder()
-                .withTitle("Title")
-                .withPrompt("Prompt")
                 .withOption(expectedOption)
                 .build()
                 .chooseOption(null);
@@ -99,6 +96,7 @@ public class MenuTest {
         System.out.println("chooseOption given correct scanner");
         System.setErr(new PrintStream(errContent));
         System.setOut(new PrintStream(outContent));
+        
         final String newline = System.lineSeparator();
         final String expectedErrContent = ("No such option" + newline).repeat(2);
         final String expectedMenuOutput = """
@@ -108,7 +106,7 @@ public class MenuTest {
                                           Prompt""";
         final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
         
-        final Menu.MenuOption<MenuTest> option = chooseOption(menu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
+        final Menu.MenuOption<MenuTest> option = chooseOption(menu, new Scanner(validInput));
         option.execute(this);
         
         assertEquals(option2, option);
@@ -121,22 +119,24 @@ public class MenuTest {
         System.out.println("chooseOption with options with null title given correct scanner");
         System.setErr(new PrintStream(errContent));
         System.setOut(new PrintStream(outContent));
+        
         final String newline = System.lineSeparator();
         final String expectedErrContent = ("No such option" + newline).repeat(2);
         final String expectedMenuOutput = """
                                           Title
                                           Prompt""";
         final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
+        
         final Menu.MenuOption<MenuTest> tempOption1 = new Menu.MenuOption<>(null, (client) -> client.setValue(1));
         final Menu.MenuOption<MenuTest> tempOption2 = new Menu.MenuOption<>(null, (client) -> client.setValue(2));
-        final Menu<MenuTest> tempMmenu = Menu.StepBuilder.<MenuTest>newBuilder()
+        final Menu<MenuTest> tempMenu = Menu.StepBuilder.<MenuTest>newBuilder()
                 .withTitle("Title")
                 .withPrompt("Prompt")
                 .withOption(tempOption1)
                 .withOption(tempOption2)
                 .build();
         
-        final Menu.MenuOption<MenuTest> option = chooseOption(tempMmenu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
+        final Menu.MenuOption<MenuTest> option = chooseOption(tempMenu, new Scanner(validInput));
         option.execute(this);
         
         assertEquals(tempOption2, option);
@@ -149,23 +149,47 @@ public class MenuTest {
         System.out.println("chooseOption with null title and prompt given correct scanner");
         System.setErr(new PrintStream(errContent));
         System.setOut(new PrintStream(outContent));
+        
         final String newline = System.lineSeparator();
         final String expectedErrContent = ("No such option" + newline).repeat(2);
         final String expectedMenuOutput = """
                                           1. Set value to 1
                                           2. Set value to 2\n""";
         final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
-        final Menu<MenuTest> tempMmenu = Menu.StepBuilder.<MenuTest>newBuilder()
-                .withTitle(null)
-                .withPrompt(null)
+        final Menu<MenuTest> tempMenu = Menu.StepBuilder.<MenuTest>newBuilder()
                 .withOption(option1)
                 .withOption(option2)
                 .build();
         
-        final Menu.MenuOption<MenuTest> option = chooseOption(tempMmenu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
+        final Menu.MenuOption<MenuTest> option = chooseOption(tempMenu, new Scanner(validInput));
         option.execute(this);
         
         assertEquals(option2, option);
+        assertEquals(2, value);
+        assertEquals(expectedErrContent, errContent.toString());
+        assertEquals(expectedOutContent, outContent.toString());
+    }
+    @Test
+    public void testChooseOptionWithNullTitlesAndPromptGivenValidScanner() {
+        System.out.println("chooseOption with null titles and prompt given correct scanner");
+        System.setErr(new PrintStream(errContent));
+        System.setOut(new PrintStream(outContent));
+        
+        final String newline = System.lineSeparator();
+        final String expectedErrContent = ("No such option" + newline).repeat(2);
+        final String expectedOutContent = "";
+        
+        final Menu.MenuOption<MenuTest> tempOption1 = new Menu.MenuOption<>(null, (client) -> client.setValue(1));
+        final Menu.MenuOption<MenuTest> tempOption2 = new Menu.MenuOption<>(null, (client) -> client.setValue(2));
+        final Menu<MenuTest> tempMenu = Menu.StepBuilder.<MenuTest>newBuilder()
+                .withOption(tempOption1)
+                .withOption(tempOption2)
+                .build();
+        
+        final Menu.MenuOption<MenuTest> option = chooseOption(tempMenu, new Scanner(validInput));
+        option.execute(this);
+        
+        assertEquals(tempOption2, option);
         assertEquals(2, value);
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());
