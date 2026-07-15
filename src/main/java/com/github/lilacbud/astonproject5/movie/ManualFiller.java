@@ -5,19 +5,23 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
+//ЗАПОЛНЕНИЕ СПИСКА ФИЛЬМОВ ВРУЧНУЮ
 public class ManualFiller implements MoviesFiller {
     private final int size;
     private final Scanner scanner;
 
     public ManualFiller(int size, Scanner scanner) {
+        if (size < 0)
+            throw new IllegalArgumentException("Size cannot be negative");
+        if (scanner == null)
+            throw new IllegalArgumentException("Scanner cannot be null");
         this.size = size;
         this.scanner = scanner;
     }
 
     @Override
     public void fillMovies(Collection<Movie> movies) {
-        System.out.println("ЗАПОЛНЕНИЕ СПИСКА ФИЛЬМОВ ВРУЧНУЮ");
-
+        movies.clear();
         IntStream.range(0, size) //создаем поток чисел от 0 до size-1
                  .mapToObj(i -> this.fill()) //заменяем каждое число на результат вызова метода
                  .forEach(movies::add); //добавляем фильм в коллекцию
@@ -29,12 +33,15 @@ public class ManualFiller implements MoviesFiller {
     //получаем данные о фильме
     private Movie fill() {
         //получаем название фильма
-        String name;
+        String name; //название фильма
+        Optional<String> verifiedName; //результат метода валидации
         do {
             System.out.print("Введите название фильма: ");
             name = scanner.nextLine();
+            verifiedName = MovieInputValidation.validateName(name);
         }
-        while (MovieInputValidation.validateName(name).isEmpty()); //пока не будет введено корректное название
+        while (verifiedName.isEmpty()); //пока не будет введено корректное название
+        name = verifiedName.get();
 
         //получаем год выпуска
         int yearOfRelease; //год выпуска
