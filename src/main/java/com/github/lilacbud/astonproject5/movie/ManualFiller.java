@@ -73,7 +73,8 @@ public class ManualFiller implements MoviesFiller {
         hourLength = verifiedHour.get();
 
         //создаем объект
-        return new Movie.Builder().withName(name)
+        return new Movie.Builder()
+                .withName(name)
                 .withYearOfRelease(yearOfRelease)
                 .withHourLength(hourLength)
                 .build();
