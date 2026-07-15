@@ -12,7 +12,6 @@ import java.util.Comparator;
 import java.util.IllegalFormatException;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -58,7 +57,8 @@ public class App {
     public String askFilepath(String prompt) {
         Optional<String> validatedFilepath;
         do {
-            System.out.print(requireNonNullElse(prompt, ""));
+            if (prompt != null)
+                System.out.print(prompt);
             validatedFilepath = InputValidation.validateInput(scanner.nextLine());
         } while (validatedFilepath.isEmpty());
         return validatedFilepath.get();
@@ -66,7 +66,8 @@ public class App {
     public int askSize(String prompt) {
         Optional<Integer> validatedSize;
         do {
-            System.out.print(requireNonNullElse(prompt, ""));
+            if (prompt != null)
+                System.out.print(prompt);
             validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
         } while (validatedSize.isEmpty());
         return validatedSize.get();
@@ -80,7 +81,8 @@ public class App {
         } catch (NullPointerException | IllegalFormatException e) {
             movies.forEach(System.out::println);
         }
-        System.out.println(requireNonNullElse(successMessage, ""));
+        if (successMessage != null)
+            System.out.println(successMessage);
     }
     public void saveMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
@@ -114,7 +116,8 @@ public class App {
                 System.err.println(e.getMessage());
                 continue;
             }
-            System.out.println(requireNonNullElse(successMessage, ""));
+            if (successMessage != null)
+                System.out.println(successMessage);
             break;
         }
     }
