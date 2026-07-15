@@ -16,19 +16,13 @@ import static java.util.Objects.requireNonNull;
 public class DefaultSaver implements MoviesSaver {
     private final Path filePath;
     private final Scanner scanner;
-    private final Menu<MoviesSaver> setSaveOptionMenu = Menu.StepBuilder.<MoviesSaver>newBuilder()
-            .withTitle("Файл уже существует.")
-            .withPrompt("Выберите одну из опций: ")
-            .withOption(new Menu.MenuOption<>("Перезаписать", (client) -> 
-                    client.setSaveOption(StandardOpenOption.TRUNCATE_EXISTING)))
-            .withOption(new Menu.MenuOption<>("Добавить", (client) -> 
-                    client.setSaveOption(StandardOpenOption.APPEND)))
-            .build();
+    private final Menu<MoviesSaver> setSaveOptionMenu;
     private StandardOpenOption saveOption = StandardOpenOption.TRUNCATE_EXISTING;
 
-    public DefaultSaver(String filepath, Scanner scanner) {
-        this.filePath = Path.of(filepath);
-        this.scanner = scanner;
+    public DefaultSaver(String filepath, Scanner scanner, Menu<MoviesSaver> setSaveOptionMenu) {
+        this.filePath = Path.of(requireNonNull(filepath, "Filepath must not be null"));
+        this.scanner = requireNonNull(scanner, "Scanner must not be null");
+        this.setSaveOptionMenu = setSaveOptionMenu;
     }
 
     @Override
