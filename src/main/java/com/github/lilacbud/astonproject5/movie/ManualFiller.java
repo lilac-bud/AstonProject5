@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
+import static java.util.Objects.requireNonNull;
+
 //ЗАПОЛНЕНИЕ СПИСКА ФИЛЬМОВ ВРУЧНУЮ
 public class ManualFiller implements MoviesFiller {
     private final int size;
@@ -13,10 +15,8 @@ public class ManualFiller implements MoviesFiller {
     public ManualFiller(int size, Scanner scanner) {
         if (size < 0)
             throw new IllegalArgumentException("Size cannot be negative");
-        if (scanner == null)
-            throw new IllegalArgumentException("Scanner cannot be null");
         this.size = size;
-        this.scanner = scanner;
+        this.scanner = requireNonNull(scanner, "Scanner cannot be null");
     }
 
     @Override
@@ -26,8 +26,7 @@ public class ManualFiller implements MoviesFiller {
                  .mapToObj(i -> this.fill()) //заменяем каждое число на результат вызова метода
                  .forEach(movies::add); //добавляем фильм в коллекцию
 
-        System.out.println("\nСПИСОК ДОБАВЛЕННЫХ ФИЛЬМОВ");
-        movies.stream().forEach(System.out::println);
+        //movies.stream().forEach(System.out::println);
     }
 
     //получаем данные о фильме
