@@ -75,7 +75,7 @@ public class MovieInputValidationTest {
         String input = "qwerty";
         Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
         assertTrue(result.isEmpty());
-        assertEquals("That's not a year", errContent.toString().trim());
+        assertEquals("Input must be a whole number", errContent.toString().trim());
     }
     @Test
     public void testValidateYearOfReleaseGivenYearLessThanMinYear() {

@@ -82,4 +82,19 @@ class DefaultSaverTest {
         assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:\0InvalidFile.txt",
                 new Scanner("")));
     }
+
+    @Test
+    public void saveMoviesIsNull() {
+
+        Path file = tempDir.resolve("movies.txt");
+        List<Movie> movies = null;
+
+        DefaultSaver ds = new DefaultSaver(file.toString(), new Scanner(""));
+
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> ds.save(movies));
+
+        assertEquals("Collection<Movie> movies must be non null to save", exception.getMessage());
+    }
+
+
 }

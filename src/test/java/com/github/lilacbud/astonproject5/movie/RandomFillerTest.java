@@ -43,4 +43,12 @@ public class RandomFillerTest {
         assertEquals(movies.size(), 10);
         assertFalse(movies.contains(null));
     }
+
+    @Test
+    void testFillMoviesWithNullMoviesArgument() {
+        System.out.println("fillMovies with null movies argument");
+        RandomFiller instance = new RandomFiller(10);
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> instance.fillMovies(null));
+        assertEquals("Collection<Movie> movies must be non null to fillMovies", exception.getMessage());
+    }
 }

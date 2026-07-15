@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.util.Scanner;
 import java.nio.file.StandardOpenOption;
 
+import static java.util.Objects.requireNonNull;
+
 public class DefaultSaver implements MoviesSaver{
     private final Path filePath;
     private final Scanner scanner;
@@ -21,6 +23,9 @@ public class DefaultSaver implements MoviesSaver{
 
     @Override
     public void save(Collection<Movie> movies){
+
+        requireNonNull(movies, "Collection<Movie> movies must be non null to save");
+
         StandardOpenOption option = StandardOpenOption.CREATE;
 
         if (Files.exists(filePath)){

@@ -1,5 +1,7 @@
 package com.github.lilacbud.astonproject5.movie;
 
+import com.github.lilacbud.astonproject5.util.InputValidation;
+
 import java.util.Optional;
 
 public final class MovieInputValidation {
@@ -10,35 +12,25 @@ public final class MovieInputValidation {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
     
-    private static Optional<String> validateInput(String input) {
-        if (input == null || input.isBlank()) {
-            System.err.println("Input cannot be empty");
-            return Optional.empty();
-        } 
-        return Optional.of(input.trim());
-    }
-    
     static Optional<String> validateName(String input){
-        return validateInput(input).map(s -> s.replaceAll("\\s+", " "));
+        return InputValidation.validateInput(input).map(s -> s.replaceAll("\\s+", " "));
     }
     static Optional<Integer> validateYearOfRelease(String input){
-        final Optional<String> validatedInput = validateInput(input);
+        final Optional<Integer> validatedInput = InputValidation.validateIntegerInput(input);
         if (validatedInput.isEmpty())
             return Optional.empty();
         try {
-            final Integer convertedYear = Integer.valueOf(validatedInput.get());
+            final Integer convertedYear = validatedInput.get();
             if (convertedYear < MIN_YEAR)
                 throw new IllegalArgumentException();
             return Optional.of(convertedYear);
-        } catch (NumberFormatException e) {
-            System.err.println("That's not a year");
         } catch (IllegalArgumentException e) {
             System.err.println("There were no films in that year");
         }
         return Optional.empty();
     }
     static Optional<Float> validateHourLength(String input){
-        final Optional<String> validatedInput = validateInput(input);
+        final Optional<String> validatedInput = InputValidation.validateInput(input);
         if (validatedInput.isEmpty())
             return Optional.empty();
         try {
