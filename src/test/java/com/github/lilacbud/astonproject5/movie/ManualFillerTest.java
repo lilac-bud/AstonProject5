@@ -2,14 +2,33 @@ package com.github.lilacbud.astonproject5.movie;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 
 public class ManualFillerTest {
     private final ArrayList<Movie> movies = new ArrayList<>();
     private String input = "Фильм1\n2000\n2\nФильм2\n2005\n2.5\nФильм3\n2010\n3\n";
+
+    private void fillMoviesMock(ManualFiller filler, Collection<Movie> movies) {
+        try (MockedStatic<MovieInputValidation> validation = mockStatic(MovieInputValidation.class)) {
+            validation.when(() -> MovieInputValidation.validateName(anyString()))
+                    .thenAnswer(i -> Optional.of(i.getArgument(0)));
+            validation.when(() -> MovieInputValidation.validateYearOfRelease(anyString()))
+                    .thenAnswer(i -> Optional.of(Integer.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation.validateHourLength(anyString()))
+                    .thenAnswer(i -> Optional.of(Float.valueOf(i.getArgument(0))));
+
+            filler.fillMovies(movies);
+        }
+    }
 
     @AfterEach
     public void tearDown() {
@@ -25,10 +44,22 @@ public class ManualFillerTest {
     }
 
     @Test
+    public void testFillMoviesWithSizeLessThanZero() {
+        System.out.println("fillMovies with size set to less than zero");
+        IllegalArgumentException thrown =
+                assertThrows(IllegalArgumentException.class, () -> {
+                    new ManualFiller(-10, new Scanner(input));
+                });
+        assertEquals(thrown.getMessage(), "Size cannot be negative");
+        assertTrue(movies.isEmpty());
+    }
+
+    @Test
     public void testFillMoviesWithSizeMoreThanZero() throws Exception {
         System.out.println("fillMovies with size set to more than zero");
         ManualFiller manualFiller = new ManualFiller(3, new Scanner(input));
-        manualFiller.fillMovies(movies);
+        //manualFiller.fillMovies(movies);
+        fillMoviesMock(manualFiller, movies);
         assertEquals(movies.size(), 3);
         assertEquals("Фильм1", movies.get(0).getName());
         assertEquals(2000, movies.get(0).getYearOfRelease());
@@ -39,5 +70,16 @@ public class ManualFillerTest {
         assertEquals("Фильм3", movies.get(2).getName());
         assertEquals(2010, movies.get(2).getYearOfRelease());
         assertEquals(3.0, movies.get(2).getHourLength());
+    }
+
+    @Test
+    public void testFillMoviesWithScannerNull() {
+        System.out.println("fillMovies with scanner is null");
+        IllegalArgumentException thrown =
+                assertThrows(IllegalArgumentException.class, () -> {
+                    new ManualFiller(10, null);
+                });
+        assertEquals(thrown.getMessage(), "Scanner cannot be null");
+        assertTrue(movies.isEmpty());
     }
 }
