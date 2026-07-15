@@ -36,4 +36,15 @@ class MovieTest {
         String expected = String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", "Криминальное чтиво", 1994, 2.5f);
         assertEquals(expected, movie.toString());
     }
+
+    @Test
+    public void withNullName() {
+        Movie movieWithNullName = new Movie.Builder()
+                .withName(null)
+                .withYearOfRelease(1994)
+                .withHourLength(2.5f)
+                .build();
+
+        assertEquals("", movieWithNullName.getName());
+    }
 }
