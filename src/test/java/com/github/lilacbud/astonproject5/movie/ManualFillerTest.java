@@ -42,7 +42,7 @@ public class ManualFillerTest {
     @Test
     public void testFillMoviesWithSizeZero() {
         System.out.println("fillMovies with size set to zero");
-        ManualFiller manualFiller = new ManualFiller(0, new Scanner(input));
+        ManualFiller manualFiller = new ManualFiller(0, new Scanner(input), null);
         manualFiller.fillMovies(movies);
         assertTrue(movies.isEmpty());
     }
@@ -51,7 +51,7 @@ public class ManualFillerTest {
     public void testFillMoviesWithSizeLessThanZero() {
         System.out.println("fillMovies with size set to less than zero");
         IllegalArgumentException thrown =
-                assertThrows(IllegalArgumentException.class, () -> new ManualFiller(-10, new Scanner(input)));
+                assertThrows(IllegalArgumentException.class, () -> new ManualFiller(-10, new Scanner(input), null));
         assertEquals("Size cannot be negative", thrown.getMessage());
         assertTrue(movies.isEmpty());
     }
@@ -59,7 +59,7 @@ public class ManualFillerTest {
     @Test
     public void testFillMoviesWithSizeMoreThanZero() {
         System.out.println("fillMovies with size set to more than zero");
-        ManualFiller manualFiller = new ManualFiller(3, new Scanner(input));
+        ManualFiller manualFiller = new ManualFiller(3, new Scanner(input), null);
         fillMoviesMock(manualFiller, movies);
         assertEquals(3, movies.size());
         assertEquals("Фильм1", movies.get(0).getName());
@@ -77,7 +77,7 @@ public class ManualFillerTest {
     public void testFillMoviesWithScannerNull() {
         System.out.println("fillMovies with scanner is null");
         NullPointerException thrown =
-                assertThrows(NullPointerException.class, () -> new ManualFiller(10, null));
+                assertThrows(NullPointerException.class, () -> new ManualFiller(10, null, null));
         assertEquals("Scanner cannot be null", thrown.getMessage());
         assertTrue(movies.isEmpty());
     }
@@ -85,7 +85,7 @@ public class ManualFillerTest {
     @Test
     void testFillMoviesWithMoviesIsNull() {
         System.out.println("fillMovies with Movies is null");
-        ManualFiller manualFiller = new ManualFiller(3, new Scanner(input));
+        ManualFiller manualFiller = new ManualFiller(3, new Scanner(input), null);
         NullPointerException exception = assertThrows(NullPointerException.class, () -> manualFiller.fillMovies(null));
 
         assertEquals("Collection<Movie> movies must be non null to sort", exception.getMessage());

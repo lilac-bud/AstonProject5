@@ -54,7 +54,11 @@ public class Main {
                 }))
                 .withOption(new Menu.MenuOption<>("Вручную", (client) -> {
                     int size = client.askSize("Укажите количество фильмов: ");
-                    client.setFiller(new ManualFiller(size, scanner));
+                    var prompts = new ManualFiller.Prompts(
+                            "Введите название фильма: ", 
+                            "Введите год выпуска: ", 
+                            "Введите продолжительность фильма: ");
+                    client.setFiller(new ManualFiller(size, scanner, prompts));
                 }))
                 .build();
         Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()

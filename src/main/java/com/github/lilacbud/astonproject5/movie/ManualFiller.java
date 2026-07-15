@@ -6,19 +6,20 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 //ЗАПОЛНЕНИЕ СПИСКА ФИЛЬМОВ ВРУЧНУЮ
 public class ManualFiller implements MoviesFiller {
     private final int size;
     private final Scanner scanner;
-    private final Prompts prompts = 
-            new Prompts("Введите название фильма: ", "Введите год выпуска: ", "Введите продолжительность фильма: ");
+    private final Prompts prompts;
 
-    public ManualFiller(int size, Scanner scanner) {
+    public ManualFiller(int size, Scanner scanner, Prompts prompts) {
         if (size < 0)
             throw new IllegalArgumentException("Size cannot be negative");
         this.size = size;
         this.scanner = requireNonNull(scanner, "Scanner cannot be null");
+        this.prompts = requireNonNullElse(prompts, new Prompts("", "", ""));
     }
 
     @Override
