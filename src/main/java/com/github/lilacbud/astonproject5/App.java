@@ -21,7 +21,7 @@ public class App {
     private final List<Movie> movies = new ArrayList<>();
     private final Scanner scanner;
     private MoviesFiller filler;
-    private final MoviesSorter sorter = new MoviesSorter(null, null);
+    private final MoviesSorter sorter;
     private MoviesSaver saver;
     
     private final Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
@@ -33,6 +33,7 @@ public class App {
         this.setSortMenu = builder.setSortMenu;
         this.setCompMenu = builder.setCompMenu;
         this.setSaverMenu = builder.setSaverMenu;
+        this.sorter = builder.sorter;
     }
     
     public void run(){
@@ -144,6 +145,7 @@ public class App {
             SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder {
         private Scanner scanner;
         private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
+        private MoviesSorter sorter = new MoviesSorter(null, null);
         
         private StepBuilder() {}
         
@@ -178,6 +180,10 @@ public class App {
         @Override
         public StepBuilder withSetSaverMenu(Menu<App> menu) {
             this.setSaverMenu = validateMenu(menu);
+            return this;
+        }
+        public StepBuilder withMoviesSorter(MoviesSorter sorter) {
+            this.sorter = requireNonNull(sorter, "Sorter cannot be null");
             return this;
         }
         public App build() {
