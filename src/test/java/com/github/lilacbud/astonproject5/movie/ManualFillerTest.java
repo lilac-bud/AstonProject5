@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mockStatic;
 
 public class ManualFillerTest {
     private final ArrayList<Movie> movies = new ArrayList<>();
-    private String input = "Фильм1\n2000\n2\nФильм2\n2005\n2.5\nФильм3\n2010\n3\n";
+    private final String input = "Фильм1\n2000\n2\nФильм2\n2005\n2.5\nФильм3\n2010\n3\n";
 
     private void fillMoviesMock(ManualFiller filler, Collection<Movie> movies) {
         try (MockedStatic<MovieInputValidation> validation = mockStatic(MovieInputValidation.class)) {
@@ -47,20 +47,17 @@ public class ManualFillerTest {
     public void testFillMoviesWithSizeLessThanZero() {
         System.out.println("fillMovies with size set to less than zero");
         IllegalArgumentException thrown =
-                assertThrows(IllegalArgumentException.class, () -> {
-                    new ManualFiller(-10, new Scanner(input));
-                });
-        assertEquals(thrown.getMessage(), "Size cannot be negative");
+                assertThrows(IllegalArgumentException.class, () -> new ManualFiller(-10, new Scanner(input)));
+        assertEquals("Size cannot be negative", thrown.getMessage());
         assertTrue(movies.isEmpty());
     }
 
     @Test
-    public void testFillMoviesWithSizeMoreThanZero() throws Exception {
+    public void testFillMoviesWithSizeMoreThanZero() {
         System.out.println("fillMovies with size set to more than zero");
         ManualFiller manualFiller = new ManualFiller(3, new Scanner(input));
-        //manualFiller.fillMovies(movies);
         fillMoviesMock(manualFiller, movies);
-        assertEquals(movies.size(), 3);
+        assertEquals(3, movies.size());
         assertEquals("Фильм1", movies.get(0).getName());
         assertEquals(2000, movies.get(0).getYearOfRelease());
         assertEquals(2.0, movies.get(0).getHourLength());
@@ -75,11 +72,9 @@ public class ManualFillerTest {
     @Test
     public void testFillMoviesWithScannerNull() {
         System.out.println("fillMovies with scanner is null");
-        IllegalArgumentException thrown =
-                assertThrows(IllegalArgumentException.class, () -> {
-                    new ManualFiller(10, null);
-                });
-        assertEquals(thrown.getMessage(), "Scanner cannot be null");
+        NullPointerException thrown =
+                assertThrows(NullPointerException.class, () -> new ManualFiller(10, null));
+        assertEquals("Scanner cannot be null", thrown.getMessage());
         assertTrue(movies.isEmpty());
     }
 }
