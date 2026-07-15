@@ -25,7 +25,7 @@ public class ManualFiller implements MoviesFiller {
     @Override
     public void fillMovies(Collection<Movie> movies) {
 
-        requireNonNull(movies, "Collection<Movie> movies must be non null to sort");
+        requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
 
         movies.clear();
         IntStream.range(0, size) //создаем поток чисел от 0 до size-1
