@@ -39,6 +39,10 @@ public class Main {
                         client.fillMovies("Список успешно заполнен");
                     client.saveMovies("Список успешно сохранён");
                 }))
+                .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client)->{
+                    if (client.moviesIsEmpty()) client.fillMovies("Список успешно заполнен");
+                    client.countMovie("Подсчет завершен");
+                }))
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
         Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
