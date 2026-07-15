@@ -14,6 +14,11 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class App {
     private boolean running = true;
@@ -105,6 +110,46 @@ public class App {
     }
     public void exit() {
         running = false;
+    }
+
+    public void countMovie (String successMessage){  //многопоточный метод считает вхождения фильмов и выводит результат
+        if (movies.isEmpty()){
+            System.err.println("List of movies is empty");
+            return;
+        }
+        System.out.println("Enter movie title to search");
+        String target = scanner.nextLine().trim();
+
+        int threadCount = Runtime.getRuntime().availableProcessors();
+        AtomicInteger totalCount = new AtomicInteger(0);
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        int chunkSize = (int) Math.ceil((double) movies.size()/threadCount);
+
+        for (int i=0; i<threadCount; i++){
+            int from=i*chunkSize;
+            int to = Math.min(from+chunkSize, movies.size());
+            if (from>=movies.size()) break;
+
+            executor.submit(()->{
+                int localCount = 0;
+                for (int j=from; j<to; j++){
+                    if(target.equals(movies.get(j).getName())){
+                        localCount++;
+                    }
+                }
+                totalCount.addAndGet(localCount);
+            });
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(1,TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Counting interrupted");
+            return;
+        }
+        System.out.println("Movie \""+target+"\" occurs "+totalCount.get()+"time(s)");
+        if (successMessage !=null) System.out.println(successMessage);
     }
     
     private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
