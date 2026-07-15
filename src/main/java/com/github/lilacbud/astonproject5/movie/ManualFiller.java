@@ -85,9 +85,9 @@ public class ManualFiller implements MoviesFiller {
         private final String movieHourLengthPrompt;
         
         public Prompts(String movieNamePrompt, String movieYearPrompt, String movieHourLengthPrompt) {
-            this.movieNamePrompt = movieNamePrompt;
-            this.movieYearPrompt = movieYearPrompt;
-            this.movieHourLengthPrompt = movieHourLengthPrompt;
+            this.movieNamePrompt = requireNonNullElse(movieNamePrompt, "");
+            this.movieYearPrompt = requireNonNullElse(movieYearPrompt, "");
+            this.movieHourLengthPrompt = requireNonNullElse(movieHourLengthPrompt, "");
         }
     }
 }
