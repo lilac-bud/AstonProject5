@@ -27,6 +27,7 @@ public class FromFileFiller implements MoviesFiller{
 
     @Override
     public void fillMovies(Collection<Movie> movies){
+        movies.clear();
         try (Stream<String> lines = Files.lines(path)) {
             lines.map(FromFileFiller::parseMovie)
                     .forEach(movies::add);

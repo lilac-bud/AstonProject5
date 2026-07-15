@@ -12,9 +12,9 @@ public class RandomFiller implements MoviesFiller {
     private static final int MAX_NAME_LENGTH = 10;
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
             + "0123456789" + "abcdefghijklmnopqrstuvxyz"; 
-    private static final int MIN_YEAR = 1895;
+    private static final int MIN_YEAR = MovieInputValidation.MIN_YEAR;
     private static final int MAX_YEAR = 2030;
-    private static final float MIN_HOUR_LENGTH = 0.05F;
+    private static final float MIN_HOUR_LENGTH = MovieInputValidation.MIN_HOUR_LENGTH;;
     private static final float MAX_HOUR_LENGTH = 3F;
     private static final int HL_PRECISION = 3;
     private static final float HL_EPS = (float)(1F / Math.pow(10, 3));

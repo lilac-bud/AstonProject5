@@ -2,9 +2,9 @@ package com.github.lilacbud.astonproject5.movie;
 
 import java.util.Optional;
 
-final class MovieInputValidation {
-    private static final int MIN_YEAR = 1888;
-    private static final float MIN_HOUR_LENGTH = 0.01F;
+public final class MovieInputValidation {
+    public static final int MIN_YEAR = 1888;
+    public static final float MIN_HOUR_LENGTH = 0.01F;
     
     private MovieInputValidation() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

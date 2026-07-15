@@ -21,7 +21,7 @@ public class Movie {
     }
 
     public static class Builder{
-        private String name;
+        private String name="";
         private int yearOfRelease;
         private float hourLength;
 
