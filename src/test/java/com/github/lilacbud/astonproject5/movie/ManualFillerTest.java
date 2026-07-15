@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mockStatic;
 
 public class ManualFillerTest {
     private final ArrayList<Movie> movies = new ArrayList<>();
-    private final String input = "Фильм1\n2000\n2\nФильм2\n2005\n2.5\nФильм3\n2010\n3\n";
+    private final String input = "Фильм1\nqwerty\n2000\nqwerty\n2\nФильм2\n2005\n2.5\nФильм3\n2010\n3\n";
 
     private void fillMoviesMock(ManualFiller filler, Collection<Movie> movies) {
         try (MockedStatic<MovieInputValidation> validation = mockStatic(MovieInputValidation.class)) {
@@ -23,8 +23,12 @@ public class ManualFillerTest {
                     .thenAnswer(i -> Optional.of(i.getArgument(0)));
             validation.when(() -> MovieInputValidation.validateYearOfRelease(anyString()))
                     .thenAnswer(i -> Optional.of(Integer.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation.validateYearOfRelease("qwerty"))
+                    .thenReturn(Optional.empty());
             validation.when(() -> MovieInputValidation.validateHourLength(anyString()))
                     .thenAnswer(i -> Optional.of(Float.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation.validateHourLength("qwerty"))
+                    .thenReturn(Optional.empty());
 
             filler.fillMovies(movies);
         }
