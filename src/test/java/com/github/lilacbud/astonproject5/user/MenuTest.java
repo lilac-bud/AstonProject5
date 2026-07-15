@@ -54,17 +54,10 @@ public class MenuTest {
     }
 
     @Test
-    public void testCreateMenuOptionWithNullTitle() {
-        System.out.println("MenuOption given null title");
-        final var thrown = assertThrows(NullPointerException.class, () 
-                -> new Menu.MenuOption<MenuTest>(null, (client) -> client.setValue(1)));
-        assertEquals("Title cannot be null", thrown.getMessage());
-    }
-    @Test
     public void testCreateMenuOptionWithNullCommand() {
         System.out.println("MenuOption given null command");
         final var thrown = assertThrows(NullPointerException.class, () -> new Menu.MenuOption<MenuTest>("Title", null));
-        assertEquals("Command cannot be null", thrown.getMessage());
+        assertEquals("Command must not be null", thrown.getMessage());
     }
     @Test
     public void testMenuOptionExecute() {
@@ -131,6 +124,32 @@ public class MenuTest {
         final Menu.MenuOption<MenuTest> option = chooseOption(menu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
         option.execute(this);
         assertEquals(option2, option);
+        assertEquals(2, value);
+        assertEquals(expectedErrContent, errContent.toString());
+        assertEquals(expectedOutContent, outContent.toString());
+    }
+    @Test
+    public void testChooseOptionWithOptionsWithNullTitleGivenValidScanner() {
+        System.out.println("chooseOption with options with null title given correct scanner");
+        System.setErr(new PrintStream(errContent));
+        System.setOut(new PrintStream(outContent));
+        final String newline = System.lineSeparator();
+        final String expectedErrContent = ("No such option" + newline).repeat(2);
+        final String expectedMenuOutput = """
+                                          Title
+                                          Prompt""";
+        final String expectedOutContent = expectedMenuOutput.repeat(5).replace("\n", newline);
+        final Menu.MenuOption<MenuTest> tempOption1 = new Menu.MenuOption<>(null, (client) -> client.setValue(1));
+        final Menu.MenuOption<MenuTest> tempOption2 = new Menu.MenuOption<>(null, (client) -> client.setValue(2));
+        final Menu<MenuTest> tempMmenu = Menu.StepBuilder.<MenuTest>newBuilder()
+                .withTitle("Title")
+                .withPrompt("Prompt")
+                .withOption(tempOption1)
+                .withOption(tempOption2)
+                .build();
+        final Menu.MenuOption<MenuTest> option = chooseOption(tempMmenu, new Scanner("qwerty\n-2\n0\n3\n2\n"));
+        option.execute(this);
+        assertEquals(tempOption2, option);
         assertEquals(2, value);
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());

@@ -3,6 +3,7 @@ package com.github.lilacbud.astonproject5.user;
 import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -28,6 +29,7 @@ public class Menu<T> {
             do {
                 System.out.println(title);
                 IntStream.range(0, options.size())
+                        .filter(i -> Objects.nonNull(options.get(i).getTitle()))
                         .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
                         .forEach(System.out::println);
                 System.out.print(prompt);
@@ -50,8 +52,8 @@ public class Menu<T> {
         private final MenuCommand<T> command;
         
         public MenuOption(String title, MenuCommand<T> command) {
-            this.title = requireNonNull(title, "Title cannot be null");
-            this.command = requireNonNull(command, "Command cannot be null");
+            this.title = title;
+            this.command = requireNonNull(command, "Command must not be null");
         }
         private String getTitle() {
             return title;
