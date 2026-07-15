@@ -74,9 +74,22 @@ class DefaultSaverTest {
     }
 
     @Test
+    public void testCreateSaverWithNullFilepath() {
+        System.out.println("testCreateSaver with null filepath");
+        var exception = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, new Scanner(""), null));
+        assertEquals("Filepath must not be null", exception.getMessage());
+    }
+    
+    @Test
+    public void testCreateSaverWithNullScanner() {
+        System.out.println("testCreateSaver with null scanner");
+        var exception = assertThrows(NullPointerException.class, () -> new DefaultSaver("", null, null));
+        assertEquals("Scanner must not be null", exception.getMessage());
+    }
+    
+    @Test
     public void testSaveCreate() throws Exception {
         System.out.println("testSaveCreate");
-        
         configureMovieMock1();
         configureMovieMock2();
         configureMovieMock3();
@@ -94,7 +107,6 @@ class DefaultSaverTest {
     @Test
     public void testSaveOverwrite() throws Exception {
         System.out.println("testSaveOverwrite");
-        
         configureMovieMock1();
         configureOverwriteOption();
         configureSetSaveOptionMenuMock();
@@ -112,7 +124,6 @@ class DefaultSaverTest {
     @Test
     public void testSaveAdd() throws Exception {
         System.out.println("testSaveAdd");
-        
         configureMovieMock1();
         configureAddOption();
         configureSetSaveOptionMenuMock();
