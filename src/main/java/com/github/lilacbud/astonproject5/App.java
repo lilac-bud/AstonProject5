@@ -114,10 +114,10 @@ public class App {
 
     public void countMovie (String successMessage){  //многопоточный метод считает вхождения фильмов и выводит результат
         if (movies.isEmpty()){
-            System.err.println("List of movies is empty");
+            System.err.println("Список фильмов пуст");
             return;
         }
-        System.out.println("Enter movie title to search");
+        System.out.println("Введите название фильма для поиска");
         String target = scanner.nextLine().trim();
 
         int threadCount = Runtime.getRuntime().availableProcessors();
@@ -145,10 +145,10 @@ public class App {
             executor.awaitTermination(1,TimeUnit.MINUTES);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Counting interrupted");
+            System.err.println("Подсчет прерван");
             return;
         }
-        System.out.println("Movie \""+target+"\" occurs "+totalCount.get()+"time(s)");
+        System.out.println("Фильм \""+target+"\" встречается "+totalCount.get()+"раз(а)");
         if (successMessage !=null) System.out.println(successMessage);
     }
     
