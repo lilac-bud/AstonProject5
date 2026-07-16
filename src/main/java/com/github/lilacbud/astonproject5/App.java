@@ -6,14 +6,11 @@ import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.MenuCommand;
-import com.github.lilacbud.astonproject5.user.Menu;
-import com.github.lilacbud.astonproject5.util.InputValidation;
+import com.github.lilacbud.astonproject5.util.InputRequest;
 import com.github.lilacbud.astonproject5.util.MovieCounter;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.IllegalFormatException;
-import java.util.List;
+import java.util.*;
+
 import static java.util.Objects.requireNonNull;
 
 public class App {
@@ -74,10 +71,8 @@ public class App {
         running = false;
     }
     
-    public void tryCommandTillSuccess(String successMessage, MenuCommand<App> command) {
-
-    public void countMovie(String prompt , String successFormat){
-        String target = askFilepath(prompt);
+    public void countMovie(Scanner scanner, String prompt , String successFormat){
+        String target = InputRequest.askString(scanner, prompt);
         int count = MovieCounter.countInsert(movies, target);
         try{
             System.out.println(String.format(successFormat,target,count));
@@ -86,7 +81,7 @@ public class App {
         }
     }
 
-    private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
+    public void tryCommandTillSuccess(String successMessage, MenuCommand<App> command) {
         requireNonNull(command, "Command cannot be null");
         while (true) {
             try {

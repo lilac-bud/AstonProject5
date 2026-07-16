@@ -111,9 +111,10 @@ public class Main {
                         _client.saveMovies();
                     });
                 }))
-                .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client)->{
-                    if (client.moviesIsEmpty()) client.fillMovies("Список успешно заполнен");
-                    client.countMovie("Введите название фильма для поиска:", "Фильм \"%s\" встречается %d раз(а)");
+                .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("List successfully filled", fillCommand);
+                    client.countMovie(scanner, "Enter movie title: ", "Found \"%s\" %d time(s)");
                 }))
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
