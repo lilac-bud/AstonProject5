@@ -6,10 +6,11 @@ import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.MenuCommand;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.IllegalFormatException;
-import java.util.List;
+import com.github.lilacbud.astonproject5.util.InputRequest;
+import com.github.lilacbud.astonproject5.util.MovieCounter;
+
+import java.util.*;
+
 import static java.util.Objects.requireNonNull;
 
 public class App {
@@ -70,6 +71,15 @@ public class App {
         running = false;
     }
     
+    public void countMovie(String target, String successFormat) {
+        int count = MovieCounter.countInsert(movies, target);
+        try {
+            System.out.println(String.format(successFormat,target,count));
+        } catch (NullPointerException | IllegalFormatException e){
+            System.out.println(count);
+        }
+    }
+
     public void tryCommandTillSuccess(String successMessage, MenuCommand<App> command) {
         requireNonNull(command, "Command cannot be null");
         while (true) {

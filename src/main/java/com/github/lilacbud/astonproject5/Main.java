@@ -22,7 +22,7 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        
+
         Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
@@ -87,7 +87,7 @@ public class Main {
         Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Главное меню:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) -> 
+                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) ->
                         client.tryCommandTillSuccess("Список успешно заполнен", fillCommand)))
                 .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
                     if (client.moviesIsEmpty())
@@ -111,9 +111,15 @@ public class Main {
                         _client.saveMovies();
                     });
                 }))
+                .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("List successfully filled", fillCommand);
+                    String target = InputRequest.askString(scanner,"Enter movie title: ");
+                    client.countMovie(target, "Found \"%s\" %d time(s)");
+                }))
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
-        
+
         new App().run((client) -> mainMenu.chooseOption(scanner).execute(client));
     }
     
