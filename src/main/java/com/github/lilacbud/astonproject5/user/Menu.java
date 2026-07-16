@@ -3,10 +3,12 @@ package com.github.lilacbud.astonproject5.user;
 import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 
 public class Menu<T> {
     private final String title;
@@ -26,11 +28,13 @@ public class Menu<T> {
         Optional<Integer> validatedInput;
         while (true) {
             do {
-                System.out.println(title);
+                if (title != null)
+                    System.out.println(title);
                 IntStream.range(0, options.size())
+                        .filter(i -> Objects.nonNull(options.get(i).getTitle()))
                         .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
                         .forEach(System.out::println);
-                System.out.print(prompt);
+                System.out.print(requireNonNullElse(prompt, ""));
                 validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
             } while (validatedInput.isEmpty());
             try {
@@ -41,17 +45,16 @@ public class Menu<T> {
         }
     }
     
-    @FunctionalInterface
-    public static interface MenuCommand<T> {
-        public void execute(T client);
-    }
     public static class MenuOption<T> {
         private final String title;
         private final MenuCommand<T> command;
         
         public MenuOption(String title, MenuCommand<T> command) {
-            this.title = requireNonNull(title, "Title cannot be null");
-            this.command = requireNonNull(command, "Command cannot be null");
+            this.title = title;
+            this.command = requireNonNull(command, "Command must not be null");
+        }
+        public MenuOption(MenuCommand<T> command) {
+            this(null, command);
         }
         private String getTitle() {
             return title;
@@ -61,33 +64,29 @@ public class Menu<T> {
         }
     }
     
-    public static interface TitleBuilder<T> {
-        public PromptBuilder<T> withTitle(String title);
-    }
-    public static interface PromptBuilder<T> {
-        public OptionBuilder<T> withPrompt(String prompt);
-    }
     public static interface OptionBuilder<T> {
+        public OptionBuilder<T> withTitle(String title);
+        public OptionBuilder<T> withPrompt(String prompt);
         public StepBuilder<T> withOption(MenuOption<T> option);
     }
-    public static class StepBuilder<T> implements TitleBuilder<T>, PromptBuilder<T>, OptionBuilder<T> {
+    public static class StepBuilder<T> implements OptionBuilder<T> {
         private String title;
         private String prompt;
         private final List<MenuOption<T>> options = new ArrayList<>();
         
         private StepBuilder() {}
         
-        public static <T> TitleBuilder<T> newBuilder() {
+        public static <T> OptionBuilder<T> newBuilder() {
             return new StepBuilder<>();
         }
         @Override
-        public PromptBuilder<T> withTitle(String title) {
-            this.title = requireNonNull(title, "Title cannot be null");
+        public OptionBuilder<T> withTitle(String title) {
+            this.title = title;
             return this;
         }
         @Override
         public OptionBuilder<T> withPrompt(String prompt) {
-            this.prompt = requireNonNull(prompt, "Prompt cannot be null");
+            this.prompt = prompt;
             return this;
         }
         @Override

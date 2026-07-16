@@ -10,6 +10,8 @@ import com.github.lilacbud.astonproject5.movie.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.movie.sort.MergeSort;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.MenuCommand;
+import com.github.lilacbud.astonproject5.util.InputRequest;
 import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
@@ -20,46 +22,20 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        
-        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
-                .withTitle("Главное меню:")
-                .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) 
-                        -> client.fillMovies("Список успешно заполнен")))
-                .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
-                    if (client.moviesIsEmpty())
-                        client.fillMovies("Список успешно заполнен");
-                    client.printMovies("Список успешно выведен на экран", null);
-                }))
-                .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
-                    if (client.moviesIsEmpty())
-                        client.fillMovies("Список успешно заполнен");
-                    client.sortMovies("Список успешно отсортирован");
-                }))
-                .withOption(new Menu.MenuOption<>("Сохранить фильмы", (client) -> {
-                    if (client.moviesIsEmpty())
-                        client.fillMovies("Список успешно заполнен");
-                    client.saveMovies("Список успешно сохранён");
-                }))
-                .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client)->{
-                    if (client.moviesIsEmpty()) client.fillMovies("Список успешно заполнен");
-                    client.countMovie("Введите название фильма для поиска:", "Фильм \"%s\" встречается %d раз(а)");
-                }))
-                .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
-                .build();
+
         Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("Из файла", (client) -> {
-                    String filepath = client.askFilepath("Укажите путь к файлу: ");
+                    String filepath = InputRequest.askString(scanner, "Укажите путь к файлу: ");
                     client.setFiller(new FromFileFiller(filepath));
                 }))
                 .withOption(new Menu.MenuOption<>("Случайно", (client) -> {
-                    int size = client.askSize("Укажите количество фильмов: ");
+                    int size = InputRequest.askInteger(scanner, "Укажите количество фильмов: ");
                     client.setFiller(new RandomFiller(size));
                 }))
                 .withOption(new Menu.MenuOption<>("Вручную", (client) -> {
-                    int size = client.askSize("Укажите количество фильмов: ");
+                    int size = InputRequest.askInteger(scanner, "Укажите количество фильмов: ");
                     var prompts = new ManualFiller.Prompts(
                             "Введите название фильма: ", 
                             "Введите год выпуска: ", 
@@ -100,20 +76,49 @@ public class Main {
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
-                    String filepath = client.askFilepath("Укажите путь к файлу: ");
+                    String filepath = InputRequest.askString(scanner, "Укажите путь к файлу: ");
                     client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
                 }))
                 .build();
-        
-        App.StepBuilder.newBuilder()
-                .withScanner(scanner)
-                .withMainMenu(mainMenu)
-                .withSetFillerMenu(setFillerMenu)
-                .withSetSortMenu(setSortMenu)
-                .withSetCompMenu(setCompMenu)
-                .withSetSaverMenu(setSaverMenu)
-                .build()
-                .run();
+        MenuCommand<App> fillCommand = (_client) -> {
+                        setFillerMenu.chooseOption(scanner).execute(_client);
+                        _client.fillMovies();
+                    };
+        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
+                .withTitle("Главное меню:")
+                .withPrompt("Выберите одну из опций: ")
+                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) ->
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand)))
+                .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    client.printMovies("Список успешно выведен на экран", null);
+                }))
+                .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    client.tryCommandTillSuccess("Список успешно отсортирован", (_client) -> {
+                        setSortMenu.chooseOption(scanner).execute(_client);
+                        setCompMenu.chooseOption(scanner).execute(_client);
+                        _client.sortMovies();
+                    });
+                }))
+                .withOption(new Menu.MenuOption<>("Сохранить фильмы", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    client.tryCommandTillSuccess("Список успешно сохранён", (_client) -> {
+                        setSaverMenu.chooseOption(scanner).execute(_client);
+                        _client.saveMovies();
+                    });
+                }))
+                .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client)->{
+                    if (client.moviesIsEmpty()) client.fillMovies("Список успешно заполнен");
+                    client.countMovie("Введите название фильма для поиска:", "Фильм \"%s\" встречается %d раз(а)");
+                }))
+                .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
+                .build();
+
+        new App().run((client) -> mainMenu.chooseOption(scanner).execute(client));
     }
     
 }
