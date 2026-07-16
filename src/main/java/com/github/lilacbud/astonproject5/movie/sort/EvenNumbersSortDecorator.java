@@ -62,8 +62,6 @@ public class EvenNumbersSortDecorator  extends SortDecorator {
 
     @FunctionalInterface
     public static interface IntegerFieldExtractor {
-
         int getValue(Movie movie);
-
     }
 }
