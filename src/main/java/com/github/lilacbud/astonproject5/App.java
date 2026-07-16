@@ -6,13 +6,11 @@ import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
-import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IllegalFormatException;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class App {
@@ -49,24 +47,6 @@ public class App {
     }
     public boolean moviesIsEmpty() {
         return movies.isEmpty();
-    }
-    public String askFilepath(String prompt) {
-        Optional<String> validatedFilepath;
-        do {
-            if (prompt != null)
-                System.out.print(prompt);
-            validatedFilepath = InputValidation.validateInput(scanner.nextLine());
-        } while (validatedFilepath.isEmpty());
-        return validatedFilepath.get();
-    }
-    public int askSize(String prompt) {
-        Optional<Integer> validatedSize;
-        do {
-            if (prompt != null)
-                System.out.print(prompt);
-            validatedSize = InputValidation.validateIntegerInput(scanner.nextLine());
-        } while (validatedSize.isEmpty());
-        return validatedSize.get();
     }
     public void printMovies(String successMessage, String printFormat) {
         try {

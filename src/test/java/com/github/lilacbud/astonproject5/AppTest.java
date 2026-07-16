@@ -6,7 +6,6 @@ import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
-import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -14,7 +13,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import static java.util.Objects.requireNonNullElse;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +25,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -61,8 +58,6 @@ public class AppTest {
     @Mock
     private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
     
-    private App.Menus menus;
-    
     private App app;
     
     private final PrintStream originalOut = System.out;
@@ -79,7 +74,7 @@ public class AppTest {
     private final String newline = System.lineSeparator();
     
     private void setUpApp(Scanner scanner) {
-        menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
+        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
         app = App.StepBuilder.newBuilder()
                 .withScanner(requireNonNullElse(scanner, new Scanner("")))
                 .withMenus(menus)
@@ -277,46 +272,6 @@ public class AppTest {
     }
 
     @Test
-    public void testAskFilepath() {
-        System.out.println("askFilepath");
-        System.setOut(new PrintStream(outContent));
-        final String prompt = "Filepath:";
-        String result;
-        try (MockedStatic<InputValidation> validation = mockStatic(InputValidation.class)) {
-            validation.when(() -> InputValidation.validateInput(anyString()))
-                    .thenAnswer(i -> Optional.of(i.getArgument(0)));
-            validation.when(() -> InputValidation.validateInput("")).thenReturn(Optional.empty());
-            validation.when(() -> InputValidation.validateInput(" ")).thenReturn(Optional.empty());
-            
-            setUpApp(new Scanner("\n \nfilepath\n"));
-            result = app.askFilepath(prompt);
-        }
-        assertEquals("filepath", result);
-        assertEquals(prompt.repeat(3), outContent.toString().trim());
-    }
-
-    @Test
-    public void testAskSize() {
-        System.out.println("askSize");
-        System.setOut(new PrintStream(outContent));
-        final String prompt = "Size:";
-        int result;
-        try (MockedStatic<InputValidation> validation = mockStatic(InputValidation.class)) {
-            validation.when(() -> InputValidation.validateIntegerInput(anyString()))
-                    .thenAnswer(i -> Optional.of(Integer.valueOf(i.getArgument(0))));
-            validation.when(() -> InputValidation.validateIntegerInput("")).thenReturn(Optional.empty());
-            validation.when(() -> InputValidation.validateIntegerInput(" ")).thenReturn(Optional.empty());
-            validation.when(() -> InputValidation.validateIntegerInput("qwerty")).thenReturn(Optional.empty());
-            validation.when(() -> InputValidation.validateIntegerInput("-2")).thenReturn(Optional.empty());
-            
-            setUpApp(new Scanner("\n \nqwerty\n-2\n2\n"));
-            result = app.askSize(prompt);
-        }
-        assertEquals(2, result);
-        assertEquals(prompt.repeat(5), outContent.toString().trim());
-    }
-
-    @Test
     public void testPrintMoviesGivenNullFormat() {
         configureMovieMocksToString();
         configureFillerMock();
@@ -338,14 +293,17 @@ public class AppTest {
         configureFillerMock();
         configureSetFillerMenuMocks();
         System.out.println("printMovies given illegal print format");
-        setUpApp(null);
-        app.fillMovies(null);
         System.setOut(new PrintStream(outContent));
+        
         final String successMessage = printSuccessMessage;
         final String printFormat = "%d, %d, %d";
         final String expectedOutContent = mockMovies.stream().map(Movie::toString).collect(Collectors.joining(newline)) 
                 + newline + successMessage + newline;
+        
+        setUpApp(null);
+        app.fillMovies(null);
         app.printMovies(successMessage, printFormat);
+        
         assertEquals(expectedOutContent, outContent.toString());
     }
     
@@ -355,16 +313,19 @@ public class AppTest {
         configureFillerMock();
         configureSetFillerMenuMocks();
         System.out.println("printMovies given illegal print format");
-        setUpApp(null);
-        app.fillMovies(null);
         System.setOut(new PrintStream(outContent));
+        
         final String successMessage = printSuccessMessage;
         final String printFormat = "%s, %d, %f";
         final String expectedOutContent = mockMovies.stream()
                 .map(movie -> 
                         String.format(printFormat, movie.getName(), movie.getYearOfRelease(), movie.getHourLength()))
                 .collect(Collectors.joining(newline)) + newline + successMessage + newline;
+        
+        setUpApp(null);
+        app.fillMovies(null);
         app.printMovies(successMessage, "%s, %d, %f");
+        
         assertEquals(expectedOutContent, outContent.toString());
     }
 
@@ -376,17 +337,21 @@ public class AppTest {
         configureSetFillerMenuMocks();
         configureSetSaverMenuMocks();
         System.out.println("saveMovies");
-        setUpApp(null);
-        app.fillMovies(null);
         System.setOut(new PrintStream(outContent));
+        
         final String successMessage = saveSuccessMessage;
         final Path filepath = tempDir.resolve("movies.txt");
         final List<String> expectedLines = mockMovies.stream().map(Movie::toString).toList();
+        
+        setUpApp(null);
+        app.fillMovies(null);
         app.saveMovies(successMessage);
+        
         InOrder inOrder = inOrder(setSaverMenu, setSaverOption, saver);
         inOrder.verify(setSaverMenu).chooseOption(any());
         inOrder.verify(setSaverOption).execute(app);
         inOrder.verify(saver).save(anyList());
+        
         List<String> lines = Files.readAllLines(filepath);
         assertEquals(3, lines.size());
         assertEquals(expectedLines, lines);
@@ -399,14 +364,18 @@ public class AppTest {
         configureSetFillerMenuMocks();
         System.out.println("fillMovies");
         System.setOut(new PrintStream(outContent));
-        setUpApp(null);
+        
         final String successMessage = fillSuccessMessage;
+        
+        setUpApp(null);
         app.fillMovies(successMessage);
+        
         assertFalse(app.moviesIsEmpty());
         InOrder inOrder = inOrder(setFillerMenu, setFillerOption, filler);
         inOrder.verify(setFillerMenu).chooseOption(any());
         inOrder.verify(setFillerOption).execute(app);
         inOrder.verify(filler).fillMovies(anyList());
+        
         assertEquals(mockMovies, actualMovies);
         assertEquals(successMessage, outContent.toString().trim());
     }
@@ -420,11 +389,14 @@ public class AppTest {
         configureSetSortMenuMocks();
         configureSetCompMenuMocks();
         System.out.println("sortMovies");
+        System.setOut(new PrintStream(outContent));
+        
+        final String successMessage = sortSuccessMessage;
+        
         setUpApp(null);
         app.fillMovies(null);
-        System.setOut(new PrintStream(outContent));
-        final String successMessage = sortSuccessMessage;
         app.sortMovies(successMessage);
+        
         InOrder inOrder = inOrder(setSortMenu, setSortStrategyOption, setCompMenu, setCompOption, sorter);
         inOrder.verify(setSortMenu).chooseOption(any());
         inOrder.verify(setSortStrategyOption).execute(app);
@@ -433,6 +405,7 @@ public class AppTest {
         inOrder.verify(setCompOption).execute(app);
         inOrder.verify(sorter).setComparator(compCaptor.capture());
         inOrder.verify(sorter).performSorting(anyList());
+        
         assertEquals(sortStrategy, sortStrategyCaptor.getValue());
         assertEquals(comparator, compCaptor.getValue());
         assertEquals(sortedMockMovies, actualMovies);
@@ -457,6 +430,7 @@ public class AppTest {
     @Test
     public void testCreateBuilderWithNullSorter() {
         System.out.println("StepBuilder with null sorter");
+        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
         final var thrown = assertThrows(NullPointerException.class, () -> App.StepBuilder.newBuilder()
                 .withScanner(new Scanner(""))
                 .withMenus(menus)
