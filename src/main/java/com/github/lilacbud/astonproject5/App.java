@@ -133,28 +133,14 @@ public class App {
     }
     
     public static interface ScannerBuilder {
-        public MainMenuBuilder withScanner(Scanner scanner);
+        public MenusBuilder withScanner(Scanner scanner);
     }
-    public static interface MainMenuBuilder {
-        public FillMenuBuilder withMainMenu(Menu<App> menu);
+    public static interface MenusBuilder {
+        public StepBuilder withMenus(Menus menus);
     }
-    public static interface FillMenuBuilder {
-        public SortMenuBuilder withSetFillerMenu(Menu<App> menu);
-    }
-    public static interface SortMenuBuilder {
-        public CompMenuBuilder withSetSortMenu(Menu<App> menu);
-    }
-    public static interface CompMenuBuilder {
-        public SaveMenuBuilder withSetCompMenu(Menu<App> menu);
-    }
-    public static interface SaveMenuBuilder {
-        public StepBuilder withSetSaverMenu(Menu<App> menu);
-    }
-    public static class StepBuilder implements ScannerBuilder, MainMenuBuilder, FillMenuBuilder, 
-            SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder {
+    public static class StepBuilder implements ScannerBuilder, MenusBuilder {
         private Scanner scanner;
         private Menus menus;
-        private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
         private MoviesSorter sorter = new MoviesSorter(null, null);
         
         private StepBuilder() {}
@@ -163,45 +149,21 @@ public class App {
             return new StepBuilder();
         }
         @Override
-        public MainMenuBuilder withScanner(Scanner scanner) {
-            this.scanner = requireNonNull(scanner, "Scanner cannot be null");
-            return this;
-        } 
-        @Override
-        public FillMenuBuilder withMainMenu(Menu<App> menu) {
-            this.mainMenu = validateMenu(menu);
+        public MenusBuilder withScanner(Scanner scanner) {
+            this.scanner = requireNonNull(scanner, "Scanner must not be null");
             return this;
         }
         @Override
-        public SortMenuBuilder withSetFillerMenu(Menu<App> menu) {
-            this.setFillerMenu = validateMenu(menu);
-            return this;
-        }
-        @Override
-        public CompMenuBuilder withSetSortMenu(Menu<App> menu) {
-            this.setSortMenu = validateMenu(menu);
-            return this;
-        }
-        @Override
-        public SaveMenuBuilder withSetCompMenu(Menu<App> menu) {
-            this.setCompMenu = validateMenu(menu);
-            return this;
-        }
-        @Override
-        public StepBuilder withSetSaverMenu(Menu<App> menu) {
-            this.setSaverMenu = validateMenu(menu);
+        public StepBuilder withMenus(Menus menus) {
+            this.menus = requireNonNull(menus, "Menus must not be null");
             return this;
         }
         public StepBuilder withMoviesSorter(MoviesSorter sorter) {
-            this.sorter = requireNonNull(sorter, "Sorter cannot be null");
+            this.sorter = requireNonNull(sorter, "Sorter must not be null");
             return this;
         }
         public App build() {
-            menus = new Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
             return new App(this);
-        }
-        private Menu<App> validateMenu(Menu<App> menu) {
-            return requireNonNull(menu, "Menu cannot be null");
         }
     }
 }

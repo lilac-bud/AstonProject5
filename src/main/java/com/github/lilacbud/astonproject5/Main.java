@@ -101,13 +101,11 @@ public class Main {
                 }))
                 .build();
         
+        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
+        
         App.StepBuilder.newBuilder()
                 .withScanner(scanner)
-                .withMainMenu(mainMenu)
-                .withSetFillerMenu(setFillerMenu)
-                .withSetSortMenu(setSortMenu)
-                .withSetCompMenu(setCompMenu)
-                .withSetSaverMenu(setSaverMenu)
+                .withMenus(menus)
                 .build()
                 .run();
     }
