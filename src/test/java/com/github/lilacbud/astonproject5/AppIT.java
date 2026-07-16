@@ -58,46 +58,39 @@ public class AppIT {
         final Path filepath = tempDir.resolve("movies.txt");
         final String filepathString = filepath.toString();
         final String input = """
-                                 qwerty
-                                 -2
-                                 0
-                                 6
-                                 1
-                                 3
-                                 3
-                                 Криминальное чтиво
-                                 1500
-                                 1994
-                                 2.5
-                                 Интерстеллар
-                                 2014
-                                 3
-                                 Начало
-                                 2010
-                                 2.5
-                                 4
-                                 %s
-                                 3
-                                 1
-                                 2
-                                 4
-                                 %s
-                                 2
-                                 1
-                                 1
-                                 %s
-                                 2
-                                 5""".formatted(filepathString, filepathString, filepathString);
+                             qwerty
+                             -2
+                             0
+                             6
+                             1
+                             3
+                             3
+                             Криминальное чтиво
+                             1500
+                             1994
+                             2.5
+                             Интерстеллар
+                             2014
+                             3
+                             Начало
+                             2010
+                             2.5
+                             4
+                             %s
+                             3
+                             1
+                             2
+                             4
+                             %s
+                             2
+                             1
+                             1
+                             %s
+                             2
+                             5""".formatted(filepathString, filepathString, filepathString);
         
         Scanner scanner = new Scanner(input);
-        
-        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
-                .withOption(new Menu.MenuOption<>((client) -> client.fillMovies(null)))
-                .withOption(new Menu.MenuOption<>((client) -> client.printMovies(null, printFormat)))
-                .withOption(new Menu.MenuOption<>((client) -> client.sortMovies(null)))
-                .withOption(new Menu.MenuOption<>((client) -> client.saveMovies(null)))
-                .withOption(new Menu.MenuOption<>((client) -> client.exit()))
-                .build();
+
         Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
                 .withOption(new Menu.MenuOption<>((client) -> 
                         client.setFiller(new FromFileFiller(InputRequest.askString(scanner)))))
@@ -129,6 +122,23 @@ public class AppIT {
                 .withOption(new Menu.MenuOption<>((client) -> 
                         client.setSaver(new DefaultSaver(InputRequest.askString(scanner), scanner, setSaveOptionMenu))))
                 .build();
+        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
+                .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
+                    setFillerMenu.chooseOption(scanner).execute(_client);
+                    _client.fillMovies();
+                })))
+                .withOption(new Menu.MenuOption<>((client) -> client.printMovies(null, printFormat)))
+                .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
+                    setSortMenu.chooseOption(scanner).execute(_client);
+                    setCompMenu.chooseOption(scanner).execute(_client);
+                    _client.sortMovies();
+                })))
+                .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
+                    setSaverMenu.chooseOption(scanner).execute(_client);
+                    _client.saveMovies();
+                })))
+                .withOption(new Menu.MenuOption<>((client) -> client.exit()))
+                .build();
         
         App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
         
@@ -136,7 +146,7 @@ public class AppIT {
                 .withScanner(scanner)
                 .withMenus(menus)
                 .build()
-                .run();
+                .run((client) -> mainMenu.chooseOption(scanner).execute(client));
         
         assertEquals(expectedFileLines, Files.readAllLines(filepath));
         assertEquals(expectedOutContent, outContent.toString().trim());

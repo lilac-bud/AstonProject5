@@ -29,10 +29,6 @@ public class App {
         this.sorter = builder.sorter;
     }
     
-    public void run(){
-        while (running)
-            menus.mainMenu.chooseOption(scanner).execute(this);
-    }
     public void run(Menu.MenuCommand<App> command) {
         while (running)
             command.execute(this);
@@ -64,30 +60,11 @@ public class App {
         if (successMessage != null)
             System.out.println(successMessage);
     }
-    public void saveMovies(String successMessage) {
-        tryCommandTillSuccess(successMessage, (client) -> {
-            client.menus.setSaverMenu.chooseOption(scanner).execute(client);
-            client.saver.save(movies);
-        });
-    }
     public void saveMovies() {
         saver.save(movies);
     }
-    public void fillMovies(String successMessage) {
-        tryCommandTillSuccess(successMessage, (client) -> {
-            client.menus.setFillerMenu.chooseOption(scanner).execute(client);
-            client.filler.fillMovies(movies);
-        });
-    }
     public void fillMovies() {
         filler.fillMovies(movies);
-    }
-    public void sortMovies(String successMessage) {
-        tryCommandTillSuccess(successMessage, (client) -> {
-            client.menus.setSortMenu.chooseOption(scanner).execute(client);
-            client.menus.setCompMenu.chooseOption(scanner).execute(client);
-            client.sorter.performSorting(movies);
-        });
     }
     public void sortMovies() {
         sorter.performSorting(movies);
@@ -109,6 +86,9 @@ public class App {
                 System.out.println(successMessage);
             break;
         }
+    }
+    public void tryCommandTillSuccess(Menu.MenuCommand<App> command) {
+        tryCommandTillSuccess(null, command);
     }
     
     public static record Menus(Menu<App> mainMenu, Menu<App> setFillerMenu, 
