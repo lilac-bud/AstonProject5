@@ -6,6 +6,7 @@ import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.MenuCommand;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -130,7 +131,7 @@ public class AppTest {
         configureSorterMock();
         configureSaverMock();
     }
-    private void configureMenuOptionMock(Menu.MenuOption<App> option, Menu.MenuCommand<App> command) {
+    private void configureMenuOptionMock(Menu.MenuOption<App> option, MenuCommand<App> command) {
         doAnswer(i -> {
             App client = i.getArgument(0);
             command.execute(client);

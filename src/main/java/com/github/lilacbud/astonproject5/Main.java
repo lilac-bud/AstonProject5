@@ -10,6 +10,7 @@ import com.github.lilacbud.astonproject5.movie.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.movie.sort.MergeSort;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.user.MenuCommand;
 import com.github.lilacbud.astonproject5.util.InputRequest;
 import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
@@ -79,7 +80,7 @@ public class Main {
                     client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
                 }))
                 .build();
-        Menu.MenuCommand<App> fillCommand = (_client) -> {
+        MenuCommand<App> fillCommand = (_client) -> {
                         setFillerMenu.chooseOption(scanner).execute(_client);
                         _client.fillMovies();
                     };

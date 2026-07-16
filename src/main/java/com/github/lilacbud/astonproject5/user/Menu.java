@@ -45,10 +45,6 @@ public class Menu<T> {
         }
     }
     
-    @FunctionalInterface
-    public static interface MenuCommand<T> {
-        public void execute(T client);
-    }
     public static class MenuOption<T> {
         private final String title;
         private final MenuCommand<T> command;
