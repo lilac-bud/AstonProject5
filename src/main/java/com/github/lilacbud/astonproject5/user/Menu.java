@@ -57,6 +57,9 @@ public class Menu<T> {
             this.title = title;
             this.command = requireNonNull(command, "Command must not be null");
         }
+        public MenuOption(MenuCommand<T> command) {
+            this(null, command);
+        }
         private String getTitle() {
             return title;
         }
