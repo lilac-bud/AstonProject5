@@ -37,12 +37,12 @@ public class DefaultSaver implements MoviesSaver {
         if (Files.exists(filePath) && setSaveOptionMenu != null)
             setSaveOptionMenu.chooseOption(scanner).execute(this);
 
-        try (BufferedWriter writer=Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, saveOption)){
-            for (Movie movie:movies){
+        try (BufferedWriter writer=Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, saveOption)) {
+            for (Movie movie:movies) {
                 writer.write(movie.getName()+";"+movie.getYearOfRelease()+";"+movie.getHourLength());
                 writer.newLine();
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException("File Save Error", e);
         }
     }

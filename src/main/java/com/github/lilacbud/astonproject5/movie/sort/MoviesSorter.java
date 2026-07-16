@@ -10,17 +10,17 @@ public class MoviesSorter {
     private SortingStrategy sortStrategy;
     private Comparator<Movie> comp;
 
-    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp){
+    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp) {
         this.sortStrategy=sortStrategy;
         this.comp=comp;
     }
-    public void setSortingStrategy(SortingStrategy sortStrategy){
+    public void setSortingStrategy(SortingStrategy sortStrategy) {
         this.sortStrategy=sortStrategy;
     }
-    public void setComparator(Comparator<Movie> comp){
+    public void setComparator(Comparator<Movie> comp) {
         this.comp=comp;
     }
-    public void performSorting(Collection<Movie> movies){
+    public void performSorting(Collection<Movie> movies) {
 
         requireNonNull(sortStrategy, "Sorting strategy must be non null to perform sorting");
         requireNonNull(comp, "Comparator must be non null to perform sorting");

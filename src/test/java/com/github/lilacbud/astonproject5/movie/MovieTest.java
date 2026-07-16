@@ -12,7 +12,7 @@ class MovieTest {
         movie=new Movie.Builder()
                 .withName("Криминальное чтиво")
                 .withYearOfRelease(1994)
-                .withHourLength(2.5f)
+                .withHourLength(2.5F)
                 .build();
     }
 
@@ -28,12 +28,13 @@ class MovieTest {
 
     @Test
     public void getHourLength() {
-        assertEquals(2.5f, movie.getHourLength());
+        assertEquals(2.5F, movie.getHourLength());
     }
 
     @Test
     public void testToString() {
-        String expected = String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", "Криминальное чтиво", 1994, 2.5f);
+        String expected = String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", 
+                "Криминальное чтиво", 1994, 2.5F);
         assertEquals(expected, movie.toString());
     }
 
@@ -42,7 +43,7 @@ class MovieTest {
         Movie movieWithNullName = new Movie.Builder()
                 .withName(null)
                 .withYearOfRelease(1994)
-                .withHourLength(2.5f)
+                .withHourLength(2.5F)
                 .build();
 
         assertEquals("", movieWithNullName.getName());

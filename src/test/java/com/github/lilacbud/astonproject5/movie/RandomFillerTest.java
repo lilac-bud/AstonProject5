@@ -20,26 +20,20 @@ public class RandomFillerTest {
     @Test
     public void testFillMoviesWithSizeZero() {
         System.out.println("fillMovies with size set to zero");
-        RandomFiller instance = new RandomFiller(0);
-        instance.fillMovies(movies);
+        new RandomFiller(0).fillMovies(movies);
         assertTrue(movies.isEmpty());
     }
     @Test
-    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void testFillMoviesWithSizeLessThanZero() {
         System.out.println("fillMovies with size set to less than zero");
-        IllegalArgumentException thrown = 
-                assertThrows(IllegalArgumentException.class, () -> { 
-                    new RandomFiller(-10); 
-                });
+        var thrown = assertThrows(IllegalArgumentException.class, () -> new RandomFiller(-10));
         assertEquals(thrown.getMessage(), "Size cannot be negative");
         assertTrue(movies.isEmpty());
     }
     @Test
     public void testFillMoviesWithSizeMoreThanZero() {
         System.out.println("fillMovies with size set to more than zero");
-        RandomFiller instance = new RandomFiller(10);
-        instance.fillMovies(movies);
+        new RandomFiller(10).fillMovies(movies);
         assertEquals(movies.size(), 10);
         assertFalse(movies.contains(null));
     }
@@ -47,8 +41,8 @@ public class RandomFillerTest {
     @Test
     void testFillMoviesWithNullMoviesArgument() {
         System.out.println("fillMovies with null movies argument");
-        RandomFiller instance = new RandomFiller(10);
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> instance.fillMovies(null));
-        assertEquals("Collection<Movie> movies must be non null to fillMovies", exception.getMessage());
+        RandomFiller rf = new RandomFiller(10);
+        var thrown = assertThrows(NullPointerException.class, () -> rf.fillMovies(null));
+        assertEquals("Collection<Movie> movies must be non null to fillMovies", thrown.getMessage());
     }
 }
