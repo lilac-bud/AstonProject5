@@ -41,7 +41,7 @@ public class Main {
                 }))
                 .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client)->{
                     if (client.moviesIsEmpty()) client.fillMovies("Список успешно заполнен");
-                    client.countMovie("Подсчет завершен");
+                    client.countMovie("Введите название фильма для поиска:", "Фильм \"%s\" встречается %d раз(а)");
                 }))
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();

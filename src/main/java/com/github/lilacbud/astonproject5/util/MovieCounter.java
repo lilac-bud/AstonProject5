@@ -1,7 +1,6 @@
 package com.github.lilacbud.astonproject5.util;
 
 import java.util.List;
-import com.github.lilacbud.astonproject5.Main;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

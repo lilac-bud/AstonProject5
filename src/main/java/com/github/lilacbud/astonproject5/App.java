@@ -109,18 +109,16 @@ public class App {
         running = false;
     }
 
-    public void countMovie(String successMessage){
-        tryCommandTillSuccess(successMessage, (client) -> {
-        if(client.movies.isEmpty()){
-            throw new IllegalStateException("Список фильмов пуст");
+    public void countMovie(String prompt , String successFormat){
+        String target = askFilepath(prompt);
+        int count = MovieCounter.countInsert(movies, target);
+        try{
+            System.out.println(String.format(successFormat,target,count));
+        } catch (NullPointerException | IllegalFormatException e){
+            System.out.println(count);
         }
-        System.out.println("Введите название фильма для поиска:");
-        String target = client.scanner.nextLine().trim();
-        int count = MovieCounter.countInsert(client.movies, target);
-        System.out.println("Фильм \""+target+ "\" встречается " + count + " раз(а)");
-    });
     }
-    
+
     private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
         requireNonNull(command, "Command cannot be null");
         while (true) {

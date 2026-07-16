@@ -439,6 +439,57 @@ public class AppTest {
         assertEquals(sortedMockMovies, actualMovies);
         assertEquals(successMessage, outContent.toString().trim());
     }
+
+    @Test
+    public void testCountMovieGivenCorrectFormat(){
+        configureMovieMocksGetName();
+        configureFillerMock();
+        configureSetFillerMenuMocks();
+        System.out.println("countMovie given correct format");
+        final String target = movie1.getName();
+        setUpApp (new Scanner(target+ "\n"));
+        app.fillMovies(null);
+        System.setOut(new PrintStream(outContent));
+        final String prompt = "Введите название фильма:";
+        final String successFormat = "Фильм \"%s\" встречается %d раз(а)";
+        final int expectedCount = 1;
+        app.countMovie(prompt, successFormat);
+        assertEquals(prompt + String.format(successFormat, target, expectedCount),
+                outContent.toString().trim());
+    }
+
+    @Test
+    public void testCountMovieGivenIllegalFormat() {
+        configureMovieMocksGetName();
+        configureFillerMock();
+        configureSetFillerMenuMocks();
+        System.out.println("countMovie given illegal format");
+        final String target = movie1.getName();
+        setUpApp(new Scanner(target + "\n"));
+        app.fillMovies(null);
+        System.setOut(new PrintStream(outContent));
+        final String prompt = "Введите название фильма: ";
+        final String successFormat = "%d, %d";
+        final int expectedCount = 1;
+        app.countMovie(prompt, successFormat);
+        assertEquals(prompt + expectedCount, outContent.toString().trim());
+    }
+
+    @Test
+    public void testCountMovieGivenNullFormat() {
+        configureMovieMocksGetName();
+        configureFillerMock();
+        configureSetFillerMenuMocks();
+        System.out.println("countMovie given null format");
+        final String target = movie1.getName();
+        setUpApp(new Scanner(target + "\n"));
+        app.fillMovies(null);
+        System.setOut(new PrintStream(outContent));
+        final String prompt = "Введите название фильма: ";
+        final int expectedCount = 1;
+        app.countMovie(prompt, null);
+        assertEquals(prompt + expectedCount, outContent.toString().trim());
+    }
     
     @Test
     public void testCreateStepBuilderWithNullScanner() {
