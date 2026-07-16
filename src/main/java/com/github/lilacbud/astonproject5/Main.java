@@ -113,9 +113,9 @@ public class Main {
                 }))
                 .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client) -> {
                     if (client.moviesIsEmpty())
-                        client.tryCommandTillSuccess("List successfully filled", fillCommand);
-                    String target = InputRequest.askString(scanner,"Enter movie title: ");
-                    client.countMovie(target, "Found \"%s\" %d time(s)");
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    String target = InputRequest.askString(scanner,"Введите название фильма: ");
+                    client.countMovie(target, "Фильм \"%s\" найден %d раз(а)");
                 }))
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
