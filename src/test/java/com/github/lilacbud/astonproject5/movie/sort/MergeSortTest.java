@@ -109,9 +109,9 @@ public class MergeSortTest {
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> mergeSort.sort(null, comparator));
+        var thrown = assertThrows(NullPointerException.class, () -> mergeSort.sort(null, comparator));
 
-        assertEquals("Collection<Movie> movies must be non null to sort", exception.getMessage());
+        assertEquals("Collection<Movie> movies must be non null to sort", thrown.getMessage());
     }
 
     @Test
