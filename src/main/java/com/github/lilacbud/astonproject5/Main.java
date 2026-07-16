@@ -22,28 +22,6 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         
-        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
-                .withTitle("Главное меню:")
-                .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) 
-                        -> client.fillMovies("Список успешно заполнен")))
-                .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
-                    if (client.moviesIsEmpty())
-                        client.fillMovies("Список успешно заполнен");
-                    client.printMovies("Список успешно выведен на экран", null);
-                }))
-                .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
-                    if (client.moviesIsEmpty())
-                        client.fillMovies("Список успешно заполнен");
-                    client.sortMovies("Список успешно отсортирован");
-                }))
-                .withOption(new Menu.MenuOption<>("Сохранить фильмы", (client) -> {
-                    if (client.moviesIsEmpty())
-                        client.fillMovies("Список успешно заполнен");
-                    client.saveMovies("Список успешно сохранён");
-                }))
-                .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
-                .build();
         Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
@@ -101,6 +79,39 @@ public class Main {
                     client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
                 }))
                 .build();
+        Menu.MenuCommand<App> fillCommand = (_client) -> {
+                        setFillerMenu.chooseOption(scanner).execute(_client);
+                        _client.fillMovies();
+                    };
+        Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
+                .withTitle("Главное меню:")
+                .withPrompt("Выберите одну из опций: ")
+                .withOption(new Menu.MenuOption<>("Заполнить список фильмов", (client) -> 
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand)))
+                .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    client.printMovies("Список успешно выведен на экран", null);
+                }))
+                .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    client.tryCommandTillSuccess("Список успешно отсортирован", (_client) -> {
+                        setSortMenu.chooseOption(scanner).execute(_client);
+                        setCompMenu.chooseOption(scanner).execute(_client);
+                        _client.sortMovies();
+                    });
+                }))
+                .withOption(new Menu.MenuOption<>("Сохранить фильмы", (client) -> {
+                    if (client.moviesIsEmpty())
+                        client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
+                    client.tryCommandTillSuccess("Список успешно сохранён", (_client) -> {
+                        setSaverMenu.chooseOption(scanner).execute(_client);
+                        _client.saveMovies();
+                    });
+                }))
+                .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
+                .build();
         
         App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
         
@@ -108,7 +119,7 @@ public class Main {
                 .withScanner(scanner)
                 .withMenus(menus)
                 .build()
-                .run();
+                .run((client) -> mainMenu.chooseOption(scanner).execute(client));
     }
     
 }

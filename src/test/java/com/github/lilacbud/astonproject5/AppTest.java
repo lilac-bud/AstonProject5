@@ -52,8 +52,7 @@ public class AppTest {
     private MoviesSaver saver;
     
     @Mock
-    private Menu.MenuOption<App> setFillerOption, setSortStrategyOption, setCompOption, setSaverOption,
-            fillMoviesOption, printMoviesOption, sortMoviesOption, saveMoviesOption, exitOption;
+    private Menu.MenuOption<App> fillMoviesOption, printMoviesOption, sortMoviesOption, saveMoviesOption, exitOption;
     
     @Mock
     private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
@@ -146,42 +145,39 @@ public class AppTest {
             return null;
         }).when(option).execute(any());
     }
-    private void configureSetFillerMenuMocks() {
-        configureMenuOptionMock(setFillerOption, client -> client.setFiller(filler));
-        when(setFillerMenu.chooseOption(any())).thenReturn(setFillerOption);
-    }
-    private void configureSetSortMenuMocks() {
-        configureMenuOptionMock(setSortStrategyOption, client -> client.setSortingStrategy(sortStrategy));
-        when(setSortMenu.chooseOption(any())).thenReturn(setSortStrategyOption);
-    }
-    private void configureSetCompMenuMocks() {
-        configureMenuOptionMock(setCompOption, client -> client.setComparator(comparator));
-        when(setCompMenu.chooseOption(any())).thenReturn(setCompOption);
-    }
-    private void configureSetSaverMenuMocks() {
-        configureMenuOptionMock(setSaverOption, client -> client.setSaver(saver));
-        when(setSaverMenu.chooseOption(any())).thenReturn(setSaverOption);
-    }
     private void configureMainMenuMocks() {
-        configureSetFillerMenuMocks();
-        configureSetSortMenuMocks();
-        configureSetCompMenuMocks();
-        configureSetSaverMenuMocks();
-        configureMenuOptionMock(fillMoviesOption, client -> client.fillMovies(fillSuccessMessage));
+        configureMenuOptionMock(fillMoviesOption, client -> {
+            client.setFiller(filler);
+            client.fillMovies();
+            System.out.println(fillSuccessMessage);
+        });
         configureMenuOptionMock(printMoviesOption, client -> {
-            if (client.moviesIsEmpty())
-                client.fillMovies(fillSuccessMessage);
+            if (client.moviesIsEmpty()) {
+                client.setFiller(filler);
+                client.fillMovies();
+                System.out.println(fillSuccessMessage);
+            }
             client.printMovies(printSuccessMessage, null);
         });
         configureMenuOptionMock(sortMoviesOption, client -> {
-            if (client.moviesIsEmpty())
-                client.fillMovies(fillSuccessMessage);
-            client.sortMovies(sortSuccessMessage);
+            if (client.moviesIsEmpty()) {
+                client.setFiller(filler);
+                client.fillMovies();
+                System.out.println(fillSuccessMessage);
+            }
+            client.setSortingStrategy(sortStrategy);
+            client.setComparator(comparator);
+            client.sortMovies();
+            System.out.println(sortSuccessMessage);
         });
         configureMenuOptionMock(saveMoviesOption, client -> {
-            if (client.moviesIsEmpty())
-                client.fillMovies(fillSuccessMessage);
-            client.saveMovies(saveSuccessMessage);
+            if (client.moviesIsEmpty()) {
+                client.setFiller(filler);
+                client.fillMovies();
+            }
+            client.setSaver(saver);
+            client.saveMovies();
+            System.out.println(saveSuccessMessage);
         });
         configureMenuOptionMock(exitOption, client -> client.exit());
         
@@ -227,7 +223,7 @@ public class AppTest {
                 + newline + printSuccessMessage + newline + saveSuccessMessage + newline;
         setUpApp(scanner);
         
-        app.run();
+        app.run((client) -> mainMenu.chooseOption(scanner).execute(client));
         verify(mainMenu, times(5)).chooseOption(scanner);
         InOrder inOrder = inOrder(fillMoviesOption, sortMoviesOption, printMoviesOption, saveMoviesOption, exitOption);
         inOrder.verify(fillMoviesOption).execute(app);
@@ -275,10 +271,10 @@ public class AppTest {
     public void testPrintMoviesGivenNullFormat() {
         configureMovieMocksToString();
         configureFillerMock();
-        configureSetFillerMenuMocks();
         System.out.println("printMovies given null print format");
         setUpApp(null);
-        app.fillMovies(null);
+        app.setFiller(filler);
+        app.fillMovies();
         System.setOut(new PrintStream(outContent));
         final String successMessage = printSuccessMessage;
         final String expectedOutContent = mockMovies.stream().map(Movie::toString).collect(Collectors.joining(newline)) 
@@ -291,7 +287,6 @@ public class AppTest {
     public void testPrintMoviesGivenIllegalFormat() {
         configureMovieMocksToString();
         configureFillerMock();
-        configureSetFillerMenuMocks();
         System.out.println("printMovies given illegal print format");
         System.setOut(new PrintStream(outContent));
         
@@ -301,7 +296,8 @@ public class AppTest {
                 + newline + successMessage + newline;
         
         setUpApp(null);
-        app.fillMovies(null);
+        app.setFiller(filler);
+        app.fillMovies();
         app.printMovies(successMessage, printFormat);
         
         assertEquals(expectedOutContent, outContent.toString());
@@ -311,7 +307,6 @@ public class AppTest {
     public void testPrintMoviesGivenCorrectFormat() {
         configureMovieMocks();
         configureFillerMock();
-        configureSetFillerMenuMocks();
         System.out.println("printMovies given illegal print format");
         System.setOut(new PrintStream(outContent));
         
@@ -323,7 +318,8 @@ public class AppTest {
                 .collect(Collectors.joining(newline)) + newline + successMessage + newline;
         
         setUpApp(null);
-        app.fillMovies(null);
+        app.setFiller(filler);
+        app.fillMovies();
         app.printMovies(successMessage, "%s, %d, %f");
         
         assertEquals(expectedOutContent, outContent.toString());
@@ -334,50 +330,37 @@ public class AppTest {
         configureMovieMocksToString();
         configureFillerMock();
         configureSaverMock();
-        configureSetFillerMenuMocks();
-        configureSetSaverMenuMocks();
         System.out.println("saveMovies");
-        System.setOut(new PrintStream(outContent));
         
-        final String successMessage = saveSuccessMessage;
         final Path filepath = tempDir.resolve("movies.txt");
         final List<String> expectedLines = mockMovies.stream().map(Movie::toString).toList();
         
         setUpApp(null);
-        app.fillMovies(null);
-        app.saveMovies(successMessage);
-        
-        InOrder inOrder = inOrder(setSaverMenu, setSaverOption, saver);
-        inOrder.verify(setSaverMenu).chooseOption(any());
-        inOrder.verify(setSaverOption).execute(app);
-        inOrder.verify(saver).save(anyList());
+        app.setFiller(filler);
+        app.fillMovies();
+        app.setSaver(saver);
+        app.saveMovies();
+
+        verify(saver).save(anyList());
         
         List<String> lines = Files.readAllLines(filepath);
         assertEquals(3, lines.size());
         assertEquals(expectedLines, lines);
-        assertEquals(successMessage, outContent.toString().trim());
     }
 
     @Test
     public void testFillMovies() {
         configureFillerMock();
-        configureSetFillerMenuMocks();
         System.out.println("fillMovies");
-        System.setOut(new PrintStream(outContent));
-        
-        final String successMessage = fillSuccessMessage;
         
         setUpApp(null);
-        app.fillMovies(successMessage);
+        app.setFiller(filler);
+        app.fillMovies();
         
         assertFalse(app.moviesIsEmpty());
-        InOrder inOrder = inOrder(setFillerMenu, setFillerOption, filler);
-        inOrder.verify(setFillerMenu).chooseOption(any());
-        inOrder.verify(setFillerOption).execute(app);
-        inOrder.verify(filler).fillMovies(anyList());
+        verify(filler).fillMovies(anyList());
         
         assertEquals(mockMovies, actualMovies);
-        assertEquals(successMessage, outContent.toString().trim());
     }
 
     @Test
@@ -385,31 +368,23 @@ public class AppTest {
         configureMovieMocksGetYearOfRelease();
         configureFillerMock();
         configureSorterMock();
-        configureSetFillerMenuMocks();
-        configureSetSortMenuMocks();
-        configureSetCompMenuMocks();
         System.out.println("sortMovies");
-        System.setOut(new PrintStream(outContent));
-        
-        final String successMessage = sortSuccessMessage;
         
         setUpApp(null);
-        app.fillMovies(null);
-        app.sortMovies(successMessage);
+        app.setFiller(filler);
+        app.fillMovies();
+        app.setSortingStrategy(sortStrategy);
+        app.setComparator(comparator);
+        app.sortMovies();
         
-        InOrder inOrder = inOrder(setSortMenu, setSortStrategyOption, setCompMenu, setCompOption, sorter);
-        inOrder.verify(setSortMenu).chooseOption(any());
-        inOrder.verify(setSortStrategyOption).execute(app);
+        InOrder inOrder = inOrder(sorter);
         inOrder.verify(sorter).setSortingStrategy(sortStrategyCaptor.capture());
-        inOrder.verify(setCompMenu).chooseOption(any());
-        inOrder.verify(setCompOption).execute(app);
         inOrder.verify(sorter).setComparator(compCaptor.capture());
         inOrder.verify(sorter).performSorting(anyList());
         
         assertEquals(sortStrategy, sortStrategyCaptor.getValue());
         assertEquals(comparator, compCaptor.getValue());
         assertEquals(sortedMockMovies, actualMovies);
-        assertEquals(successMessage, outContent.toString().trim());
     }
     
     @Test

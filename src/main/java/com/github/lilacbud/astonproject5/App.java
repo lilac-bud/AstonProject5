@@ -33,6 +33,10 @@ public class App {
         while (running)
             menus.mainMenu.chooseOption(scanner).execute(this);
     }
+    public void run(Menu.MenuCommand<App> command) {
+        while (running)
+            command.execute(this);
+    }
     public void setFiller(MoviesFiller filler) {
         this.filler = requireNonNull(filler, "Filler cannot be null");
     }
@@ -66,11 +70,17 @@ public class App {
             client.saver.save(movies);
         });
     }
+    public void saveMovies() {
+        saver.save(movies);
+    }
     public void fillMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
             client.menus.setFillerMenu.chooseOption(scanner).execute(client);
             client.filler.fillMovies(movies);
         });
+    }
+    public void fillMovies() {
+        filler.fillMovies(movies);
     }
     public void sortMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
@@ -79,11 +89,14 @@ public class App {
             client.sorter.performSorting(movies);
         });
     }
+    public void sortMovies() {
+        sorter.performSorting(movies);
+    }
     public void exit() {
         running = false;
     }
     
-    private void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
+    public void tryCommandTillSuccess(String successMessage, Menu.MenuCommand<App> command) {
         requireNonNull(command, "Command cannot be null");
         while (true) {
             try {
