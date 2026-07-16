@@ -23,21 +23,17 @@ public class App {
     private final MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private final Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
+    private final Menus menus;
     
     private App(StepBuilder builder) {
         this.scanner = builder.scanner;
-        this.mainMenu = builder.mainMenu;
-        this.setFillerMenu = builder.setFillerMenu;
-        this.setSortMenu = builder.setSortMenu;
-        this.setCompMenu = builder.setCompMenu;
-        this.setSaverMenu = builder.setSaverMenu;
+        this.menus = builder.menus;
         this.sorter = builder.sorter;
     }
     
     public void run(){
         while (running)
-            mainMenu.chooseOption(scanner).execute(this);
+            menus.mainMenu.chooseOption(scanner).execute(this);
     }
     public void setFiller(MoviesFiller filler) {
         this.filler = requireNonNull(filler, "Filler cannot be null");
@@ -86,20 +82,20 @@ public class App {
     }
     public void saveMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
-            client.setSaverMenu.chooseOption(scanner).execute(client);
+            client.menus.setSaverMenu.chooseOption(scanner).execute(client);
             client.saver.save(movies);
         });
     }
     public void fillMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
-            client.setFillerMenu.chooseOption(scanner).execute(client);
+            client.menus.setFillerMenu.chooseOption(scanner).execute(client);
             client.filler.fillMovies(movies);
         });
     }
     public void sortMovies(String successMessage) {
         tryCommandTillSuccess(successMessage, (client) -> {
-            client.setSortMenu.chooseOption(scanner).execute(client);
-            client.setCompMenu.chooseOption(scanner).execute(client);
+            client.menus.setSortMenu.chooseOption(scanner).execute(client);
+            client.menus.setCompMenu.chooseOption(scanner).execute(client);
             client.sorter.performSorting(movies);
         });
     }
@@ -157,6 +153,7 @@ public class App {
     public static class StepBuilder implements ScannerBuilder, MainMenuBuilder, FillMenuBuilder, 
             SortMenuBuilder, CompMenuBuilder, SaveMenuBuilder {
         private Scanner scanner;
+        private Menus menus;
         private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
         private MoviesSorter sorter = new MoviesSorter(null, null);
         
@@ -200,6 +197,7 @@ public class App {
             return this;
         }
         public App build() {
+            menus = new Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
             return new App(this);
         }
         private Menu<App> validateMenu(Menu<App> menu) {
