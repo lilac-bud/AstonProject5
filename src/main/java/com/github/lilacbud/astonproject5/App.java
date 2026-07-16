@@ -16,16 +16,11 @@ import java.util.Scanner;
 public class App {
     private boolean running = true;
     private final List<Movie> movies = new ArrayList<>();
-    private final Scanner scanner;
     private MoviesFiller filler;
     private final MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private final Menus menus;
-    
     private App(StepBuilder builder) {
-        this.scanner = builder.scanner;
-        this.menus = builder.menus;
         this.sorter = builder.sorter;
     }
     
