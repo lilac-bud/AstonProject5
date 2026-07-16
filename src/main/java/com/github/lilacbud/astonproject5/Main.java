@@ -113,13 +113,7 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
         
-        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
-        
-        App.StepBuilder.newBuilder()
-                .withScanner(scanner)
-                .withMenus(menus)
-                .build()
-                .run((client) -> mainMenu.chooseOption(scanner).execute(client));
+        new App().run((client) -> mainMenu.chooseOption(scanner).execute(client));
     }
     
 }

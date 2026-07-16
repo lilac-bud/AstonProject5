@@ -140,13 +140,7 @@ public class AppIT {
                 .withOption(new Menu.MenuOption<>((client) -> client.exit()))
                 .build();
         
-        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
-        
-        App.StepBuilder.newBuilder()
-                .withScanner(scanner)
-                .withMenus(menus)
-                .build()
-                .run((client) -> mainMenu.chooseOption(scanner).execute(client));
+        new App().run((client) -> mainMenu.chooseOption(scanner).execute(client));
         
         assertEquals(expectedFileLines, Files.readAllLines(filepath));
         assertEquals(expectedOutContent, outContent.toString().trim());

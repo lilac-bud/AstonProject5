@@ -23,6 +23,12 @@ public class App {
     private App(StepBuilder builder) {
         this.sorter = builder.sorter;
     }
+    public App(MoviesSorter sorter) {
+        this.sorter = sorter;
+    }
+    public App() {
+        this(new MoviesSorter(null, null));
+    }
     
     public void run(Menu.MenuCommand<App> command) {
         while (running)
