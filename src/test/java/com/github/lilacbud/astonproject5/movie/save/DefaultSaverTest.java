@@ -76,15 +76,15 @@ class DefaultSaverTest {
     @Test
     public void testCreateSaverWithNullFilepath() {
         System.out.println("testCreateSaver with null filepath");
-        var exception = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, new Scanner(""), null));
-        assertEquals("Filepath must not be null", exception.getMessage());
+        var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, new Scanner(""), null));
+        assertEquals("Filepath must not be null", thrown.getMessage());
     }
     
     @Test
     public void testCreateSaverWithNullScanner() {
         System.out.println("testCreateSaver with null scanner");
-        var exception = assertThrows(NullPointerException.class, () -> new DefaultSaver("", null, null));
-        assertEquals("Scanner must not be null", exception.getMessage());
+        var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver("", null, null));
+        assertEquals("Scanner must not be null", thrown.getMessage());
     }
     
     @Test
@@ -143,8 +143,7 @@ class DefaultSaverTest {
     @SuppressWarnings("ThrowableResultIgnored")
     public void testSaveGivenInvalidFilepath() {
         System.out.println("testSave given invalid filepath");
-        assertThrows(InvalidPathException.class, () -> 
-                new DefaultSaver("Name:InvalidFile.txt", new Scanner(""), null));
+        assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:InvalidFile.txt", new Scanner(""), null));
     }
 
     @Test
@@ -155,7 +154,7 @@ class DefaultSaverTest {
 
         DefaultSaver ds = new DefaultSaver(file.toString(), new Scanner(""), null);
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> ds.save(movies));
-        assertEquals("Collection<Movie> movies must be non null to save", exception.getMessage());
+        var thrown = assertThrows(NullPointerException.class, () -> ds.save(movies));
+        assertEquals("Collection<Movie> movies must be non null to save", thrown.getMessage());
     }
 }
