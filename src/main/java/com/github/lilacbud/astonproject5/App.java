@@ -122,6 +122,20 @@ public class App {
         }
     }
     
+    public static record Menus(Menu<App> mainMenu, Menu<App> setFillerMenu, 
+        Menu<App> setSortMenu, Menu<App> setCompMenu, Menu<App> setSaverMenu) {
+        public Menus {
+            validateMenu(mainMenu);
+            validateMenu(setFillerMenu);
+            validateMenu(setSortMenu);
+            validateMenu(setCompMenu);
+            validateMenu(setSaverMenu);
+        }
+        private static Menu<App> validateMenu(Menu<App> menu) {
+            return requireNonNull(menu, "Menu cannot be null");
+        }
+    }
+    
     public static interface ScannerBuilder {
         public MainMenuBuilder withScanner(Scanner scanner);
     }
