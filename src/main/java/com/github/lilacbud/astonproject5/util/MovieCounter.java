@@ -36,7 +36,8 @@ public final class MovieCounter {
         executor.shutdown();
         try{
             executor.awaitTermination(1,TimeUnit.MINUTES);
-        } catch (InterruptedException e) {Thread.currentThread().interrupt();}
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();}
         return totalCount.get();
     }
 }

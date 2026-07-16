@@ -71,8 +71,7 @@ public class App {
         running = false;
     }
     
-    public void countMovie(Scanner scanner, String prompt , String successFormat){
-        String target = InputRequest.askString(scanner, prompt);
+    public void countMovie(String target , String successFormat){
         int count = MovieCounter.countInsert(movies, target);
         try{
             System.out.println(String.format(successFormat,target,count));

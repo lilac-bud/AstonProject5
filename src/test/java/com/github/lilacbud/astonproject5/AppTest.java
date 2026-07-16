@@ -380,18 +380,14 @@ public class AppTest {
         configureMovieMocksGetName();
         configureFillerMock();
         System.out.println("countMovie given correct format");
-        final String target = movie1.getName();
-        final Scanner scanner = new Scanner(target + "\n");
-
         app.setFiller (filler);
         app.fillMovies();
-
         System.setOut(new PrintStream(outContent));
-        final String prompt = "Введите название фильма:";
+        final String target = movie1.getName();
         final String successFormat = "Фильм \"%s\" встречается %d раз(а)";
         final int expectedCount = 1;
-        app.countMovie(scanner, prompt, successFormat);
-        assertEquals(prompt + String.format(successFormat, target, expectedCount),
+        app.countMovie(target, successFormat);
+        assertEquals(String.format(successFormat, target, expectedCount),
                 outContent.toString().trim());
     }
 
@@ -400,17 +396,14 @@ public class AppTest {
         configureMovieMocksGetName();
         configureFillerMock();
         System.out.println("countMovie given illegal format");
-        final String target = movie1.getName();
-        final Scanner scanner = new Scanner(target + "\n");
-
         app.setFiller(filler);
         app.fillMovies();
         System.setOut(new PrintStream(outContent));
-        final String prompt = "Введите название фильма: ";
+        final String target = movie1.getName();
         final String successFormat = "%d, %d";
         final int expectedCount = 1;
-        app.countMovie(scanner, prompt, successFormat);
-        assertEquals(prompt + expectedCount, outContent.toString().trim());
+        app.countMovie(target, successFormat);
+        assertEquals(String.valueOf(expectedCount), outContent.toString().trim());
     }
 
     @Test
@@ -418,14 +411,12 @@ public class AppTest {
         configureMovieMocksGetName();
         configureFillerMock();
         System.out.println("countMovie given null format");
-        final String target = movie1.getName();
-        final Scanner scanner = new Scanner(target + "\n");
         app.setFiller(filler);
         app.fillMovies();
         System.setOut(new PrintStream(outContent));
-        final String prompt = "Введите название фильма: ";
+        final String target = movie1.getName();
         final int expectedCount = 1;
-        app.countMovie(scanner, prompt, null);
-        assertEquals(prompt + expectedCount, outContent.toString().trim());
+        app.countMovie(target, null);
+        assertEquals(String.valueOf(expectedCount), outContent.toString().trim());
     }
 }
