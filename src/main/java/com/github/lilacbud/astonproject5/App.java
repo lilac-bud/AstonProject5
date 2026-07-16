@@ -71,9 +71,9 @@ public class App {
         running = false;
     }
     
-    public void countMovie(String target , String successFormat){
+    public void countMovie(String target, String successFormat) {
         int count = MovieCounter.countInsert(movies, target);
-        try{
+        try {
             System.out.println(String.format(successFormat,target,count));
         } catch (NullPointerException | IllegalFormatException e){
             System.out.println(count);
