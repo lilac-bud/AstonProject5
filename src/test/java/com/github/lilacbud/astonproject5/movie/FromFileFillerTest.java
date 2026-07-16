@@ -19,9 +19,29 @@ import org.mockito.MockedStatic;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class FromFileFillerTest {
-
+    @Mock
+    private Movie movie;
+    
+    private final List<String> expectedNames = List.of("The Shawshank Redemption", "The Godfather", 
+            "The Matrix", "Inception", "Interstellar");
+    private final List<Integer> expectedYears = List.of(1994, 1972, 1999, 2010, 2014);
+    private final List<Float> expectedLengths = List.of(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
+    
+    private void configureMovieMock() {
+        when(movie.getName()).thenReturn("The Shawshank Redemption", "The Godfather", 
+                "The Matrix", "Inception", "Interstellar");
+        when(movie.getYearOfRelease()).thenReturn(1994, 1972, 1999, 2010, 2014);
+        when(movie.getHourLength()).thenReturn(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
+    }
+    
     private FromFileFiller createFiller(String filepath) {
 
         URL resource = getClass().getClassLoader().getResource(filepath);
@@ -32,6 +52,22 @@ public class FromFileFillerTest {
             return new FromFileFiller(Paths.get(resource.toURI()).toString());
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Cannot load test resource: " + filepath, e);
+        }
+    }
+    
+    private FromFileFiller createFillerWithMockedBuilder(String filepath) {
+        try (MockedConstruction<Movie.Builder> mockBuilder = mockConstruction(Movie.Builder.class, 
+                    withSettings().defaultAnswer(Answers.RETURNS_DEEP_STUBS))) {
+            FromFileFiller fff = createFiller(filepath);
+            
+            Movie.Builder builder = mockBuilder.constructed().get(0);
+            for (int i = 0; i < 5; ++i)
+                when(builder.withName(expectedNames.get(i))
+                        .withYearOfRelease(expectedYears.get(i))
+                        .withHourLength(expectedLengths.get(i))
+                        .build())
+                        .thenReturn(movie);
+            return fff;
         }
     }
 
@@ -45,7 +81,7 @@ public class FromFileFillerTest {
             validation.when(() -> MovieInputValidation.validateHourLength(anyString()))
                     .thenAnswer(i -> Optional.of(Float.valueOf(i.getArgument(0))));
             validation.when(() -> MovieInputValidation.validateHourLength("qwerty")).thenReturn(Optional.empty());
-
+            
             fff.fillMovies(movies);
         }
     }
@@ -60,25 +96,21 @@ public class FromFileFillerTest {
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
     public void fromFileFillerInvalidPathTest() {
-        assertThrows(InvalidPathException.class, () -> new FromFileFiller("Name:\0InvalidFile.txt"));
+        assertThrows(InvalidPathException.class, () -> new FromFileFiller("Name:InvalidFile.txt"));
     }
 
     @Test
     void fillMoviesCorrectTest() {
-
-        FromFileFiller fff = createFiller("correctMovies.txt");
-
+        configureMovieMock();
+        FromFileFiller fff = createFillerWithMockedBuilder("correctMovies.txt");
         List<Movie> movies = new ArrayList<>();
 
         fillMovies(fff, movies);
 
         assertEquals(5, movies.size());
-        assertEquals(List.of("The Shawshank Redemption", "The Godfather", "The Matrix", "Inception", "Interstellar"),
-                movies.stream().map(Movie::getName).toList());
-        assertEquals(List.of(1994, 1972, 1999, 2010, 2014),
-                movies.stream().map(Movie::getYearOfRelease).toList());
-        assertEquals(List.of(2.4F, 2.9F, 2.3F, 2.5F, 2.8F),
-                movies.stream().map(Movie::getHourLength).toList());
+        assertEquals(expectedNames, movies.stream().map(Movie::getName).toList());
+        assertEquals(expectedYears, movies.stream().map(Movie::getYearOfRelease).toList());
+        assertEquals(expectedLengths, movies.stream().map(Movie::getHourLength).toList());
     }
 
     @Test

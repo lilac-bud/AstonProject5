@@ -1,7 +1,6 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,47 +9,30 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class EvenNumbersSortDecoratorTest {
 
     private List<Movie> movies;
 
-    private static final Movie movie1 = mock(Movie.class);
-    private static final Movie movie2 = mock(Movie.class);
-    private static final Movie movie3 = mock(Movie.class);
-    private static final Movie movie4 = mock(Movie.class);
-    private static final Movie movie5 = mock(Movie.class);
-    private static final Movie movie6 = mock(Movie.class);
+    @Mock
+    private Movie movie1, movie2, movie3, movie4, movie5, movie6;
 
-    @BeforeAll
-    public static void setUpClass() throws Exception {
-        when(movie1.getName()).thenReturn("movie1");
-        when(movie1.getYearOfRelease()).thenReturn(2010);
-        when(movie1.getHourLength()).thenReturn(2.5f);
-
-        when(movie2.getName()).thenReturn("movie2");
+    private void configureOddYearMovieMocks() {
         when(movie2.getYearOfRelease()).thenReturn(2011);
-        when(movie2.getHourLength()).thenReturn(2.5f);
-
-        when(movie3.getName()).thenReturn("movie3");
-        when(movie3.getYearOfRelease()).thenReturn(1994);
-        when(movie3.getHourLength()).thenReturn(2.5f);
-
-        when(movie4.getName()).thenReturn("movie4");
-        when(movie4.getYearOfRelease()).thenReturn(2008);
-        when(movie4.getHourLength()).thenReturn(2.5f);
-
-        when(movie5.getName()).thenReturn("movie5");
         when(movie5.getYearOfRelease()).thenReturn(2001);
-        when(movie5.getHourLength()).thenReturn(2.5f);
-
-        when(movie6.getName()).thenReturn("movie6");
         when(movie6.getYearOfRelease()).thenReturn(1999);
-        when(movie6.getHourLength()).thenReturn(2.5f);
     }
-
+    private void configureEvenYearMovieMocks() {
+        when(movie1.getYearOfRelease()).thenReturn(2010);
+        when(movie3.getYearOfRelease()).thenReturn(1994);
+        when(movie4.getYearOfRelease()).thenReturn(2008);
+    }
+    
     @BeforeEach
     public void setUp() {
         movies = new ArrayList<>(List.of(movie1, movie2, movie3,movie4,movie5,movie6));
@@ -58,7 +40,9 @@ public class EvenNumbersSortDecoratorTest {
 
     @Test
     void evenNumbersSortCorrectTest() {
-
+        configureOddYearMovieMocks();
+        configureEvenYearMovieMocks();
+        System.out.println("sort");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
@@ -70,7 +54,8 @@ public class EvenNumbersSortDecoratorTest {
 
     @Test
     void onlyEvenEvenNumbersSortCorrectTest() {
-
+        configureEvenYearMovieMocks();
+        System.out.println("sort given movies with even year");
         movies.clear();
         movies.addAll(List.of(movie1,movie3,movie4));
 
@@ -85,7 +70,8 @@ public class EvenNumbersSortDecoratorTest {
 
     @Test
     void onlyOddEvenNumbersSortCorrectTest() {
-
+        configureOddYearMovieMocks();
+        System.out.println("sort given movies with odd year");
         movies.clear();
         movies.addAll(List.of(movie2,movie5,movie6));
 
@@ -100,7 +86,7 @@ public class EvenNumbersSortDecoratorTest {
 
     @Test
     void evenNumbersEmptyCollectionTest() {
-
+        System.out.println("sort given empty movies");
         movies.clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
@@ -112,7 +98,7 @@ public class EvenNumbersSortDecoratorTest {
 
     @Test
     void evenNumbersMoviesIsNullTest() {
-
+        System.out.println("sort given null movies");
         movies = null;
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 

@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 public class FromFileFiller implements MoviesFiller {
 
     private final Path path;
+    private final Movie.Builder builder = new Movie.Builder();
 
     public FromFileFiller(String filepath ){
 
@@ -36,14 +37,14 @@ public class FromFileFiller implements MoviesFiller {
 
         movies.clear();
         try (Stream<String> lines = Files.lines(path)) {
-            lines.map(FromFileFiller::parseMovie)
+                    lines.map(this::parseMovie)
                     .forEach(movies::add);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot load movies from file: " + path, e);
         }
     }
 
-    private static Movie parseMovie(String line) {
+    private Movie parseMovie(String line) {
         String[] arrStrings = line.split(";");
 
         if(arrStrings.length != 3) {
@@ -57,7 +58,7 @@ public class FromFileFiller implements MoviesFiller {
         float hourLength = MovieInputValidation.validateHourLength(arrStrings[2])
                 .orElseThrow(() -> new IllegalArgumentException("Invalid hour: " + arrStrings[2]));
 
-        return new Movie.Builder()
+        return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)
                 .withHourLength(hourLength)

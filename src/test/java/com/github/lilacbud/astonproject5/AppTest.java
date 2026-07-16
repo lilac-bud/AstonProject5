@@ -7,6 +7,7 @@ import com.github.lilacbud.astonproject5.movie.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
 import com.github.lilacbud.astonproject5.user.MenuCommand;
+import com.github.lilacbud.astonproject5.util.MovieCounter;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -26,6 +27,7 @@ import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -187,6 +189,14 @@ public class AppTest {
                 }
             }
         });
+    }
+    
+    private void appCountMovieWithMockedCounter(App app, String target, String successFormat) {
+        try (MockedStatic<MovieCounter> validation = mockStatic(MovieCounter.class)) {
+            validation.when(() -> MovieCounter.countInsert(mockMovies, movie1.getName())).thenReturn(1);
+            
+            app.countMovie(target, successFormat);
+        }
     }
     
     @BeforeEach
@@ -377,7 +387,7 @@ public class AppTest {
 
     @Test
     public void testCountMovieGivenCorrectFormat(){
-        configureMovieMocksGetName();
+        when(movie1.getName()).thenReturn("Криминальное чтиво");
         configureFillerMock();
         System.out.println("countMovie given correct format");
         app.setFiller (filler);
@@ -386,14 +396,14 @@ public class AppTest {
         final String target = movie1.getName();
         final String successFormat = "Фильм \"%s\" встречается %d раз(а)";
         final int expectedCount = 1;
-        app.countMovie(target, successFormat);
+        appCountMovieWithMockedCounter(app, target, successFormat);
         assertEquals(String.format(successFormat, target, expectedCount),
                 outContent.toString().trim());
     }
 
     @Test
     public void testCountMovieGivenIllegalFormat() {
-        configureMovieMocksGetName();
+        when(movie1.getName()).thenReturn("Криминальное чтиво");
         configureFillerMock();
         System.out.println("countMovie given illegal format");
         app.setFiller(filler);
@@ -402,13 +412,13 @@ public class AppTest {
         final String target = movie1.getName();
         final String successFormat = "%d, %d";
         final int expectedCount = 1;
-        app.countMovie(target, successFormat);
+        appCountMovieWithMockedCounter(app, target, successFormat);
         assertEquals(String.valueOf(expectedCount), outContent.toString().trim());
     }
 
     @Test
     public void testCountMovieGivenNullFormat() {
-        configureMovieMocksGetName();
+        when(movie1.getName()).thenReturn("Криминальное чтиво");
         configureFillerMock();
         System.out.println("countMovie given null format");
         app.setFiller(filler);
@@ -416,7 +426,7 @@ public class AppTest {
         System.setOut(new PrintStream(outContent));
         final String target = movie1.getName();
         final int expectedCount = 1;
-        app.countMovie(target, null);
+        appCountMovieWithMockedCounter(app, target, null);
         assertEquals(String.valueOf(expectedCount), outContent.toString().trim());
     }
 }

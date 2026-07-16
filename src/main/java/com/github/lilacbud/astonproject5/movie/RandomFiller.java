@@ -21,6 +21,7 @@ public class RandomFiller implements MoviesFiller {
     private static final float HL_EPS = (float)(1F / Math.pow(10, 3));
     
     private final int size;
+    private final Movie.Builder builder = new Movie.Builder();
     
     public RandomFiller(int size) {
         if (size < 0)
@@ -38,7 +39,7 @@ public class RandomFiller implements MoviesFiller {
     }
     
     private Movie generateMovie(){
-        return new Movie.Builder()
+        return builder
                 .withName(generateName())
                 .withYearOfRelease(generateYear())
                 .withHourLength(generateHourLength())

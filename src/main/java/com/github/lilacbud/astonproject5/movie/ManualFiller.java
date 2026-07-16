@@ -13,6 +13,7 @@ public class ManualFiller implements MoviesFiller {
     private final int size;
     private final Scanner scanner;
     private final Prompts prompts;
+    private final Movie.Builder builder = new Movie.Builder();
 
     public ManualFiller(int size, Scanner scanner, Prompts prompts) {
         if (size < 0)
@@ -73,7 +74,7 @@ public class ManualFiller implements MoviesFiller {
         hourLength = verifiedHour.get();
 
         //создаем объект
-        return new Movie.Builder()
+        return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)
                 .withHourLength(hourLength)
