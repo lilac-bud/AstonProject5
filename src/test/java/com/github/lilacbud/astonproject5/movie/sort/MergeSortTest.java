@@ -42,7 +42,7 @@ public class MergeSortTest {
     }
 
     @Test
-    void MergeSortNameCorrectTest() {
+    void mergeSortNameCorrectTest() {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getName);
 
@@ -55,7 +55,7 @@ public class MergeSortTest {
     }
 
     @Test
-    void MergeSortYearCorrectTest() {
+    void mergeSortYearCorrectTest() {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
@@ -67,7 +67,7 @@ public class MergeSortTest {
     }
 
     @Test
-    void MergeSortHourCorrectTest() {
+    void mergeSortHourCorrectTest() {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
 
@@ -79,7 +79,7 @@ public class MergeSortTest {
     }
 
     @Test
-    void MergeSortIdenticalValuesCorrectTest() {
+    void mergeSortIdenticalValuesCorrectTest() {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
 
@@ -92,7 +92,7 @@ public class MergeSortTest {
     }
 
     @Test
-    void MergeSortEmptyCollectionTest() {
+    void mergeSortEmptyCollectionTest() {
 
         movies.clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
@@ -104,19 +104,18 @@ public class MergeSortTest {
     }
 
     @Test
-    void MergeSortMoviesIsNullTest() {
+    void mergeSortMoviesIsNullTest() {
 
-        movies = null;
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
-        mergeSort.sort(movies, comparator);
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> mergeSort.sort(null, comparator));
 
-        assertNull(movies);
+        assertEquals("Collection<Movie> movies must be non null to sort", exception.getMessage());
     }
 
     @Test
-    void MergeSortSingleElementTest() {
+    void mergeSortSingleElementTest() {
 
         movies.subList(1, movies.size()).clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);

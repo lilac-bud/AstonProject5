@@ -5,10 +5,12 @@ import com.github.lilacbud.astonproject5.movie.ManualFiller;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.RandomFiller;
 import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
+import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.movie.sort.MergeSort;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
+import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 public class Main {
@@ -58,7 +60,11 @@ public class Main {
                 }))
                 .withOption(new Menu.MenuOption<>("Вручную", (client) -> {
                     int size = client.askSize("Укажите количество фильмов: ");
-                    client.setFiller(new ManualFiller(size));
+                    var prompts = new ManualFiller.Prompts(
+                            "Введите название фильма: ", 
+                            "Введите год выпуска: ", 
+                            "Введите продолжительность фильма: ");
+                    client.setFiller(new ManualFiller(size, scanner, prompts));
                 }))
                 .build();
         Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()
@@ -82,12 +88,20 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("По длительности", (client)
                         -> client.setComparator(Movie.compareByHourLength)))
                 .build();
+        Menu<MoviesSaver> setSaveOptionMenu = Menu.StepBuilder.<MoviesSaver>newBuilder()
+                .withTitle("Файл уже существует.")
+                .withPrompt("Выберите одну из опций: ")
+                .withOption(new Menu.MenuOption<>("Перезаписать", (client)
+                        -> client.setSaveOption(StandardOpenOption.TRUNCATE_EXISTING)))
+                .withOption(new Menu.MenuOption<>("Добавить", (client)
+                        -> client.setSaveOption(StandardOpenOption.APPEND)))
+                .build();
         Menu<App> setSaverMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
                     String filepath = client.askFilepath("Укажите путь к файлу: ");
-                    client.setSaver(new DefaultSaver(filepath, scanner));
+                    client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
                 }))
                 .build();
         

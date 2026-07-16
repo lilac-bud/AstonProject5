@@ -7,11 +7,15 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 public class FromFileFiller implements MoviesFiller{
 
     private final Path path;
 
     public FromFileFiller(String filepath){
+
+        requireNonNull(filepath, "Filepath must not be null");
 
         Path resultPath = Paths.get(filepath);
 
@@ -27,6 +31,9 @@ public class FromFileFiller implements MoviesFiller{
 
     @Override
     public void fillMovies(Collection<Movie> movies){
+
+        requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
+
         movies.clear();
         try (Stream<String> lines = Files.lines(path)) {
             lines.map(FromFileFiller::parseMovie)

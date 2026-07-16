@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
 public class RandomFiller implements MoviesFiller {
     private static final Random RANDOM = new Random();
     private static final int MIN_NAME_LENGTH = 5;
@@ -28,6 +30,8 @@ public class RandomFiller implements MoviesFiller {
     }
     @Override
     public void fillMovies(Collection<Movie> movies) {
+        requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
+
         movies.clear();
         Stream.generate(this::generateMovie)
                 .limit(size)

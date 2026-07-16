@@ -77,4 +77,24 @@ class MoviesSorterTest {
         assertEquals(List.of("Интерстеллар", "Криминальное чтиво", "Начало"), names);
         assertTrue(sortWasCalled, "Вызов стратегии сортировки");
     }
+
+    @Test
+    public void performSortingForStrategyIsNull() {
+
+        MoviesSorter sorter = new MoviesSorter(null, comparatorByName);
+
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
+
+        assertEquals("Sorting strategy must be non null to perform sorting", exception.getMessage());
+    }
+
+    @Test
+    public void performSortingForComparatorIsNull() {
+
+        MoviesSorter sorter = new MoviesSorter(testStrategy, null);
+
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
+
+        assertEquals("Comparator must be non null to perform sorting", exception.getMessage());
+    }
 }

@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 public class EvenNumbersSortDecorator  extends SortDecorator {
 
     private final IntegerFieldExtractor extractor;
@@ -20,7 +22,9 @@ public class EvenNumbersSortDecorator  extends SortDecorator {
     @Override
     public void sort(Collection<Movie> movies, Comparator<Movie> comp) {
 
-        if (movies == null || movies.isEmpty()) return;
+        requireNonNull(movies, "Collection<Movie> movies must be non null to sort");
+
+        if (movies.isEmpty()) return;
 
         List<Movie> listMovies = new ArrayList<>(movies);
 
