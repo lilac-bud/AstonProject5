@@ -28,7 +28,9 @@ public class AppIT {
     Path tempDir;
 
     private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     
     private final List<String> expectedFileLines = List.of(
             "Криминальное чтиво;1994;2.5",
@@ -37,7 +39,14 @@ public class AppIT {
             "Криминальное чтиво;1994;2.5",
             "Начало;2010;2.5",
             "Интерстеллар;2014;3.0");
-    private final String expectedOutContent = String.join(System.lineSeparator(), expectedFileLines).replace(".", ",");
+    private final String newline = System.lineSeparator();
+    private final String expectedOutContent = String.join(newline, expectedFileLines).replace(".", ",");
+    private final String expectedErrContent = String.join(newline, List.of(
+            "Input must be a whole number", 
+            "Input cannot be negative", 
+            "No such option", 
+            "No such option", 
+            "There were no films in that year"));
 
     private final String printFormat = "%s;%d;%.1f";
     
@@ -48,12 +57,14 @@ public class AppIT {
     @AfterEach
     public void tearDown() {
         System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
     @Test
     public void testRun() throws Exception {
         System.out.println("run");
         System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
         
         final Path filepath = tempDir.resolve("movies.txt");
         final String filepathString = filepath.toString();
@@ -144,5 +155,6 @@ public class AppIT {
         
         assertEquals(expectedFileLines, Files.readAllLines(filepath));
         assertEquals(expectedOutContent, outContent.toString().trim());
+        assertEquals(expectedErrContent, errContent.toString().trim());
     }
 }
