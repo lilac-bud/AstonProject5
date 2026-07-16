@@ -12,38 +12,44 @@ public class Movie {
     public static final Comparator<Movie> compareByYearOfRelease = Comparator.comparing(Movie::getYearOfRelease);
     public static final Comparator<Movie> compareByHourLength = Comparator.comparingDouble(Movie::getHourLength);
 
-    public String getName() { return name; }
-    public int getYearOfRelease() { return yearOfRelease; }
-    public float getHourLength() { return hourLength; }
+    public String getName() { 
+        return name; 
+    }
+    public int getYearOfRelease() { 
+        return yearOfRelease; 
+    }
+    public float getHourLength() { 
+        return hourLength; 
+    }
 
     @Override
     public String toString() {
         return String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", name, yearOfRelease, hourLength);
     }
 
-    public static class Builder{
+    public static class Builder {
         private String name="";
         private int yearOfRelease;
         private float hourLength;
 
-        public Builder withName(String name){
-            this.name= requireNonNullElse(name, "");;
+        public Builder withName(String name) {
+            this.name= requireNonNullElse(name, "");
             return this;
         }
-        public Builder withYearOfRelease(int year){
+        public Builder withYearOfRelease(int year) {
             this.yearOfRelease=year;
             return this;
         }
-        public Builder withHourLength(float hourLength){
+        public Builder withHourLength(float hourLength) {
             this.hourLength=hourLength;
             return this;
         }
-        public Movie build(){
+        public Movie build() {
             return new Movie(this);
         }
     }
 
-    Movie(Builder builder){
+    Movie(Builder builder) {
         this.name= builder.name;
         this.yearOfRelease=builder.yearOfRelease;
         this.hourLength= builder.hourLength;

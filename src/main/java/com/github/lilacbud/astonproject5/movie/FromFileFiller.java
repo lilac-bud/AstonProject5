@@ -9,11 +9,11 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class FromFileFiller implements MoviesFiller{
+public class FromFileFiller implements MoviesFiller {
 
     private final Path path;
 
-    public FromFileFiller(String filepath){
+    public FromFileFiller(String filepath ){
 
         requireNonNull(filepath, "Filepath must not be null");
 
@@ -30,7 +30,7 @@ public class FromFileFiller implements MoviesFiller{
     }
 
     @Override
-    public void fillMovies(Collection<Movie> movies){
+    public void fillMovies(Collection<Movie> movies) {
 
         requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
 
@@ -43,8 +43,7 @@ public class FromFileFiller implements MoviesFiller{
         }
     }
 
-    private static Movie parseMovie(String line)
-    {
+    private static Movie parseMovie(String line) {
         String[] arrStrings = line.split(";");
 
         if(arrStrings.length != 3) {

@@ -83,9 +83,9 @@ class MoviesSorterTest {
 
         MoviesSorter sorter = new MoviesSorter(null, comparatorByName);
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
+        var thrown = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
 
-        assertEquals("Sorting strategy must be non null to perform sorting", exception.getMessage());
+        assertEquals("Sorting strategy must be non null to perform sorting", thrown.getMessage());
     }
 
     @Test
@@ -93,8 +93,8 @@ class MoviesSorterTest {
 
         MoviesSorter sorter = new MoviesSorter(testStrategy, null);
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
+        var thrown = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
 
-        assertEquals("Comparator must be non null to perform sorting", exception.getMessage());
+        assertEquals("Comparator must be non null to perform sorting", thrown.getMessage());
     }
 }

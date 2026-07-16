@@ -12,8 +12,7 @@ public class RandomFiller implements MoviesFiller {
     private static final Random RANDOM = new Random();
     private static final int MIN_NAME_LENGTH = 5;
     private static final int MAX_NAME_LENGTH = 10;
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
-            + "0123456789" + "abcdefghijklmnopqrstuvxyz"; 
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz"; 
     private static final int MIN_YEAR = MovieInputValidation.MIN_YEAR;
     private static final int MAX_YEAR = 2030;
     private static final float MIN_HOUR_LENGTH = MovieInputValidation.MIN_HOUR_LENGTH;;
@@ -59,8 +58,7 @@ public class RandomFiller implements MoviesFiller {
         return RANDOM.nextInt(MIN_YEAR, MAX_YEAR + 1);
     }
     private float generateHourLength() {
-        final float hourLength = 
-                RANDOM.nextFloat(MIN_HOUR_LENGTH, MAX_HOUR_LENGTH + HL_EPS);
+        final float hourLength = RANDOM.nextFloat(MIN_HOUR_LENGTH, MAX_HOUR_LENGTH + HL_EPS);
         return round(hourLength);
     }
     private float round(float hourLength) {
