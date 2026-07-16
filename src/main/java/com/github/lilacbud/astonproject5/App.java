@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.IllegalFormatException;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
-import java.util.Scanner;
 
 public class App {
     private boolean running = true;
@@ -20,9 +19,6 @@ public class App {
     private final MoviesSorter sorter;
     private MoviesSaver saver;
     
-    private App(StepBuilder builder) {
-        this.sorter = builder.sorter;
-    }
     public App(MoviesSorter sorter) {
         this.sorter = sorter;
     }
@@ -90,54 +86,5 @@ public class App {
     }
     public void tryCommandTillSuccess(Menu.MenuCommand<App> command) {
         tryCommandTillSuccess(null, command);
-    }
-    
-    public static record Menus(Menu<App> mainMenu, Menu<App> setFillerMenu, 
-        Menu<App> setSortMenu, Menu<App> setCompMenu, Menu<App> setSaverMenu) {
-        public Menus {
-            validateMenu(mainMenu);
-            validateMenu(setFillerMenu);
-            validateMenu(setSortMenu);
-            validateMenu(setCompMenu);
-            validateMenu(setSaverMenu);
-        }
-        private static Menu<App> validateMenu(Menu<App> menu) {
-            return requireNonNull(menu, "Menu cannot be null");
-        }
-    }
-    
-    public static interface ScannerBuilder {
-        public MenusBuilder withScanner(Scanner scanner);
-    }
-    public static interface MenusBuilder {
-        public StepBuilder withMenus(Menus menus);
-    }
-    public static class StepBuilder implements ScannerBuilder, MenusBuilder {
-        private Scanner scanner;
-        private Menus menus;
-        private MoviesSorter sorter = new MoviesSorter(null, null);
-        
-        private StepBuilder() {}
-        
-        public static ScannerBuilder newBuilder() {
-            return new StepBuilder();
-        }
-        @Override
-        public MenusBuilder withScanner(Scanner scanner) {
-            this.scanner = requireNonNull(scanner, "Scanner must not be null");
-            return this;
-        }
-        @Override
-        public StepBuilder withMenus(Menus menus) {
-            this.menus = requireNonNull(menus, "Menus must not be null");
-            return this;
-        }
-        public StepBuilder withMoviesSorter(MoviesSorter sorter) {
-            this.sorter = requireNonNull(sorter, "Sorter must not be null");
-            return this;
-        }
-        public App build() {
-            return new App(this);
-        }
     }
 }

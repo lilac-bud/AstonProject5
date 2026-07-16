@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
-import static java.util.Objects.requireNonNullElse;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
@@ -56,7 +55,7 @@ public class AppTest {
     private Menu.MenuOption<App> fillMoviesOption, printMoviesOption, sortMoviesOption, saveMoviesOption, exitOption;
     
     @Mock
-    private Menu<App> mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu;
+    private Menu<App> mainMenu;
     
     @InjectMocks
     private App app;
@@ -73,15 +72,6 @@ public class AppTest {
     private final String saveSuccessMessage = "Movies saved";
     
     private final String newline = System.lineSeparator();
-    
-    private void setUpApp(Scanner scanner) {
-        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
-        app = App.StepBuilder.newBuilder()
-                .withScanner(requireNonNullElse(scanner, new Scanner("")))
-                .withMenus(menus)
-                .withMoviesSorter(sorter)
-                .build();
-    }
     
     private void configureMovieMocksGetName() {
         when(movie1.getName()).thenReturn("Криминальное чтиво");
@@ -382,31 +372,5 @@ public class AppTest {
         assertEquals(sortStrategy, sortStrategyCaptor.getValue());
         assertEquals(comparator, compCaptor.getValue());
         assertEquals(sortedMockMovies, actualMovies);
-    }
-    
-    @Test
-    public void testCreateStepBuilderWithNullScanner() {
-        System.out.println("StepBuilder with null scanner");
-        final var thrown = assertThrows(NullPointerException.class, () -> App.StepBuilder.newBuilder()
-                .withScanner(null));
-        assertEquals("Scanner must not be null", thrown.getMessage());
-    }
-    @Test
-    public void testCreateBuilderWithNullMenus() {
-        System.out.println("StepBuilder with null menus");
-        final var thrown = assertThrows(NullPointerException.class, () -> App.StepBuilder.newBuilder()
-                .withScanner(new Scanner(""))
-                .withMenus(null));
-        assertEquals("Menus must not be null", thrown.getMessage());
-    }
-    @Test
-    public void testCreateBuilderWithNullSorter() {
-        System.out.println("StepBuilder with null sorter");
-        App.Menus menus = new App.Menus(mainMenu, setFillerMenu, setSortMenu, setCompMenu, setSaverMenu);
-        final var thrown = assertThrows(NullPointerException.class, () -> App.StepBuilder.newBuilder()
-                .withScanner(new Scanner(""))
-                .withMenus(menus)
-                .withMoviesSorter(null));
-        assertEquals("Sorter must not be null", thrown.getMessage());
     }
 }
