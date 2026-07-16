@@ -8,29 +8,29 @@ import static org.mockito.Mockito.*;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 class MoviesSorterTest {
     private List<Movie> movies;
     private Comparator<Movie> comparatorByName;
     private SortingStrategy testStrategy;
     private boolean sortWasCalled;
-    private static final Movie movie1 = mock(Movie.class);
-    private static final Movie movie2 = mock(Movie.class);
-    private static final Movie movie3 = mock(Movie.class);
+    
+    @Mock
+    private Movie movie1, movie2, movie3;
 
-    @BeforeAll
-    public static void setUpClass() throws Exception {
+    private void configureMovieMocksName() {
         when(movie1.getName()).thenReturn("Криминальное чтиво");
-        when(movie1.getYearOfRelease()).thenReturn(1994);
-        when(movie1.getHourLength()).thenReturn(2.5f);
-        
         when(movie2.getName()).thenReturn("Интерстеллар");
-        when(movie2.getYearOfRelease()).thenReturn(2014);
-        when(movie2.getHourLength()).thenReturn(3f);
-        
         when(movie3.getName()).thenReturn("Начало");
+    }
+    private void configureMovieMocksYear() {
+        when(movie1.getYearOfRelease()).thenReturn(1994);
+        when(movie2.getYearOfRelease()).thenReturn(2014);
         when(movie3.getYearOfRelease()).thenReturn(2010);
-        when(movie3.getHourLength()).thenReturn(2.5f);
     }
 
     @BeforeEach
@@ -45,7 +45,9 @@ class MoviesSorterTest {
     }
 
     @Test
-    public void setSortingStrategy() {
+    public void testSetSortingStrategy() {
+        configureMovieMocksName();
+        System.out.println("setSortingStrategy");
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         boolean[] newStrategyCalled = {false};
         SortingStrategy newStrategy = (movieList, comp)->{
@@ -60,7 +62,9 @@ class MoviesSorterTest {
     }
 
     @Test
-    public void setComparator() {
+    public void testSetComparator() {
+        configureMovieMocksYear();
+        System.out.println("setComparator");
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         Comparator<Movie> comparatorByYear = Comparator.comparing(Movie::getYearOfRelease);
         sorter.setComparator(comparatorByYear);
@@ -70,7 +74,9 @@ class MoviesSorterTest {
     }
 
     @Test
-    public void performSorting() {
+    public void testPerformSorting() {
+        configureMovieMocksName();
+        System.out.println("performSorting");
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         sorter.performSorting(movies);
         List<String> names = movies.stream().map(Movie::getName).toList();
@@ -79,8 +85,8 @@ class MoviesSorterTest {
     }
 
     @Test
-    public void performSortingForStrategyIsNull() {
-
+    public void testPerformSortingForStrategyIsNull() {
+        System.out.println("performSorting with null sorting strategy");
         MoviesSorter sorter = new MoviesSorter(null, comparatorByName);
 
         var thrown = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
@@ -89,8 +95,8 @@ class MoviesSorterTest {
     }
 
     @Test
-    public void performSortingForComparatorIsNull() {
-
+    public void testPerformSortingForComparatorIsNull() {
+        System.out.println("performSorting with null comparator");
         MoviesSorter sorter = new MoviesSorter(testStrategy, null);
 
         var thrown = assertThrows(NullPointerException.class, () -> sorter.performSorting(movies));
