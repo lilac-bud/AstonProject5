@@ -40,7 +40,8 @@ public class AppIT {
             "Начало;2010;2.5",
             "Интерстеллар;2014;3.0");
     private final String newline = System.lineSeparator();
-    private final String expectedOutContent = String.join(newline, expectedFileLines).replace(".", ",");
+    private final String expectedOutContent = String.join(newline, expectedFileLines).replace(".", ",")
+            + newline + "2";
     private final String expectedErrContent = String.join(newline, List.of(
             "Input must be a whole number", 
             "Input cannot be negative", 
@@ -72,7 +73,7 @@ public class AppIT {
                              qwerty
                              -2
                              0
-                             6
+                             9
                              1
                              3
                              3
@@ -98,7 +99,9 @@ public class AppIT {
                              1
                              %s
                              2
-                             5""".formatted(filepathString, filepathString, filepathString);
+                             5
+                             Криминальное чтиво
+                             6""".formatted(filepathString, filepathString, filepathString);
         
         Scanner scanner = new Scanner(input);
 
@@ -147,6 +150,9 @@ public class AppIT {
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
                     setSaverMenu.chooseOption(scanner).execute(_client);
                     _client.saveMovies();
+                })))
+                .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
+                    _client.countMovie(InputRequest.askString(scanner), null);
                 })))
                 .withOption(new Menu.MenuOption<>((client) -> client.exit()))
                 .build();
