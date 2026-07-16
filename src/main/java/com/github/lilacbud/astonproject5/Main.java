@@ -10,6 +10,7 @@ import com.github.lilacbud.astonproject5.movie.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.movie.sort.MergeSort;
 import com.github.lilacbud.astonproject5.movie.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
+import com.github.lilacbud.astonproject5.util.InputRequest;
 import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
@@ -47,15 +48,15 @@ public class Main {
                 .withTitle("Как заполнить список:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("Из файла", (client) -> {
-                    String filepath = client.askFilepath("Укажите путь к файлу: ");
+                    String filepath = InputRequest.askString(scanner, "Укажите путь к файлу: ");
                     client.setFiller(new FromFileFiller(filepath));
                 }))
                 .withOption(new Menu.MenuOption<>("Случайно", (client) -> {
-                    int size = client.askSize("Укажите количество фильмов: ");
+                    int size = InputRequest.askInteger(scanner, "Укажите количество фильмов: ");
                     client.setFiller(new RandomFiller(size));
                 }))
                 .withOption(new Menu.MenuOption<>("Вручную", (client) -> {
-                    int size = client.askSize("Укажите количество фильмов: ");
+                    int size = InputRequest.askInteger(scanner, "Укажите количество фильмов: ");
                     var prompts = new ManualFiller.Prompts(
                             "Введите название фильма: ", 
                             "Введите год выпуска: ", 
@@ -96,7 +97,7 @@ public class Main {
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
-                    String filepath = client.askFilepath("Укажите путь к файлу: ");
+                    String filepath = InputRequest.askString(scanner, "Укажите путь к файлу: ");
                     client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
                 }))
                 .build();
