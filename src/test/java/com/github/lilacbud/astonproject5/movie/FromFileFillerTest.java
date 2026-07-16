@@ -1,6 +1,5 @@
 package com.github.lilacbud.astonproject5.movie;
 
-import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
@@ -37,25 +36,15 @@ public class FromFileFillerTest {
     }
 
     private void fillMovies(FromFileFiller fff, Collection<Movie> movies) {
-        try (MockedStatic<MovieInputValidation> validation =
-                     mockStatic(MovieInputValidation.class)) {
-            validation.when(() -> MovieInputValidation
-                            .validateName(anyString()))
+        try (MockedStatic<MovieInputValidation> validation = mockStatic(MovieInputValidation.class)) {
+            validation.when(() -> MovieInputValidation.validateName(anyString()))
                     .thenAnswer(i -> Optional.of(i.getArgument(0)));
-            validation.when(() -> MovieInputValidation
-                            .validateYearOfRelease(anyString()))
-                    .thenAnswer(i ->
-                            Optional.of(Integer.valueOf(i.getArgument(0))));
-            validation.when(() -> MovieInputValidation
-                            .validateYearOfRelease("qwerty"))
-                    .thenReturn(Optional.empty());
-            validation.when(() -> MovieInputValidation
-                            .validateHourLength(anyString()))
-                    .thenAnswer(i ->
-                            Optional.of(Float.valueOf(i.getArgument(0))));
-            validation.when(() -> MovieInputValidation
-                            .validateHourLength("qwerty"))
-                    .thenReturn(Optional.empty());
+            validation.when(() -> MovieInputValidation.validateYearOfRelease(anyString()))
+                    .thenAnswer(i -> Optional.of(Integer.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation.validateYearOfRelease("qwerty")).thenReturn(Optional.empty());
+            validation.when(() -> MovieInputValidation.validateHourLength(anyString()))
+                    .thenAnswer(i -> Optional.of(Float.valueOf(i.getArgument(0))));
+            validation.when(() -> MovieInputValidation.validateHourLength("qwerty")).thenReturn(Optional.empty());
 
             fff.fillMovies(movies);
         }
@@ -69,6 +58,7 @@ public class FromFileFillerTest {
     }
 
     @Test
+    @SuppressWarnings("ThrowableResultIgnored")
     public void fromFileFillerInvalidPathTest() {
         assertThrows(InvalidPathException.class, () -> new FromFileFiller("Name:\0InvalidFile.txt"));
     }
@@ -83,26 +73,12 @@ public class FromFileFillerTest {
         fillMovies(fff, movies);
 
         assertEquals(5, movies.size());
-        assertEquals("The Shawshank Redemption", movies.get(0).getName());
-        assertEquals(1994, movies.get(0).getYearOfRelease());
-        assertEquals(2.4f, movies.get(0).getHourLength());
-
-        assertEquals("The Godfather", movies.get(1).getName());
-        assertEquals(1972, movies.get(1).getYearOfRelease());
-        assertEquals(2.9f, movies.get(1).getHourLength());
-
-        assertEquals("The Matrix", movies.get(2).getName());
-        assertEquals(1999, movies.get(2).getYearOfRelease());
-        assertEquals(2.3f, movies.get(2).getHourLength());
-
-        assertEquals("Inception", movies.get(3).getName());
-        assertEquals(2010, movies.get(3).getYearOfRelease());
-        assertEquals(2.5f, movies.get(3).getHourLength());
-
-        assertEquals("Interstellar", movies.get(4).getName());
-        assertEquals(2014, movies.get(4).getYearOfRelease());
-        assertEquals(2.8f, movies.get(4).getHourLength());
-
+        assertEquals(List.of("The Shawshank Redemption", "The Godfather", "The Matrix", "Inception", "Interstellar"),
+                movies.stream().map(Movie::getName).toList());
+        assertEquals(List.of(1994, 1972, 1999, 2010, 2014),
+                movies.stream().map(Movie::getYearOfRelease).toList());
+        assertEquals(List.of(2.4F, 2.9F, 2.3F, 2.5F, 2.8F),
+                movies.stream().map(Movie::getHourLength).toList());
     }
 
     @Test
@@ -121,8 +97,8 @@ public class FromFileFillerTest {
     void fillMoviesFileNotExistTest() {
 
         String filepath = "NotExistFile.txt";
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller(filepath));
-        assertEquals("File does not exist: " + filepath, exception.getMessage());
+        var thrown = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller(filepath));
+        assertEquals("File does not exist: " + filepath, thrown.getMessage());
     }
 
     @Test
@@ -132,10 +108,10 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "The Shawshank Redemption;1994;2.4;1972";
-        assertEquals("Invalid string format: " + line, exception.getMessage());
+        assertEquals("Invalid string format: " + line, thrown.getMessage());
     }
 
     @Test
@@ -145,10 +121,10 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "The Shawshank Redemption;1994";
-        assertEquals("Invalid string format: " + line, exception.getMessage());
+        assertEquals("Invalid string format: " + line, thrown.getMessage());
     }
 
     @Test
@@ -158,10 +134,10 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "qwerty";
-        assertEquals("Invalid year: " + line, exception.getMessage());
+        assertEquals("Invalid year: " + line, thrown.getMessage());
     }
 
     @Test
@@ -171,10 +147,10 @@ public class FromFileFillerTest {
 
         Collection<Movie> movies = new ArrayList<>();
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
 
         String line = "qwerty";
-        assertEquals("Invalid hour: " + line, exception.getMessage());
+        assertEquals("Invalid hour: " + line, thrown.getMessage());
     }
 
     @Test
@@ -182,8 +158,8 @@ public class FromFileFillerTest {
 
         FromFileFiller fff = createFiller("correctMovies.txt");
 
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
+        var thrown = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
 
-        assertEquals("Collection<Movie> movies must be non null to fillMovies", exception.getMessage());
+        assertEquals("Collection<Movie> movies must be non null to fillMovies", thrown.getMessage());
     }
 }
