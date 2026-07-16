@@ -1,52 +1,49 @@
 package com.github.lilacbud.astonproject5.util;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
-import org.junit.jupiter.api.BeforeAll;
+import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class MovieCounterTest {
-
-    private static final Movie movie1 = mock(Movie.class);
-    private static final Movie movie2 = mock(Movie.class);
-    private static final Movie movie3 = mock(Movie.class);
-    private static final Movie movie4 = mock(Movie.class);
-
-    @BeforeAll
-    public static void setUp(){
-        when(movie1.getName()).thenReturn("Интерстеллар");
-        when(movie2.getName()).thenReturn("Начало");
-        when(movie3.getName()).thenReturn("Интерстеллар");
-        when(movie4.getName()).thenReturn("Криминальное чтиво");
-    }
+    @Mock
+    private Movie movie;
 
     @Test
-    public void countInsertNotFound() {
-        List<Movie> movies = List.of(movie1, movie2, movie3, movie4);
+    public void testCountInsertNotFound() {
+        when(movie.getName()).thenReturn("Интерстеллар", "Начало", "Интерстеллар", "Криминальное чтиво");
+        System.out.println("countInsert given movies without target");
+        List<Movie> movies = Collections.nCopies(4, movie);
         int result = MovieCounter.countInsert(movies, "Дюна");
         assertEquals(0,result);
     }
 
     @Test
-    public void countInsertListIsEmpty(){
+    public void testCountInsertListIsEmpty(){
+        System.out.println("countInsert given empty movies");
         int result = MovieCounter.countInsert(List.of(), "Интерстеллар");
         assertEquals(0, result);
     }
 
     @Test
-    public void countInsertTargetIsNull(){
-        List<Movie> movies = List.of(movie1, movie2, movie3, movie4);
+    public void testCountInsertTargetIsNull(){
+        System.out.println("countInsert given null target");
+        List<Movie> movies = Collections.nCopies(4, movie);
         int result = MovieCounter.countInsert(movies, null);
         assertEquals(0, result);
     }
 
     @Test
-    public void countInsertListIsNull(){
+    public void testCountInsertListIsNull(){
+        System.out.println("countInsert given null movies");
         int result = MovieCounter.countInsert(null, "Интерстеллар");
         assertEquals(0,result);
     }
