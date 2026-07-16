@@ -1,7 +1,6 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,29 +9,32 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class MergeSortTest {
 
     private List<Movie> movies;
 
-    private static final Movie movie1 = mock(Movie.class);
-    private static final Movie movie2 = mock(Movie.class);
-    private static final Movie movie3 = mock(Movie.class);
+    @Mock
+    private Movie movie1, movie2, movie3;
 
-    @BeforeAll
-    public static void setUpClass() throws Exception {
+    private void configureMovieMocksName() {
         when(movie1.getName()).thenReturn("Криминальное чтиво");
-        when(movie1.getYearOfRelease()).thenReturn(1994);
-        when(movie1.getHourLength()).thenReturn(2.5f);
-
         when(movie2.getName()).thenReturn("Интерстеллар");
-        when(movie2.getYearOfRelease()).thenReturn(2014);
-        when(movie2.getHourLength()).thenReturn(3f);
-
         when(movie3.getName()).thenReturn("Начало");
+    }
+    private void configureMovieMocksYear() {
+        when(movie1.getYearOfRelease()).thenReturn(1994);
+        when(movie2.getYearOfRelease()).thenReturn(2014);
         when(movie3.getYearOfRelease()).thenReturn(2010);
+    }
+    private void configureMovieMocksLength() {
+        when(movie1.getHourLength()).thenReturn(2.5f);
+        when(movie2.getHourLength()).thenReturn(3f);
         when(movie3.getHourLength()).thenReturn(2.5f);
     }
 
@@ -42,8 +44,9 @@ public class MergeSortTest {
     }
 
     @Test
-    void mergeSortNameCorrectTest() {
-
+    void testMergeSortNameCorrect() {
+        configureMovieMocksName();
+        System.out.println("sort given comparator by name");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getName);
 
 
@@ -55,8 +58,9 @@ public class MergeSortTest {
     }
 
     @Test
-    void mergeSortYearCorrectTest() {
-
+    void testMergeSortYearCorrect() {
+        configureMovieMocksYear();
+        System.out.println("sort given comparator by year");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
@@ -67,20 +71,9 @@ public class MergeSortTest {
     }
 
     @Test
-    void mergeSortHourCorrectTest() {
-
-        Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
-
-        SortingStrategy mergeSort = new MergeSort();
-        mergeSort.sort(movies, comparator);
-
-        assertEquals(3, movies.size());
-        assertEquals(List.of(movie1,movie3,movie2), movies);
-    }
-
-    @Test
-    void mergeSortIdenticalValuesCorrectTest() {
-
+    void testMergeSortHourIdenticalValuesCorrect() {
+        configureMovieMocksLength();
+        System.out.println("sort given comparator by length");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
 
         SortingStrategy mergeSort = new MergeSort();
@@ -92,8 +85,8 @@ public class MergeSortTest {
     }
 
     @Test
-    void mergeSortEmptyCollectionTest() {
-
+    void testMergeSortEmptyCollection() {
+        System.out.println("sort given empty movies");
         movies.clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
@@ -104,8 +97,8 @@ public class MergeSortTest {
     }
 
     @Test
-    void mergeSortMoviesIsNullTest() {
-
+    void testMergeSortMoviesIsNull() {
+        System.out.println("sort given null movies");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
         SortingStrategy mergeSort = new MergeSort();
@@ -115,8 +108,8 @@ public class MergeSortTest {
     }
 
     @Test
-    void mergeSortSingleElementTest() {
-
+    void testMergeSortSingleElement() {
+        System.out.println("sort given one element movies");
         movies.subList(1, movies.size()).clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
