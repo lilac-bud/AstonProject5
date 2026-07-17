@@ -1,14 +1,12 @@
 package com.github.lilacbud.astonproject5.movie;
 
 import java.util.Collection;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.stream.IntStream;
-
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElse;
+import java.util.Optional;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
-//ЗАПОЛНЕНИЕ СПИСКА ФИЛЬМОВ ВРУЧНУЮ
 public class ManualFiller implements MoviesFiller {
     private final int size;
     private final Scanner scanner;
@@ -16,8 +14,9 @@ public class ManualFiller implements MoviesFiller {
     private final Movie.Builder builder = new Movie.Builder();
 
     public ManualFiller(int size, Scanner scanner, Prompts prompts) {
-        if (size < 0)
+        if (size < 0) {
             throw new IllegalArgumentException("Size cannot be negative");
+        }
         this.size = size;
         this.scanner = requireNonNull(scanner, "Scanner cannot be null");
         this.prompts = requireNonNullElse(prompts, new Prompts("", "", ""));
@@ -25,60 +24,48 @@ public class ManualFiller implements MoviesFiller {
 
     @Override
     public void fillMovies(Collection<Movie> movies) {
-
-        requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
-
-        movies.clear();
-        IntStream.range(0, size) //создаем поток чисел от 0 до size-1
-                 .mapToObj(i -> this.fill()) //заменяем каждое число на результат вызова метода
-                 .forEach(movies::add); //добавляем фильм в коллекцию
-
-        //movies.stream().forEach(System.out::println);
+        requireNonNull(movies, "Movies must not be null").clear();
+        Stream.generate(this::createMovie)
+                .limit(size)
+                .forEach(movies::add);
     }
-
-    //получаем данные о фильме
-    private Movie fill() {
-        //получаем название фильма
-        String name; //название фильма
-        Optional<String> verifiedName; //результат метода валидации
+    
+    private Movie createMovie() {
+        return builder
+                .withName(askMovieName())
+                .withYearOfRelease(askMovieYearOfRelease())
+                .withHourLength(askMovieHourLength())
+                .build();
+    }
+    
+    private String askMovieName() {
+        Optional<String> validatedName;
         do {
             System.out.print(prompts.movieNamePrompt);
-            name = scanner.nextLine();
-            verifiedName = MovieInputValidation.validateName(name);
+            validatedName = MovieInputValidation.validateName(scanner.nextLine());
         }
-        while (verifiedName.isEmpty()); //пока не будет введено корректное название
-        name = verifiedName.get();
-
-        //получаем год выпуска
-        int yearOfRelease; //год выпуска
-        String yearStr; //год выпуска в строковом представлении
-        Optional<Integer> verifiedYear; //результат метода валидации
+        while (validatedName.isEmpty());
+        return validatedName.get();
+    }
+    
+    private int askMovieYearOfRelease() {
+        Optional<Integer> validatedYear;
         do {
             System.out.print(prompts.movieYearPrompt);
-            yearStr = scanner.nextLine();
-            verifiedYear = MovieInputValidation.validateYearOfRelease(yearStr);
+            validatedYear = MovieInputValidation.validateYearOfRelease(scanner.nextLine());
         }
-        while (verifiedYear.isEmpty());
-        yearOfRelease = verifiedYear.get();
-
-        //получаем продолжительность
-        float hourLength; //продолжительность
-        String hourStr; //продолжительность в строковом представлении
-        Optional<Float> verifiedHour; //результат метода валидации
+        while (validatedYear.isEmpty());
+        return validatedYear.get();
+    }
+    
+    private float askMovieHourLength() {
+        Optional<Float> validatedHour;
         do {
             System.out.print(prompts.movieHourLengthPrompt);
-            hourStr = scanner.nextLine();
-            verifiedHour = MovieInputValidation.validateHourLength(hourStr);
+            validatedHour = MovieInputValidation.validateHourLength(scanner.nextLine());
         }
-        while (verifiedHour.isEmpty());
-        hourLength = verifiedHour.get();
-
-        //создаем объект
-        return builder
-                .withName(name)
-                .withYearOfRelease(yearOfRelease)
-                .withHourLength(hourLength)
-                .build();
+        while (validatedHour.isEmpty());
+        return validatedHour.get();
     }
     
     public static record Prompts(String movieNamePrompt, String movieYearPrompt, String movieHourLengthPrompt) {

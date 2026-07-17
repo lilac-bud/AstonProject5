@@ -137,6 +137,6 @@ public class ManualFillerTest {
         ManualFiller manualFiller = new ManualFiller(3, new Scanner(input), null);
         NullPointerException exception = assertThrows(NullPointerException.class, () -> manualFiller.fillMovies(null));
 
-        assertEquals("Collection<Movie> movies must be non null to fillMovies", exception.getMessage());
+        assertEquals("Movies must not be null", exception.getMessage());
     }
 }
