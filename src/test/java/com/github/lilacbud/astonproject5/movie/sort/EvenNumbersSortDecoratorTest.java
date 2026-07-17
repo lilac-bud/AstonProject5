@@ -1,14 +1,12 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
@@ -36,6 +34,14 @@ public class EvenNumbersSortDecoratorTest {
     @BeforeEach
     public void setUp() {
         movies = new ArrayList<>(List.of(movie1, movie2, movie3,movie4,movie5,movie6));
+    }
+    
+    @Test
+    void createEvenNumbersSortDecoratorWithNullExtractor() {
+        System.out.println("EvenNumbersSortDecorator with nul extractor");
+        var thrown = assertThrows(NullPointerException.class, () -> 
+                new EvenNumbersSortDecorator(new MergeSort(), null));
+        assertEquals("Extractor must not be null", thrown.getMessage());
     }
 
     @Test
@@ -105,7 +111,7 @@ public class EvenNumbersSortDecoratorTest {
         SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
         var thrown = assertThrows(NullPointerException.class, () -> sortingStrategy.sort(movies, comparator));
 
-        assertEquals("Collection<Movie> movies must be non null to sort", thrown.getMessage());
+        assertEquals("Movies must not be null", thrown.getMessage());
     }
 
 }
