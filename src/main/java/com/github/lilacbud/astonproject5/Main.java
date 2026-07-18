@@ -109,7 +109,8 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("Вывести список фильмов на экран", (client) -> {
                     if (client.moviesIsEmpty())
                         client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
-                    client.printMovies(null, "Список успешно выведен на экран");
+                    client.printMovies("Название: %-30s, год выпуска: %d, продолжительность: %.1f ч.", 
+                            "Список успешно выведен на экран");
                 }))
                 .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
                     if (client.moviesIsEmpty())

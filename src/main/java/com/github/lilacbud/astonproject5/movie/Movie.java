@@ -32,7 +32,7 @@ public class Movie {
 
     @Override
     public String toString() {
-        return String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", name, yearOfRelease, hourLength);
+        return String.format("Movie {Name: %s Year of release: %d Hour length: %f }", name, yearOfRelease, hourLength);
     }
 
     public static class Builder {
