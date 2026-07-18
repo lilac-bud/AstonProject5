@@ -101,7 +101,7 @@ public class MergeSortTest {
         SortingStrategy mergeSort = new MergeSort();
         
         var thrown = assertThrows(NullPointerException.class, () -> mergeSort.sort(null, comparator));
-        assertEquals("Collection<Movie> movies must be non null to sort", thrown.getMessage());
+        assertEquals("Movies must not be null", thrown.getMessage());
     }
 
     @Test

@@ -1,8 +1,6 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -19,24 +17,20 @@ public class EvenNumbersSortDecorator  extends SortDecorator {
     }
 
     @Override
-    public void sort(Collection<Movie> movies, Comparator<Movie> comp) {
+    public void sort(List<Movie> movies, Comparator<Movie> comp) {
         if (requireNonNull(movies, "Movies must not be null").isEmpty()) {
             return;
         }
-        final List<Movie> listMovies = new ArrayList<>(movies);
-        final List<Integer> evenIndices = IntStream.range(0, listMovies.size()).boxed()
-                .filter(i -> numberIsEven(listMovies.get(i)))
+        final List<Integer> evenIndices = IntStream.range(0, movies.size()).boxed()
+                .filter(i -> numberIsEven(movies.get(i)))
                 .toList();
         final List<Movie> evenResult = evenIndices.stream()
-                .map(listMovies::get)
+                .map(movies::get)
                 .collect(Collectors.toList());
         
         sortingStrategy.sort(evenResult, comp);
         Iterator<Movie> evenResultIt = evenResult.iterator();
-        evenIndices.forEach(i -> listMovies.set(i, evenResultIt.next()));
-
-        movies.clear();
-        movies.addAll(listMovies);
+        evenIndices.forEach(i -> movies.set(i, evenResultIt.next()));
     }
 
     private boolean numberIsEven(Movie movie) {

@@ -2,7 +2,6 @@ package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -11,9 +10,8 @@ import static java.util.Objects.requireNonNull;
 public class MergeSort implements SortingStrategy {
 
     @Override
-    public void sort(Collection<Movie> movies, Comparator<Movie> comp) {
-        requireNonNull(movies, "Collection<Movie> movies must be non null to sort");
-        if (movies.isEmpty()) {
+    public void sort(List<Movie> movies, Comparator<Movie> comp) {
+        if (requireNonNull(movies, "Movies must not be null").isEmpty()) {
             return;
         }
 

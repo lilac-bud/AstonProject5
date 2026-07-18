@@ -1,8 +1,8 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 public abstract class SortDecorator implements SortingStrategy {
@@ -13,5 +13,5 @@ public abstract class SortDecorator implements SortingStrategy {
     }
 
     @Override
-    public abstract void sort(Collection<Movie> movies, Comparator<Movie> comp);
+    public abstract void sort(List<Movie> movies, Comparator<Movie> comp);
 }
