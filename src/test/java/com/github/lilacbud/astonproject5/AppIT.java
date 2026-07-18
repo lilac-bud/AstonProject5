@@ -138,17 +138,17 @@ public class AppIT {
                 .build();
         Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
-                    setFillerMenu.chooseOption(scanner).execute(_client);
+                    setFillerMenu.chooseOptionAndExecute(scanner, _client);
                     _client.fillMovies();
                 })))
                 .withOption(new Menu.MenuOption<>((client) -> client.printMovies(printFormat, null)))
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
-                    setSortMenu.chooseOption(scanner).execute(_client);
-                    setCompMenu.chooseOption(scanner).execute(_client);
+                    setSortMenu.chooseOptionAndExecute(scanner, _client);
+                    setCompMenu.chooseOptionAndExecute(scanner, _client);
                     _client.sortMovies();
                 })))
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
-                    setSaverMenu.chooseOption(scanner).execute(_client);
+                    setSaverMenu.chooseOptionAndExecute(scanner, _client);
                     _client.saveMovies();
                 })))
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
@@ -157,7 +157,7 @@ public class AppIT {
                 .withOption(new Menu.MenuOption<>((client) -> client.exit()))
                 .build();
         
-        new App().run((client) -> mainMenu.chooseOption(scanner).execute(client));
+        new App().run((client) -> mainMenu.chooseOptionAndExecute(scanner, client));
         
         assertEquals(expectedFileLines, Files.readAllLines(filepath));
         assertEquals(expectedOutContent, outContent.toString().trim());

@@ -32,7 +32,7 @@ public class DefaultSaver implements MoviesSaver {
     public void save(Collection<Movie> movies){
         requireNonNull(movies, "Movies must not be null");
         if (Files.exists(filePath) && setSaveOptionMenu != null) {
-            setSaveOptionMenu.chooseOption(scanner).execute(this);
+            setSaveOptionMenu.chooseOptionAndExecute(scanner, this);
         }
         try (BufferedWriter writer=Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, saveOption)) {
             for (Movie movie : movies) {

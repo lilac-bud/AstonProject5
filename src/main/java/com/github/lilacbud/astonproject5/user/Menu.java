@@ -43,6 +43,10 @@ public class Menu<T> {
         }
     }
     
+    public void chooseOptionAndExecute(Scanner scanner, T client) {
+        chooseOption(scanner).execute(client);
+    }
+    
     public static class MenuOption<T> {
         private final Optional<String> title;
         private final MenuCommand<T> command;

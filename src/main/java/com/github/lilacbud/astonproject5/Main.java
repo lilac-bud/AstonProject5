@@ -86,18 +86,18 @@ public class Main {
                 .build();
         
         MenuCommand<App> fillCommand = (client) -> {
-            setFillerMenu.chooseOption(scanner).execute(client);
+            setFillerMenu.chooseOptionAndExecute(scanner, client);
             client.fillMovies();
         };
         
         MenuCommand<App> sortCommand = (client) -> {
-            setSortMenu.chooseOption(scanner).execute(client);
-            setCompMenu.chooseOption(scanner).execute(client);
+            setSortMenu.chooseOptionAndExecute(scanner, client);
+            setCompMenu.chooseOptionAndExecute(scanner, client);
             client.sortMovies();
         };
         
         MenuCommand<App> saveCommand = (client) -> {
-            setSaverMenu.chooseOption(scanner).execute(client);
+            setSaverMenu.chooseOptionAndExecute(scanner, client);
             client.saveMovies();
         };
         
@@ -130,7 +130,7 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("Закончить работу", (client) -> client.exit()))
                 .build();
 
-        new App().run((client) -> mainMenu.chooseOption(scanner).execute(client));
+        new App().run((client) -> mainMenu.chooseOptionAndExecute(scanner, client));
     }
     
 }

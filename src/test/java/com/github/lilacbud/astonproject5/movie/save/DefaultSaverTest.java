@@ -18,14 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultSaverTest {
-
     @TempDir
     Path tempDir;
 
     @Mock
     private Movie movie1, movie2, movie3;
-    @Mock
-    private Menu.MenuOption<MoviesSaver> overwriteOption, addOption;
     @Mock
     private Menu<MoviesSaver> setSaveOptionMenu;
 
@@ -47,33 +44,24 @@ class DefaultSaverTest {
         when(movie3.getHourLength()).thenReturn(2.5f);
     }
     
-    private void configureOverwriteOption() {
-        doAnswer(i -> {
-            MoviesSaver client = i.getArgument(0);
-            client.setSaveOption(StandardOpenOption.TRUNCATE_EXISTING);
-            return null;
-        }).when(overwriteOption).execute(any());
-    }
-    
-    private void configureAddOption() {
-        doAnswer(i -> {
-            MoviesSaver client = i.getArgument(0);
-            client.setSaveOption(StandardOpenOption.APPEND);
-            return null;
-        }).when(addOption).execute(any());
-    }
-    
     private void configureSetSaveOptionMenuMock() {
-        when(setSaveOptionMenu.chooseOption(any())).thenAnswer(i -> {
+        doAnswer(i -> {
             Scanner scanner = i.getArgument(0);
+            MoviesSaver client = i.getArgument(1);
             while (true) {
                 switch (scanner.nextLine()) {
-                    case "1" -> { return overwriteOption; }
-                    case "2" -> { return addOption; }
+                    case "1" -> { 
+                        client.setSaveOption(StandardOpenOption.TRUNCATE_EXISTING);
+                        return null;
+                    }
+                    case "2" -> { 
+                        client.setSaveOption(StandardOpenOption.APPEND);
+                        return null;
+                    }
                     default -> {}
                 }
             }
-        });
+        }).when(setSaveOptionMenu).chooseOptionAndExecute(any(), any());
     }
 
     @Test
@@ -111,7 +99,6 @@ class DefaultSaverTest {
     public void testSaveWithTruncateOption() throws Exception {
         System.out.println("save with truncate option");
         configureMovieMock1();
-        configureOverwriteOption();
         configureSetSaveOptionMenuMock();
         
         Path file = tempDir.resolve("movies.txt");
@@ -128,7 +115,6 @@ class DefaultSaverTest {
     public void testSaveWithAppendOption() throws Exception {
         System.out.println("save with append option");
         configureMovieMock1();
-        configureAddOption();
         configureSetSaveOptionMenuMock();
         
         Path file = tempDir.resolve("movies.txt");

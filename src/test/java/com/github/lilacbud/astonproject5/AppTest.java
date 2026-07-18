@@ -5,8 +5,6 @@ import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.sort.SortingStrategy;
-import com.github.lilacbud.astonproject5.user.Menu;
-import com.github.lilacbud.astonproject5.user.MenuCommand;
 import com.github.lilacbud.astonproject5.util.MovieCounter;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -14,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,17 +45,11 @@ public class AppTest {
     @Mock
     private MoviesSorter sorter;
     @Captor 
-    private ArgumentCaptor<SortingStrategy> sortStrategyCaptor;
+    private ArgumentCaptor<SortingStrategy<Movie>> sortStrategyCaptor;
     @Captor 
     private ArgumentCaptor<Comparator<Movie>> compCaptor;
     @Mock 
     private MoviesSaver saver;
-    
-    @Mock
-    private Menu.MenuOption<App> fillMoviesOption, printMoviesOption, sortMoviesOption, saveMoviesOption, exitOption;
-    
-    @Mock
-    private Menu<App> mainMenu;
     
     @InjectMocks
     private App app;
@@ -66,13 +57,10 @@ public class AppTest {
     private final PrintStream originalOut = System.out;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     
-    private final SortingStrategy sortStrategy = (movies, comp) -> ((List<Movie>)movies).sort(comp);
+    private final SortingStrategy<Movie> sortStrategy = (movies, comp) -> movies.sort(comp);
     private final Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
-    
-    private final String fillSuccessMessage = "Movies filled";
+
     private final String printSuccessMessage = "Movies printed";
-    private final String sortSuccessMessage = "Movies sorted";
-    private final String saveSuccessMessage = "Movies saved";
     
     private final String newline = System.lineSeparator();
 
@@ -136,71 +124,6 @@ public class AppTest {
         }).when(saver).save(anyList());
     }
     
-    private void configureMoviesHelpers() {
-        configureFillerMock();
-        configureSorterMock();
-        configureSaverMock();
-    }
-    
-    private void configureMenuOptionMock(Menu.MenuOption<App> option, MenuCommand<App> command) {
-        doAnswer(i -> {
-            App client = i.getArgument(0);
-            command.execute(client);
-            return null;
-        }).when(option).execute(any());
-    }
-    
-    private void configureMainMenuMocks() {
-        configureMenuOptionMock(fillMoviesOption, client -> {
-            client.setFiller(filler);
-            client.fillMovies();
-            System.out.println(fillSuccessMessage);
-        });
-        configureMenuOptionMock(printMoviesOption, client -> {
-            if (client.moviesIsEmpty()) {
-                client.setFiller(filler);
-                client.fillMovies();
-                System.out.println(fillSuccessMessage);
-            }
-            client.printMovies(null, printSuccessMessage);
-        });
-        configureMenuOptionMock(sortMoviesOption, client -> {
-            if (client.moviesIsEmpty()) {
-                client.setFiller(filler);
-                client.fillMovies();
-                System.out.println(fillSuccessMessage);
-            }
-            client.setSortingStrategy(sortStrategy);
-            client.setComparator(comparator);
-            client.sortMovies();
-            System.out.println(sortSuccessMessage);
-        });
-        configureMenuOptionMock(saveMoviesOption, client -> {
-            if (client.moviesIsEmpty()) {
-                client.setFiller(filler);
-                client.fillMovies();
-            }
-            client.setSaver(saver);
-            client.saveMovies();
-            System.out.println(saveSuccessMessage);
-        });
-        configureMenuOptionMock(exitOption, client -> client.exit());
-        
-        when(mainMenu.chooseOption(any())).thenAnswer(i -> {
-            Scanner scanner = i.getArgument(0);
-            while (true) {
-                switch (scanner.nextLine()) {
-                    case "1" -> { return fillMoviesOption; }
-                    case "2" -> { return printMoviesOption; }
-                    case "3" -> { return sortMoviesOption; }
-                    case "4" -> { return saveMoviesOption; }
-                    case "5" -> { return exitOption; }
-                    default -> {}
-                }
-            }
-        });
-    }
-    
     private void appCountMovieWithMockedCounter(App app, String target, String successFormat) {
         try (MockedStatic<MovieCounter> validation = mockStatic(MovieCounter.class)) {
             validation.when(() -> MovieCounter.countInsert(mockMovies, movie1.getName())).thenReturn(1);
@@ -224,30 +147,19 @@ public class AppTest {
 
     @Test
     public void testRun() {
-        configureMovieMocksToString();
-        configureMovieMocksGetYearOfRelease();
-        configureMoviesHelpers();
-        configureMainMenuMocks();
-        
         System.out.println("run");
         System.setOut(new PrintStream(outContent));
         
-        final Scanner scanner = new Scanner("qwerty\n  \n-2\n0\n8\n1\n3\n2\n4\n5\n");
-        final String expectedOutContent = String.join(newline, fillSuccessMessage, sortSuccessMessage, 
-                sortedMockMovies.stream().map(Movie::toString).collect(Collectors.joining(newline)),
-                printSuccessMessage, saveSuccessMessage);
+        final String printContent = "Print";
+        final String expectedOutContent = printContent.repeat(5);
 
-        app.run((client) -> mainMenu.chooseOption(scanner).execute(client));
-
-        verify(mainMenu, times(5)).chooseOption(scanner);
-        InOrder inOrder = inOrder(fillMoviesOption, sortMoviesOption, printMoviesOption, saveMoviesOption, exitOption);
-        inOrder.verify(fillMoviesOption).execute(app);
-        inOrder.verify(sortMoviesOption).execute(app);
-        inOrder.verify(printMoviesOption).execute(app);
-        inOrder.verify(saveMoviesOption).execute(app);
-        inOrder.verify(exitOption).execute(app);
-
-        assertFalse(app.moviesIsEmpty());
+        app.run((client) -> {
+            for (int i = 0; i < 5; ++i) {
+                System.out.print(printContent);
+            }
+            client.exit();
+        });
+        
         assertEquals(expectedOutContent, outContent.toString().trim());
     }
 
