@@ -5,49 +5,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import static java.util.Objects.requireNonNull;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-
 public class FromFileFiller implements MoviesFiller {
-
     private final Path path;
     private final Movie.Builder builder = new Movie.Builder();
 
-    public FromFileFiller(String filepath ){
-
-        requireNonNull(filepath, "Filepath must not be null");
-
-        Path resultPath = Paths.get(filepath);
-
-        if (!Files.exists(resultPath)) {
+    public FromFileFiller(String filepath ) {
+        path = Paths.get(requireNonNull(filepath, "Filepath must not be null"));
+        if (!Files.exists(path)) {
             throw new IllegalArgumentException("File does not exist: " + filepath);
         }
-        if (!Files.isReadable(resultPath)) {
+        if (!Files.isReadable(path)) {
             throw new IllegalArgumentException("File is not readable: " + filepath);
         }
-
-        this.path = resultPath;
     }
 
     @Override
     public void fillMovies(Collection<Movie> movies) {
-
-        requireNonNull(movies, "Collection<Movie> movies must be non null to fillMovies");
-
-        movies.clear();
+        requireNonNull(movies, "Movies must not be null").clear();
         try (Stream<String> lines = Files.lines(path)) {
-                    lines.map(this::parseMovie)
-                    .forEach(movies::add);
+            lines.map(this::parseMovie).forEach(movies::add);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot load movies from file: " + path, e);
         }
     }
 
     private Movie parseMovie(String line) {
-        String[] arrStrings = line.split(";");
+        final String[] arrStrings = line.split(";");
 
-        if(arrStrings.length != 3) {
+        if (arrStrings.length != 3) {
             throw new IllegalArgumentException("Invalid string format: " + line);
         }
 

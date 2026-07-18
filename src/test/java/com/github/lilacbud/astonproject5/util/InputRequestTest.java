@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import java.util.Optional;
 import java.util.Scanner;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.mockStatic;
@@ -26,6 +26,7 @@ public class InputRequestTest {
         var thrown = assertThrows(NullPointerException.class, () -> InputRequest.askString(null));
         assertEquals("Scanner must not be null", thrown.getMessage());
     }
+    
     @Test
     public void testAskStringGivenValidScanner() {
         System.out.println("askString given valid scanner");

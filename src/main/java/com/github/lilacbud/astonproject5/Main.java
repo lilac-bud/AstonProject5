@@ -43,6 +43,7 @@ public class Main {
                     client.setFiller(new ManualFiller(size, scanner, prompts));
                 }))
                 .build();
+        
         Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Нужно отсортировать:")
                 .withPrompt("Выберите одну из опций: ")
@@ -54,6 +55,7 @@ public class Main {
                     client.setSortingStrategy(sortStrategy);
                 }))
                 .build();
+        
         Menu<App> setCompMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Отсортировать список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
@@ -64,6 +66,7 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("По длительности", (client)
                         -> client.setComparator(Movie.compareByHourLength)))
                 .build();
+        
         Menu<MoviesSaver> setSaveOptionMenu = Menu.StepBuilder.<MoviesSaver>newBuilder()
                 .withTitle("Файл уже существует.")
                 .withPrompt("Выберите одну из опций: ")
@@ -72,6 +75,7 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("Добавить", (client)
                         -> client.setSaveOption(StandardOpenOption.APPEND)))
                 .build();
+        
         Menu<App> setSaverMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Сохранить список фильмов:")
                 .withPrompt("Выберите одну из опций: ")
@@ -80,10 +84,23 @@ public class Main {
                     client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
                 }))
                 .build();
-        MenuCommand<App> fillCommand = (_client) -> {
-                        setFillerMenu.chooseOption(scanner).execute(_client);
-                        _client.fillMovies();
-                    };
+        
+        MenuCommand<App> fillCommand = (client) -> {
+            setFillerMenu.chooseOption(scanner).execute(client);
+            client.fillMovies();
+        };
+        
+        MenuCommand<App> sortCommand = (client) -> {
+            setSortMenu.chooseOption(scanner).execute(client);
+            setCompMenu.chooseOption(scanner).execute(client);
+            client.sortMovies();
+        };
+        
+        MenuCommand<App> saveCommand = (client) -> {
+            setSaverMenu.chooseOption(scanner).execute(client);
+            client.saveMovies();
+        };
+        
         Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Главное меню:")
                 .withPrompt("Выберите одну из опций: ")
@@ -97,19 +114,12 @@ public class Main {
                 .withOption(new Menu.MenuOption<>("Отсортировать список фильмов", (client) -> {
                     if (client.moviesIsEmpty())
                         client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
-                    client.tryCommandTillSuccess("Список успешно отсортирован", (_client) -> {
-                        setSortMenu.chooseOption(scanner).execute(_client);
-                        setCompMenu.chooseOption(scanner).execute(_client);
-                        _client.sortMovies();
-                    });
+                    client.tryCommandTillSuccess("Список успешно отсортирован", sortCommand);
                 }))
                 .withOption(new Menu.MenuOption<>("Сохранить фильмы", (client) -> {
                     if (client.moviesIsEmpty())
                         client.tryCommandTillSuccess("Список успешно заполнен", fillCommand);
-                    client.tryCommandTillSuccess("Список успешно сохранён", (_client) -> {
-                        setSaverMenu.chooseOption(scanner).execute(_client);
-                        _client.saveMovies();
-                    });
+                    client.tryCommandTillSuccess("Список успешно сохранён", saveCommand);
                 }))
                 .withOption(new Menu.MenuOption<>("Подсчитать вхождения фильма", (client) -> {
                     if (client.moviesIsEmpty())

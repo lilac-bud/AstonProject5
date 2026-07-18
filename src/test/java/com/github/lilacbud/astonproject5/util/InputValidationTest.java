@@ -4,17 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class InputValidationTest {
-    
     private final PrintStream originalErr = System.err;
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    
-    public InputValidationTest() {
-    }
     
     @BeforeEach
     public void setUp() {
@@ -34,6 +30,7 @@ public class InputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateInputGivenBlankString() {
         System.out.println("validateInput given blank string");
@@ -42,6 +39,7 @@ public class InputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateInputGivenValidString() {
         System.out.println("validateInput given valid string");
@@ -61,6 +59,7 @@ public class InputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateIntegerInputGivenBlankString() {
         System.out.println("validateIntegerInput given blank string");
@@ -69,6 +68,7 @@ public class InputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateIntegerInputGivenUnconvertableString() {
         System.out.println("validateIntegerInput given unconvertable string");
@@ -77,6 +77,7 @@ public class InputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input must be a whole number", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateIntegerInputGivenNegativeInteger() {
         System.out.println("validateIntegerInput given negative integer");
@@ -85,6 +86,7 @@ public class InputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be negative", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateIntegerInputGivenValidInteger() {
         System.out.println("validateIntegerInput given valid integer");

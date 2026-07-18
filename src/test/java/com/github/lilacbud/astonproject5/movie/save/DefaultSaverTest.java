@@ -2,18 +2,16 @@ package com.github.lilacbud.astonproject5.movie.save;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.user.Menu;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Scanner;
-
 import static org.junit.jupiter.api.Assertions.*;
-import java.nio.file.InvalidPathException;
-import java.nio.file.StandardOpenOption;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,16 +34,19 @@ class DefaultSaverTest {
         when(movie1.getYearOfRelease()).thenReturn(1994);
         when(movie1.getHourLength()).thenReturn(2.5f);
     }
+    
     private void configureMovieMock2() {
         when(movie2.getName()).thenReturn("Интерстеллар");
         when(movie2.getYearOfRelease()).thenReturn(2014);
         when(movie2.getHourLength()).thenReturn(3f);
     }
+    
     private void configureMovieMock3() {
         when(movie3.getName()).thenReturn("Начало");
         when(movie3.getYearOfRelease()).thenReturn(2010);
         when(movie3.getHourLength()).thenReturn(2.5f);
     }
+    
     private void configureOverwriteOption() {
         doAnswer(i -> {
             MoviesSaver client = i.getArgument(0);
@@ -53,6 +54,7 @@ class DefaultSaverTest {
             return null;
         }).when(overwriteOption).execute(any());
     }
+    
     private void configureAddOption() {
         doAnswer(i -> {
             MoviesSaver client = i.getArgument(0);
@@ -60,6 +62,7 @@ class DefaultSaverTest {
             return null;
         }).when(addOption).execute(any());
     }
+    
     private void configureSetSaveOptionMenuMock() {
         when(setSaveOptionMenu.chooseOption(any())).thenAnswer(i -> {
             Scanner scanner = i.getArgument(0);
@@ -75,24 +78,24 @@ class DefaultSaverTest {
 
     @Test
     public void testCreateSaverWithNullFilepath() {
-        System.out.println("testCreateSaver with null filepath");
+        System.out.println("DefaultSaver with null filepath");
         var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, new Scanner(""), null));
         assertEquals("Filepath must not be null", thrown.getMessage());
     }
     
     @Test
     public void testCreateSaverWithNullScanner() {
-        System.out.println("testCreateSaver with null scanner");
+        System.out.println("DefaultSaver with null scanner");
         var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver("", null, null));
         assertEquals("Scanner must not be null", thrown.getMessage());
     }
     
     @Test
-    public void testSaveCreate() throws Exception {
-        System.out.println("testSaveCreate");
+    public void testSave() throws Exception {
         configureMovieMock1();
         configureMovieMock2();
         configureMovieMock3();
+        System.out.println("save");
         
         Path file = tempDir.resolve("movies.txt");
         List<Movie> movies = List.of(movie1,movie2,movie3);
@@ -105,8 +108,8 @@ class DefaultSaverTest {
     }
 
     @Test
-    public void testSaveOverwrite() throws Exception {
-        System.out.println("testSaveOverwrite");
+    public void testSaveWithTruncateOption() throws Exception {
+        System.out.println("save with truncate option");
         configureMovieMock1();
         configureOverwriteOption();
         configureSetSaveOptionMenuMock();
@@ -122,8 +125,8 @@ class DefaultSaverTest {
     }
 
     @Test
-    public void testSaveAdd() throws Exception {
-        System.out.println("testSaveAdd");
+    public void testSaveWithAppendOption() throws Exception {
+        System.out.println("save with append option");
         configureMovieMock1();
         configureAddOption();
         configureSetSaveOptionMenuMock();
@@ -142,19 +145,19 @@ class DefaultSaverTest {
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
     public void testSaveGivenInvalidFilepath() {
-        System.out.println("testSave given invalid filepath");
+        System.out.println("save given invalid filepath");
         assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:InvalidFile.txt", new Scanner(""), null));
     }
 
     @Test
     public void testSaveGivenNullMovies() {
-        System.out.println("testSave given null movies");
+        System.out.println("save given null movies");
         Path file = tempDir.resolve("movies.txt");
         List<Movie> movies = null;
 
         DefaultSaver ds = new DefaultSaver(file.toString(), new Scanner(""), null);
 
         var thrown = assertThrows(NullPointerException.class, () -> ds.save(movies));
-        assertEquals("Collection<Movie> movies must be non null to save", thrown.getMessage());
+        assertEquals("Movies must not be null", thrown.getMessage());
     }
 }

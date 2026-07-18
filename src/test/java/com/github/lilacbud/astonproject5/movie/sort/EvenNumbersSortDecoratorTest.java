@@ -25,6 +25,7 @@ public class EvenNumbersSortDecoratorTest {
         when(movie5.getYearOfRelease()).thenReturn(2001);
         when(movie6.getYearOfRelease()).thenReturn(1999);
     }
+    
     private void configureEvenYearMovieMocks() {
         when(movie1.getYearOfRelease()).thenReturn(2010);
         when(movie3.getYearOfRelease()).thenReturn(1994);
@@ -38,7 +39,7 @@ public class EvenNumbersSortDecoratorTest {
     
     @Test
     void createEvenNumbersSortDecoratorWithNullExtractor() {
-        System.out.println("EvenNumbersSortDecorator with nul extractor");
+        System.out.println("EvenNumbersSortDecorator with null extractor");
         var thrown = assertThrows(NullPointerException.class, () -> 
                 new EvenNumbersSortDecorator(new MergeSort(), null));
         assertEquals("Extractor must not be null", thrown.getMessage());

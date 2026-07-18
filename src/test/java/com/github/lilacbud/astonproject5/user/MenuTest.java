@@ -6,8 +6,8 @@ import java.io.PrintStream;
 import java.util.Optional;
 import java.util.Scanner;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.mockStatic;
@@ -58,6 +58,7 @@ public class MenuTest {
         final var thrown = assertThrows(NullPointerException.class, () -> new Menu.MenuOption<MenuTest>("Title", null));
         assertEquals("Command must not be null", thrown.getMessage());
     }
+    
     @Test
     public void testMenuOptionExecute() {
         System.out.println("MenuOption.execute");
@@ -65,6 +66,7 @@ public class MenuTest {
         option.execute(this);
         assertEquals(1, value);
     }
+    
     @Test
     public void testStepBuilderWithNullOption() {
         System.out.println("StepBuilder with null prompt");
@@ -72,6 +74,7 @@ public class MenuTest {
                 -> Menu.StepBuilder.newBuilder().withTitle("Title").withPrompt("Prompt").withOption(null));
         assertEquals("Option cannot be null", thrown.getMessage());
     }
+    
     @Test
     public void testChooseOptionWithOneOption() {
         System.out.println("chooseOption with one option");
@@ -85,12 +88,14 @@ public class MenuTest {
         assertEquals(expectedOption, option);
         assertEquals(1, value);
     }
+    
     @Test
     public void testChooseOptionGivenNullScanner() {
         System.out.println("chooseOption given null scanner");
         final var thrown = assertThrows(NullPointerException.class, () -> menu.chooseOption(null));
         assertEquals("Scanner cannot be null", thrown.getMessage());
     }
+    
     @Test
     public void testChooseOptionGivenValidScanner() {
         System.out.println("chooseOption given correct scanner");
@@ -114,6 +119,7 @@ public class MenuTest {
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());
     }
+    
     @Test
     public void testChooseOptionWithOptionsWithNullTitleGivenValidScanner() {
         System.out.println("chooseOption with options with null title given correct scanner");
@@ -144,6 +150,7 @@ public class MenuTest {
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());
     }
+    
     @Test
     public void testChooseOptionWithNullTitleAndPromptGivenValidScanner() {
         System.out.println("chooseOption with null title and prompt given correct scanner");
@@ -169,6 +176,7 @@ public class MenuTest {
         assertEquals(expectedErrContent, errContent.toString());
         assertEquals(expectedOutContent, outContent.toString());
     }
+    
     @Test
     public void testChooseOptionWithNullTitlesAndPromptGivenValidScanner() {
         System.out.println("chooseOption with null titles and prompt given correct scanner");

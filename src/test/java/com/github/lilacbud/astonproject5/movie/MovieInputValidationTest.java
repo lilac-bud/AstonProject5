@@ -4,18 +4,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MovieInputValidationTest {
     
     private final PrintStream originalErr = System.err;
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
-    
-    public MovieInputValidationTest() {
-    }
-    
+
     @BeforeEach
     public void setUp() {
         System.setErr(new PrintStream(errContent));
@@ -34,6 +31,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateNameGivenBlankString() {
         System.out.println("validateName given blank string");
@@ -61,6 +59,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateYearOfReleaseGivenBlankString() {
         System.out.println("validateYearOfRelease given blank string");
@@ -69,6 +68,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateYearOfReleaseGivenUnconvertableString() {
         System.out.println("validateYearOfRelease given unconvertable string");
@@ -77,6 +77,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input must be a whole number", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateYearOfReleaseGivenYearLessThanMinYear() {
         System.out.println("validateYearOfRelease given year less than min year");
@@ -85,6 +86,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("There were no films in that year", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateYearOfReleaseGivenValidYear() {
         System.out.println("validateYearOfRelease given valid year");
@@ -103,6 +105,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateHourLengthGivenBlankString() {
         System.out.println("validateHourLength given blank string");
@@ -111,6 +114,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Input cannot be empty", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateHourLengthGivenUnconvertableString() {
         System.out.println("validateHourLength given unconvertable string");
@@ -119,6 +123,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("That's not an hour length", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateHourLengthGivenNegativeHourLength() {
         System.out.println("validateHourLength given negative hour length");
@@ -127,6 +132,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Hour length cannot be negative", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateHourLengthGivenHourLengthLessThanMinHourLength() {
         System.out.println("validateHourLength given hour length less than min hour length");
@@ -135,6 +141,7 @@ public class MovieInputValidationTest {
         assertTrue(result.isEmpty());
         assertEquals("Hour length cannot be that small", errContent.toString().trim());
     }
+    
     @Test
     public void testValidateHourLengthGivenValidHourLength() {
         System.out.println("validateHourLength given valid hour length");

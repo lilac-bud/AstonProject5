@@ -5,6 +5,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 
 public interface MoviesSaver {
-    public void setSaveOption(StandardOpenOption saveOption);
-    public void save(Collection<Movie> movies);
+    void setSaveOption(StandardOpenOption saveOption);
+    void save(Collection<Movie> movies);
 }

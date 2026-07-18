@@ -1,7 +1,7 @@
 package com.github.lilacbud.astonproject5.util;
 
-import java.util.List;
 import com.github.lilacbud.astonproject5.movie.Movie;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,18 +13,20 @@ public final class MovieCounter {
     }
 
     public static int countInsert(List<Movie> movies, String target) {
-        if (movies == null || movies.isEmpty() || target == null) return 0;
-
+        if (movies == null || movies.isEmpty() || target == null) {
+            return 0;
+        }
         int threadCount = Runtime.getRuntime().availableProcessors();
         AtomicInteger totalCount = new AtomicInteger(0);
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         int chunkSize = (int) Math.ceil((double) movies.size() / threadCount);
 
-        for (int i = 0; i < threadCount; i++) {
+        for (int i = 0; i < threadCount; ++i) {
             int from = i * chunkSize;
             int to = Math.min(from + chunkSize, movies.size());
-            if (from >= movies.size()) break;
-
+            if (from >= movies.size()) {
+                break;
+            }
             executor.submit(() -> {
                 int localCount = 0;
                 for (int j = from; j < to; j++) {

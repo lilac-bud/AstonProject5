@@ -2,11 +2,9 @@ package com.github.lilacbud.astonproject5.util;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.Collections;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
@@ -47,5 +45,4 @@ public class MovieCounterTest {
         int result = MovieCounter.countInsert(null, "Интерстеллар");
         assertEquals(0,result);
     }
-
 }

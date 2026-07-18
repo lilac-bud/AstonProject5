@@ -2,16 +2,14 @@ package com.github.lilacbud.astonproject5.movie.save;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.user.Menu;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collection;
 import java.nio.file.Path;
-import java.util.Scanner;
 import java.nio.file.StandardOpenOption;
-
+import java.util.Collection;
 import static java.util.Objects.requireNonNull;
+import java.util.Scanner;
 
 public class DefaultSaver implements MoviesSaver {
     private final Path filePath;
@@ -29,17 +27,16 @@ public class DefaultSaver implements MoviesSaver {
     public void setSaveOption(StandardOpenOption saveOption) {
         this.saveOption = saveOption;
     }
+    
     @Override
     public void save(Collection<Movie> movies){
-
-        requireNonNull(movies, "Collection<Movie> movies must be non null to save");
-        
-        if (Files.exists(filePath) && setSaveOptionMenu != null)
+        requireNonNull(movies, "Movies must not be null");
+        if (Files.exists(filePath) && setSaveOptionMenu != null) {
             setSaveOptionMenu.chooseOption(scanner).execute(this);
-
+        }
         try (BufferedWriter writer=Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, saveOption)) {
-            for (Movie movie:movies) {
-                writer.write(movie.getName()+";"+movie.getYearOfRelease()+";"+movie.getHourLength());
+            for (Movie movie : movies) {
+                writer.write(movie.getName() + ";" + movie.getYearOfRelease() + ";" + movie.getHourLength());
                 writer.newLine();
             }
         } catch (IOException e) {

@@ -4,11 +4,11 @@ import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElse;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
-import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
 
 public class Menu<T> {
     private final String title;
@@ -22,14 +22,16 @@ public class Menu<T> {
     }
     
     public MenuOption<T> chooseOption(Scanner scanner) {
-        if (options.size() == 1)
+        if (options.size() == 1) {
             return options.get(0);
+        }
         requireNonNull(scanner, "Scanner cannot be null");
         Optional<Integer> validatedInput;
         while (true) {
             do {
-                if (title != null)
+                if (title != null) {
                     System.out.println(title);
+                }
                 IntStream.range(0, options.size())
                         .filter(i -> Objects.nonNull(options.get(i).getTitle()))
                         .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
