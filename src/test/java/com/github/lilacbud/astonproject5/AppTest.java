@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
@@ -162,7 +162,7 @@ public class AppTest {
                 client.fillMovies();
                 System.out.println(fillSuccessMessage);
             }
-            client.printMovies(printSuccessMessage, null);
+            client.printMovies(null, printSuccessMessage);
         });
         configureMenuOptionMock(sortMoviesOption, client -> {
             if (client.moviesIsEmpty()) {
@@ -293,7 +293,7 @@ public class AppTest {
      
         app.setFiller(filler);
         app.fillMovies();
-        app.printMovies(successMessage, null);
+        app.printMovies(null, successMessage);
 
         assertEquals(expectedOutContent, outContent.toString());
     }
@@ -313,7 +313,7 @@ public class AppTest {
         
         app.setFiller(filler);
         app.fillMovies();
-        app.printMovies(successMessage, printFormat);
+        app.printMovies(printFormat, successMessage);
 
         assertEquals(expectedOutContent, outContent.toString());
     }
@@ -337,7 +337,7 @@ public class AppTest {
 
         app.setFiller(filler);
         app.fillMovies();
-        app.printMovies(successMessage, "%s, %d, %f");
+        app.printMovies("%s, %d, %f", successMessage);
 
         assertEquals(expectedOutContent, outContent.toString().trim());
     }

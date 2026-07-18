@@ -14,7 +14,8 @@ public final class InputRequest {
         requireNonNull(scanner, "Scanner must not be null");
         Optional<String> validatedString;
         do {
-            System.out.print(requireNonNullElse(prompt, ""));
+            if (prompt != null)
+                System.out.print(prompt);
             validatedString = InputValidation.validateInput(scanner.nextLine());
         } while (validatedString.isEmpty());
         return validatedString.get();

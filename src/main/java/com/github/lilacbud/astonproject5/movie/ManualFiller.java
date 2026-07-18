@@ -2,7 +2,6 @@ package com.github.lilacbud.astonproject5.movie;
 
 import java.util.Collection;
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
@@ -10,7 +9,7 @@ import java.util.stream.Stream;
 public class ManualFiller implements MoviesFiller {
     private final int size;
     private final Scanner scanner;
-    private final Prompts prompts;
+    private final Optional<Prompts> prompts;
     private final Movie.Builder builder = new Movie.Builder();
 
     public ManualFiller(int size, Scanner scanner, Prompts prompts) {
@@ -19,7 +18,7 @@ public class ManualFiller implements MoviesFiller {
         }
         this.size = size;
         this.scanner = requireNonNull(scanner, "Scanner cannot be null");
-        this.prompts = requireNonNullElse(prompts, new Prompts("", "", ""));
+        this.prompts = Optional.ofNullable(prompts);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class ManualFiller implements MoviesFiller {
     private String askMovieName() {
         Optional<String> validatedName;
         do {
-            System.out.print(prompts.movieNamePrompt);
+            prompts.ifPresent((p) -> System.out.print(p.movieNamePrompt));
             validatedName = MovieInputValidation.validateName(scanner.nextLine());
         }
         while (validatedName.isEmpty());
@@ -51,7 +50,7 @@ public class ManualFiller implements MoviesFiller {
     private int askMovieYearOfRelease() {
         Optional<Integer> validatedYear;
         do {
-            System.out.print(prompts.movieYearPrompt);
+            prompts.ifPresent((p) -> System.out.print(p.movieYearPrompt));
             validatedYear = MovieInputValidation.validateYearOfRelease(scanner.nextLine());
         }
         while (validatedYear.isEmpty());
@@ -61,7 +60,7 @@ public class ManualFiller implements MoviesFiller {
     private float askMovieHourLength() {
         Optional<Float> validatedHour;
         do {
-            System.out.print(prompts.movieHourLengthPrompt);
+            prompts.ifPresent((p) -> System.out.print(p.movieHourLengthPrompt));
             validatedHour = MovieInputValidation.validateHourLength(scanner.nextLine());
         }
         while (validatedHour.isEmpty());
@@ -70,9 +69,13 @@ public class ManualFiller implements MoviesFiller {
     
     public static record Prompts(String movieNamePrompt, String movieYearPrompt, String movieHourLengthPrompt) {
         public Prompts(String movieNamePrompt, String movieYearPrompt, String movieHourLengthPrompt) {
-            this.movieNamePrompt = requireNonNullElse(movieNamePrompt, "");
-            this.movieYearPrompt = requireNonNullElse(movieYearPrompt, "");
-            this.movieHourLengthPrompt = requireNonNullElse(movieHourLengthPrompt, "");
+            this.movieNamePrompt = validatePrompt(movieNamePrompt);
+            this.movieYearPrompt = validatePrompt(movieYearPrompt);
+            this.movieHourLengthPrompt = validatePrompt(movieHourLengthPrompt);
+        }
+        
+        private String validatePrompt(String prompt) {
+            return requireNonNull(prompt, "Prompt must not be null");
         }
     }
 }

@@ -69,10 +69,10 @@ public class MenuTest {
     
     @Test
     public void testStepBuilderWithNullOption() {
-        System.out.println("StepBuilder with null prompt");
+        System.out.println("StepBuilder with null option");
         final var thrown = assertThrows(NullPointerException.class, () 
                 -> Menu.StepBuilder.newBuilder().withTitle("Title").withPrompt("Prompt").withOption(null));
-        assertEquals("Option cannot be null", thrown.getMessage());
+        assertEquals("Option must not be null", thrown.getMessage());
     }
     
     @Test
@@ -93,7 +93,7 @@ public class MenuTest {
     public void testChooseOptionGivenNullScanner() {
         System.out.println("chooseOption given null scanner");
         final var thrown = assertThrows(NullPointerException.class, () -> menu.chooseOption(null));
-        assertEquals("Scanner cannot be null", thrown.getMessage());
+        assertEquals("Scanner must not be null", thrown.getMessage());
     }
     
     @Test

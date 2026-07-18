@@ -3,21 +3,19 @@ package com.github.lilacbud.astonproject5.user;
 import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElse;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
 public class Menu<T> {
-    private final String title;
-    private final String prompt;
+    private final Optional<String> title;
+    private final Optional<String> prompt;
     private final List<MenuOption<T>> options;
     
     private Menu(StepBuilder<T> builder) {
-        this.title = builder.title;
-        this.prompt = builder.prompt;
+        this.title = Optional.ofNullable(builder.title);
+        this.prompt = Optional.ofNullable(builder.prompt);
         this.options = builder.options;
     }
     
@@ -25,18 +23,16 @@ public class Menu<T> {
         if (options.size() == 1) {
             return options.get(0);
         }
-        requireNonNull(scanner, "Scanner cannot be null");
+        requireNonNull(scanner, "Scanner must not be null");
         Optional<Integer> validatedInput;
         while (true) {
             do {
-                if (title != null) {
-                    System.out.println(title);
-                }
+                title.ifPresent(System.out::println);
                 IntStream.range(0, options.size())
-                        .filter(i -> Objects.nonNull(options.get(i).getTitle()))
-                        .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).getTitle()))
+                        .filter(i -> options.get(i).title.isPresent())
+                        .mapToObj(i -> String.format("%d. %s", i + 1, options.get(i).title.get()))
                         .forEach(System.out::println);
-                System.out.print(requireNonNullElse(prompt, ""));
+                prompt.ifPresent(System.out::print);
                 validatedInput = InputValidation.validateIntegerInput(scanner.nextLine());
             } while (validatedInput.isEmpty());
             try {
@@ -48,18 +44,15 @@ public class Menu<T> {
     }
     
     public static class MenuOption<T> {
-        private final String title;
+        private final Optional<String> title;
         private final MenuCommand<T> command;
         
         public MenuOption(String title, MenuCommand<T> command) {
-            this.title = title;
+            this.title = Optional.ofNullable(title);
             this.command = requireNonNull(command, "Command must not be null");
         }
         public MenuOption(MenuCommand<T> command) {
             this(null, command);
-        }
-        private String getTitle() {
-            return title;
         }
         public void execute(T client) {
             command.execute(client);
@@ -93,7 +86,7 @@ public class Menu<T> {
         }
         @Override
         public StepBuilder<T> withOption(MenuOption<T> option) {
-            options.add(requireNonNull(option, "Option cannot be null"));
+            options.add(requireNonNull(option, "Option must not be null"));
             return this;
         }
         public Menu<T> build() {

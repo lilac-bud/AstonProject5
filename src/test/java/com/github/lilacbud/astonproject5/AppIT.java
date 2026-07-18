@@ -18,9 +18,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Scanner;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.io.TempDir;
 
 public class AppIT {
@@ -141,7 +141,7 @@ public class AppIT {
                     setFillerMenu.chooseOption(scanner).execute(_client);
                     _client.fillMovies();
                 })))
-                .withOption(new Menu.MenuOption<>((client) -> client.printMovies(null, printFormat)))
+                .withOption(new Menu.MenuOption<>((client) -> client.printMovies(printFormat, null)))
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {
                     setSortMenu.chooseOption(scanner).execute(_client);
                     setCompMenu.chooseOption(scanner).execute(_client);

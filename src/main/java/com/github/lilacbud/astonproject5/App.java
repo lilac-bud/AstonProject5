@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IllegalFormatException;
 import java.util.List;
-
-
 import static java.util.Objects.requireNonNull;
 
 public class App {
@@ -58,7 +56,7 @@ public class App {
         return movies.isEmpty();
     }
     
-    public void printMovies(String successMessage, String printFormat) {
+    public void printMovies(String printFormat, String successMessage) {
         try {
             movies.forEach(movie -> System.out.println(String.format(printFormat, 
                     movie.getName(), 
@@ -70,6 +68,14 @@ public class App {
         if (successMessage != null) {
             System.out.println(successMessage);
         }
+    }
+    
+    public void printMovies(String printFormat) {
+        printMovies(printFormat, null);
+    }
+    
+    public void printMovies() {
+        printMovies(null, null);
     }
     
     public void saveMovies() {
@@ -102,7 +108,7 @@ public class App {
     }
 
     public void tryCommandTillSuccess(String successMessage, MenuCommand<App> command) {
-        requireNonNull(command, "Command cannot be null");
+        requireNonNull(command, "Command must not be null");
         while (true) {
             try {
                 command.execute(this);
