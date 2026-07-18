@@ -2,9 +2,10 @@ package com.github.lilacbud.astonproject5.movie.sort;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import static java.util.Objects.requireNonNull;
 
 public class MergeSort implements SortingStrategy {
@@ -28,7 +29,7 @@ public class MergeSort implements SortingStrategy {
         }
 
         int moviesSize = movies.size();
-        int middle = moviesSize/2;
+        int middle = moviesSize / 2;
 
         List<Movie> left = new ArrayList<>(movies.subList(0, middle));
         List<Movie> right = new ArrayList<>(movies.subList(middle, moviesSize));
@@ -40,25 +41,21 @@ public class MergeSort implements SortingStrategy {
     }
 
     private List<Movie> merge(List<Movie> left, List<Movie> right, Comparator<Movie> comp) {
-        int posLeft = 0;
-        int posRight = 0;
-        List<Movie> result = new ArrayList<>(Collections.nCopies(left.size() + right.size(), null));
-
-        for (int k = 0; k < result.size(); ++k) {
-            if (posLeft == left.size()) {
-                result.set(k,right.get(posRight));
-                ++posRight;
-            } else if (posRight == right.size()) {
-                result.set(k,left.get(posLeft));
-                ++posLeft;
-            } else if (comp.compare(left.get(posLeft), right.get(posRight)) <= 0) {
-                result.set(k,left.get(posLeft));
-                ++posLeft;
-            } else {
-                result.set(k,right.get(posRight));
-                ++posRight;
+        List<Movie> result = new LinkedList<>();
+        ListIterator<Movie> leftIt = left.listIterator(), rightIt = right.listIterator();
+        while (rightIt.hasNext()) {
+            var rightElem = rightIt.next();
+            while (leftIt.hasNext()) {
+                var leftElem = leftIt.next();
+                if (comp.compare(leftElem, rightElem) > 0) {
+                    leftIt.previous();
+                    break;
+                }
+                result.add(leftElem);
             }
+            result.add(rightElem);
         }
+        leftIt.forEachRemaining(result::add);
         return result;
     }
 }
