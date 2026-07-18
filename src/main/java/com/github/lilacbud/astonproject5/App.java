@@ -3,7 +3,6 @@ package com.github.lilacbud.astonproject5;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
-import com.github.lilacbud.astonproject5.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.MenuCommand;
 import com.github.lilacbud.astonproject5.util.MovieCounter;
@@ -16,19 +15,11 @@ import static java.util.Objects.requireNonNull;
 public class App {
     private final List<Movie> movies = new ArrayList<>();
     
-    private final MoviesSorter sorter;
+    private final MoviesSorter sorter = new MoviesSorter();
     private MoviesFiller filler;
     private MoviesSaver saver;
     
     private boolean running = true;
-    
-    public App(MoviesSorter sorter) {
-        this.sorter = sorter;
-    }
-    
-    public App() {
-        this(new MoviesSorter(null, null));
-    }
     
     public void run(MenuCommand<App> command) {
         while (running) {
@@ -44,7 +35,7 @@ public class App {
         this.saver = requireNonNull(saver, "Saver must not be null");
     }
     
-    public void setSortingStrategy(SortingStrategy sortStrategy) {
+    public void setSortingStrategy(SortingStrategy<Movie> sortStrategy) {
         sorter.setSortingStrategy(requireNonNull(sortStrategy, "Sorting strategy must not be null"));
     }
     
@@ -125,5 +116,24 @@ public class App {
     
     public void tryCommandTillSuccess(MenuCommand<App> command) {
         tryCommandTillSuccess(null, command);
+    }
+    
+    private static class MoviesSorter {
+        private SortingStrategy<Movie> sortStrategy;
+        private Comparator<Movie> comp;
+
+        public void setSortingStrategy(SortingStrategy<Movie> sortStrategy) {
+            this.sortStrategy = sortStrategy;
+        }
+
+        public void setComparator(Comparator<Movie> comp) {
+            this.comp = comp;
+        }
+
+        public void performSorting(List<Movie> movies) {
+            requireNonNull(sortStrategy, "Sorting strategy must not be null to perform sorting");
+            requireNonNull(comp, "Comparator must not be null to perform sorting");
+            sortStrategy.sort(movies, comp);
+        }
     }
 }

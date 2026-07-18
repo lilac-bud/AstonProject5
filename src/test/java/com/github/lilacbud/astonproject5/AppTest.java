@@ -3,7 +3,6 @@ package com.github.lilacbud.astonproject5;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
-import com.github.lilacbud.astonproject5.sort.MoviesSorter;
 import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.util.MovieCounter;
 import java.io.ByteArrayOutputStream;
@@ -19,10 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InOrder;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.*;
@@ -42,17 +37,10 @@ public class AppTest {
     
     @Mock 
     private MoviesFiller filler;
-    @Mock
-    private MoviesSorter sorter;
-    @Captor 
-    private ArgumentCaptor<SortingStrategy<Movie>> sortStrategyCaptor;
-    @Captor 
-    private ArgumentCaptor<Comparator<Movie>> compCaptor;
     @Mock 
     private MoviesSaver saver;
-    
-    @InjectMocks
-    private App app;
+
+    private final App app = new App();
     
     private final PrintStream originalOut = System.out;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -106,15 +94,6 @@ public class AppTest {
         }).when(filler).fillMovies(anyList());
     }
     
-    private void configureSorterMock() {
-        doAnswer(i -> {
-            List<Movie> movies = i.getArgument(0);
-            sortStrategy.sort(movies, comparator);
-            actualMovies = movies;
-            return null;
-        }).when(sorter).performSorting(anyList());
-    }
-    
     private void configureSaverMock() {
         doAnswer(i -> {
             Path filepath = tempDir.resolve("movies.txt");
@@ -141,7 +120,6 @@ public class AppTest {
     @AfterEach
     public void tearDown() {
         System.setOut(originalOut);
-        app = null;
         actualMovies = null;
     }
 
@@ -296,7 +274,6 @@ public class AppTest {
     public void testSortMovies() {
         configureMovieMocksGetYearOfRelease();
         configureFillerMock();
-        configureSorterMock();
 
         System.out.println("sortMovies");
         
@@ -306,13 +283,6 @@ public class AppTest {
         app.setComparator(comparator);
         app.sortMovies();
 
-        InOrder inOrder = inOrder(sorter);
-        inOrder.verify(sorter).setSortingStrategy(sortStrategyCaptor.capture());
-        inOrder.verify(sorter).setComparator(compCaptor.capture());
-        inOrder.verify(sorter).performSorting(anyList());
-
-        assertEquals(sortStrategy, sortStrategyCaptor.getValue());
-        assertEquals(comparator, compCaptor.getValue());
         assertEquals(sortedMockMovies, actualMovies);
     }
 
