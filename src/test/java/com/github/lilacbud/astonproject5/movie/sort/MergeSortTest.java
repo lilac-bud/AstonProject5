@@ -1,8 +1,8 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
+import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
 import com.github.lilacbud.astonproject5.sort.SortingStrategy;
-import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -50,7 +50,7 @@ public class MergeSortTest {
         System.out.println("sort given comparator by name");
         
         Comparator<Movie> comparator = Comparator.comparing(Movie::getName);
-        SortingStrategy mergeSort = new MergeSort();
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
         mergeSort.sort(movies, comparator);
 
         assertEquals(3, movies.size());
@@ -63,7 +63,7 @@ public class MergeSortTest {
         System.out.println("sort given comparator by year");
         
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
-        SortingStrategy mergeSort = new MergeSort();
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
         mergeSort.sort(movies, comparator);
 
         assertEquals(3, movies.size());
@@ -76,7 +76,7 @@ public class MergeSortTest {
         System.out.println("sort given comparator by length");
         
         Comparator<Movie> comparator = Comparator.comparing(Movie::getHourLength);
-        SortingStrategy mergeSort = new MergeSort();
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
         mergeSort.sort(movies, comparator);
 
         assertEquals(3, movies.size());
@@ -89,7 +89,7 @@ public class MergeSortTest {
         
         movies.clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
-        SortingStrategy mergeSort = new MergeSort();
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
         mergeSort.sort(movies, comparator);
 
         assertTrue(movies.isEmpty());
@@ -100,10 +100,10 @@ public class MergeSortTest {
         System.out.println("sort given null movies");
         
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
-        SortingStrategy mergeSort = new MergeSort();
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
         
         var thrown = assertThrows(NullPointerException.class, () -> mergeSort.sort(null, comparator));
-        assertEquals("Movies must not be null", thrown.getMessage());
+        assertEquals("List must not be null", thrown.getMessage());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class MergeSortTest {
        
         movies.subList(1, movies.size()).clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
-        SortingStrategy mergeSort = new MergeSort();
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
         mergeSort.sort(movies, comparator);
 
         assertEquals(1, movies.size());

@@ -9,23 +9,23 @@ import static java.util.Objects.requireNonNull;
 public class MergeSort<E> implements SortingStrategy<E> {
 
     @Override
-    public void sort(List<E> movies, Comparator<E> comp) {
-        if (requireNonNull(movies, "Movies must not be null").size() <= 1) {
+    public void sort(List<E> list, Comparator<E> comp) {
+        if (requireNonNull(list, "List must not be null").size() <= 1) {
             return;
         }
-        final List<E> result = doMergeSort(movies, comp);
-        movies.clear();
-        movies.addAll(result);
+        final List<E> result = doMergeSort(list, comp);
+        list.clear();
+        list.addAll(result);
     }
 
-    private <E> List<E> doMergeSort(List<E> movies, Comparator<E> comp) {
-        final int size = movies.size();
+    private <E> List<E> doMergeSort(List<E> list, Comparator<E> comp) {
+        final int size = list.size();
         if (size <= 1) {
-            return movies;
+            return list;
         }
         final int middle = size / 2;
-        final List<E> left = doMergeSort(movies.subList(0, middle), comp);
-        final List<E> right = doMergeSort(movies.subList(middle, size), comp);
+        final List<E> left = doMergeSort(list.subList(0, middle), comp);
+        final List<E> right = doMergeSort(list.subList(middle, size), comp);
         return merge(left, right, comp);
     }
 

@@ -16,28 +16,28 @@ public class EvenNumbersSortDecorator<E> extends SortDecorator<E> {
     }
 
     @Override
-    public void sort(List<E> movies, Comparator<E> comp) {
-        if (requireNonNull(movies, "Movies must not be null").isEmpty()) {
+    public void sort(List<E> list, Comparator<E> comp) {
+        if (requireNonNull(list, "List must not be null").isEmpty()) {
             return;
         }
-        final List<Integer> evenIndices = IntStream.range(0, movies.size()).boxed()
-                .filter(i -> numberIsEven(movies.get(i)))
+        final List<Integer> evenIndices = IntStream.range(0, list.size()).boxed()
+                .filter(i -> numberIsEven(list.get(i)))
                 .toList();
         final List<E> evenResult = evenIndices.stream()
-                .map(movies::get)
+                .map(list::get)
                 .collect(Collectors.toList());
         
         sortingStrategy.sort(evenResult, comp);
         Iterator<E> evenResultIt = evenResult.iterator();
-        evenIndices.forEach(i -> movies.set(i, evenResultIt.next()));
+        evenIndices.forEach(i -> list.set(i, evenResultIt.next()));
     }
 
-    private boolean numberIsEven(E movie) {
-        return extractor.getValue(movie) % 2 == 0;
+    private boolean numberIsEven(E elem) {
+        return extractor.getValue(elem) % 2 == 0;
     }
 
     @FunctionalInterface
     public static interface IntegerFieldExtractor<T> {
-        int getValue(T movie);
+        int getValue(T elem);
     }
 }

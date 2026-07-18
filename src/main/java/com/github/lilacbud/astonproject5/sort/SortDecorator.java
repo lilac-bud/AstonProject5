@@ -12,5 +12,5 @@ public abstract class SortDecorator<E> implements SortingStrategy<E> {
     }
 
     @Override
-    public abstract void sort(List<E> movies, Comparator<E> comp);
+    public abstract void sort(List<E> list, Comparator<E> comp);
 }

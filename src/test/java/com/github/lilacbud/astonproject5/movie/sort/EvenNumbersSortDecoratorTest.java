@@ -1,9 +1,9 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
+import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
 import com.github.lilacbud.astonproject5.sort.SortingStrategy;
-import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -120,7 +120,7 @@ public class EvenNumbersSortDecoratorTest {
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         var thrown = assertThrows(NullPointerException.class, () -> sortingStrategy.sort(movies, comparator));
 
-        assertEquals("Movies must not be null", thrown.getMessage());
+        assertEquals("List must not be null", thrown.getMessage());
     }
 
 }

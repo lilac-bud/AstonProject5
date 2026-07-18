@@ -4,5 +4,5 @@ import java.util.Comparator;
 import java.util.List;
 
 public interface SortingStrategy<E> {
-     void sort(List<E> movies, Comparator<E> comp);
+     void sort(List<E> list, Comparator<E> comp);
 }
