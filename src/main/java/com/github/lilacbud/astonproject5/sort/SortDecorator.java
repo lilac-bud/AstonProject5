@@ -1,4 +1,4 @@
-package com.github.lilacbud.astonproject5.movie.sort;
+package com.github.lilacbud.astonproject5.sort;
 
 import java.util.Comparator;
 import java.util.List;

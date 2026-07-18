@@ -1,5 +1,8 @@
 package com.github.lilacbud.astonproject5.movie.sort;
 
+import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
+import com.github.lilacbud.astonproject5.sort.MergeSort;
+import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import java.util.ArrayList;
 import java.util.Comparator;
