@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MoviesSorterTest {
     private List<Movie> movies;
     private Comparator<Movie> comparatorByName;
-    private SortingStrategy testStrategy;
+    private SortingStrategy<Movie> testStrategy;
     private boolean sortWasCalled;
     
     @Mock
@@ -37,9 +37,9 @@ class MoviesSorterTest {
         movies = new ArrayList<>(List.of(movie1, movie2, movie3));
         comparatorByName = Comparator.comparing(Movie::getName);
         sortWasCalled = false;
-        testStrategy = (movieList, comp)->{
-            sortWasCalled=true;
-            ((List<Movie>)movieList).sort(comp);
+        testStrategy = (movieList, comp) -> {
+            sortWasCalled = true;
+            movieList.sort(comp);
         };
     }
 
@@ -50,9 +50,9 @@ class MoviesSorterTest {
         
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         boolean[] newStrategyCalled = {false};
-        SortingStrategy newStrategy = (movieList, comp)->{
-            newStrategyCalled[0]=true;
-            ((List<Movie>)movieList).sort(comp);
+        SortingStrategy<Movie> newStrategy = (movieList, comp) -> {
+            newStrategyCalled[0] = true;
+            movieList.sort(comp);
         };
         sorter.setSortingStrategy(newStrategy);
         sorter.performSorting(movies);
@@ -65,15 +65,14 @@ class MoviesSorterTest {
     public void testSetComparator() {
         configureMovieMocksYear();
         System.out.println("setComparator");
-        
-        List<Integer> years=movies.stream().map(Movie::getYearOfRelease).toList();
-        
+         
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         Comparator<Movie> comparatorByYear = Comparator.comparing(Movie::getYearOfRelease);
         sorter.setComparator(comparatorByYear);
         sorter.performSorting(movies);
         
-        assertEquals(List.of(1994,2010,2014),years);
+        List<Integer> years = movies.stream().map(Movie::getYearOfRelease).toList();
+        assertEquals(List.of(1994,2010,2014), years);
     }
 
     @Test
@@ -81,10 +80,10 @@ class MoviesSorterTest {
         configureMovieMocksName();
         System.out.println("performSorting");
         
-        List<String> names = movies.stream().map(Movie::getName).toList();
         MoviesSorter sorter = new MoviesSorter(testStrategy, comparatorByName);
         sorter.performSorting(movies);
         
+        List<String> names = movies.stream().map(Movie::getName).toList();
         assertEquals(List.of("Интерстеллар", "Криминальное чтиво", "Начало"), names);
         assertTrue(sortWasCalled, "Вызов стратегии сортировки");
     }

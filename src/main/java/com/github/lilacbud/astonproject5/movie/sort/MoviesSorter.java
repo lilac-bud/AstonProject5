@@ -6,20 +6,20 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 public class MoviesSorter {
-    private SortingStrategy sortStrategy;
+    private SortingStrategy<Movie> sortStrategy;
     private Comparator<Movie> comp;
 
-    public MoviesSorter(SortingStrategy sortStrategy, Comparator<Movie> comp) {
+    public MoviesSorter(SortingStrategy<Movie> sortStrategy, Comparator<Movie> comp) {
         this.sortStrategy = sortStrategy;
         this.comp = comp;
     }
 
-    public void setSortingStrategy(SortingStrategy sortStrategy) {
-        this.sortStrategy=sortStrategy;
+    public void setSortingStrategy(SortingStrategy<Movie> sortStrategy) {
+        this.sortStrategy = sortStrategy;
     }
 
     public void setComparator(Comparator<Movie> comp) {
-        this.comp=comp;
+        this.comp = comp;
     }
 
     public void performSorting(List<Movie> movies) {

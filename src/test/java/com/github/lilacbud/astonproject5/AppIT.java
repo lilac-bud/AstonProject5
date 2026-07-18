@@ -115,9 +115,9 @@ public class AppIT {
                 .build();
         Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()
                 .withOption(new Menu.MenuOption<>((client)
-                        -> client.setSortingStrategy(new MergeSort())))
+                        -> client.setSortingStrategy(new MergeSort<Movie>())))
                 .withOption(new Menu.MenuOption<>((client) -> {
-                    var sortStrategy = new EvenNumbersSortDecorator(new MergeSort(), Movie::getYearOfRelease);
+                    var sortStrategy = new EvenNumbersSortDecorator<Movie>(new MergeSort<>(), Movie::getYearOfRelease);
                     client.setSortingStrategy(sortStrategy);
                 }))
                 .build();

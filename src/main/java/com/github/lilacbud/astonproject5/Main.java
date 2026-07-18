@@ -48,10 +48,10 @@ public class Main {
                 .withTitle("Нужно отсортировать:")
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("Все фильмы", (client)
-                        -> client.setSortingStrategy(new MergeSort())))
+                        -> client.setSortingStrategy(new MergeSort<Movie>())))
                 .withOption(new Menu.MenuOption<>("Фильмы с чётным годом выпуска", (client) -> {
-                    SortingStrategy sortStrategy = 
-                            new EvenNumbersSortDecorator(new MergeSort(), Movie::getYearOfRelease);
+                    SortingStrategy<Movie> sortStrategy = 
+                            new EvenNumbersSortDecorator<>(new MergeSort<>(), Movie::getYearOfRelease);
                     client.setSortingStrategy(sortStrategy);
                 }))
                 .build();

@@ -41,7 +41,7 @@ public class EvenNumbersSortDecoratorTest {
     void createEvenNumbersSortDecoratorWithNullExtractor() {
         System.out.println("EvenNumbersSortDecorator with null extractor");
         var thrown = assertThrows(NullPointerException.class, () -> 
-                new EvenNumbersSortDecorator(new MergeSort(), null));
+                new EvenNumbersSortDecorator<Movie>(new MergeSort<>(), null));
         assertEquals("Extractor must not be null", thrown.getMessage());
     }
 
@@ -52,7 +52,8 @@ public class EvenNumbersSortDecoratorTest {
         System.out.println("sort");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
+        SortingStrategy<Movie> sortingStrategy = 
+                new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
         assertEquals(6, movies.size());
@@ -68,7 +69,8 @@ public class EvenNumbersSortDecoratorTest {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
+        SortingStrategy<Movie> sortingStrategy = 
+                new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
         assertEquals(3, movies.size());
@@ -84,7 +86,8 @@ public class EvenNumbersSortDecoratorTest {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
+        SortingStrategy<Movie> sortingStrategy = 
+                new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
         assertEquals(3, movies.size());
@@ -97,7 +100,8 @@ public class EvenNumbersSortDecoratorTest {
         movies.clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
+        SortingStrategy<Movie> sortingStrategy = 
+                new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
         assertTrue(movies.isEmpty());
@@ -109,7 +113,8 @@ public class EvenNumbersSortDecoratorTest {
         movies = null;
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy sortingStrategy = new EvenNumbersSortDecorator(new MergeSort(),Movie::getYearOfRelease);
+        SortingStrategy<Movie> sortingStrategy = 
+                new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         var thrown = assertThrows(NullPointerException.class, () -> sortingStrategy.sort(movies, comparator));
 
         assertEquals("Movies must not be null", thrown.getMessage());
