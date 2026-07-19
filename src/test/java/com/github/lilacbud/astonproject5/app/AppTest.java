@@ -1,6 +1,5 @@
 package com.github.lilacbud.astonproject5.app;
 
-import com.github.lilacbud.astonproject5.app.App;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.MoviesFiller;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;

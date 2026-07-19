@@ -1,6 +1,5 @@
 package com.github.lilacbud.astonproject5.app;
 
-import com.github.lilacbud.astonproject5.app.App;
 import com.github.lilacbud.astonproject5.movie.FromFileFiller;
 import com.github.lilacbud.astonproject5.movie.ManualFiller;
 import com.github.lilacbud.astonproject5.movie.Movie;
@@ -9,6 +8,7 @@ import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
 import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
+import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
 import com.github.lilacbud.astonproject5.util.InputRequest;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +32,10 @@ public class AppIT {
     private final PrintStream originalErr = System.err;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    
+    private final SortingStrategy<Movie> mergeSort = new MergeSort<>();
+    private final SortingStrategy<Movie> mergeSortEven = 
+            new EvenNumbersSortDecorator<>(mergeSort, Movie::getYearOfRelease);
     
     private final List<String> expectedFileLines = List.of(
             "Криминальное чтиво;1994;2.5",
@@ -115,12 +119,8 @@ public class AppIT {
                         client.setFiller(new ManualFiller(InputRequest.askInteger(scanner), scanner, null))))
                 .build();
         Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()
-                .withOption(new Menu.MenuOption<>((client)
-                        -> client.setSortingStrategy(new MergeSort<Movie>())))
-                .withOption(new Menu.MenuOption<>((client) -> {
-                    var sortStrategy = new EvenNumbersSortDecorator<Movie>(new MergeSort<>(), Movie::getYearOfRelease);
-                    client.setSortingStrategy(sortStrategy);
-                }))
+                .withOption(new Menu.MenuOption<>((client) -> client.setSortingStrategy(mergeSort)))
+                .withOption(new Menu.MenuOption<>((client) -> client.setSortingStrategy(mergeSortEven)))
                 .build();
         Menu<App> setCompMenu = Menu.StepBuilder.<App>newBuilder()
                 .withOption(new Menu.MenuOption<>((client) -> client.setComparator(Movie.compareByName)))

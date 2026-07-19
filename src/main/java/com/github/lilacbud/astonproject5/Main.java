@@ -23,6 +23,9 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        
+        SortingStrategy<Movie> mergeSort = new MergeSort<>();
+        SortingStrategy<Movie> mergeSortEven = new EvenNumbersSortDecorator<>(mergeSort, Movie::getYearOfRelease);
 
         Menu<App> setFillerMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Как заполнить список:")
@@ -48,13 +51,9 @@ public class Main {
         Menu<App> setSortMenu = Menu.StepBuilder.<App>newBuilder()
                 .withTitle("Нужно отсортировать:")
                 .withPrompt("Выберите одну из опций: ")
-                .withOption(new Menu.MenuOption<>("Все фильмы", (client)
-                        -> client.setSortingStrategy(new MergeSort<Movie>())))
-                .withOption(new Menu.MenuOption<>("Фильмы с чётным годом выпуска", (client) -> {
-                    SortingStrategy<Movie> sortStrategy = 
-                            new EvenNumbersSortDecorator<>(new MergeSort<>(), Movie::getYearOfRelease);
-                    client.setSortingStrategy(sortStrategy);
-                }))
+                .withOption(new Menu.MenuOption<>("Все фильмы", (client) -> client.setSortingStrategy(mergeSort)))
+                .withOption(new Menu.MenuOption<>("Фильмы с чётным годом выпуска", 
+                        (client) -> client.setSortingStrategy(mergeSortEven)))
                 .build();
         
         Menu<App> setCompMenu = Menu.StepBuilder.<App>newBuilder()
