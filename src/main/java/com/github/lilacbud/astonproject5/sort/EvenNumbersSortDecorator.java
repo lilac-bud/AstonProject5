@@ -4,13 +4,14 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import static java.util.Objects.requireNonNull;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class EvenNumbersSortDecorator<E> extends SortDecorator<E> {
-    private final IntegerFieldExtractor<E> extractor;
+    private final ToIntFunction<E> extractor;
 
-    public EvenNumbersSortDecorator(SortingStrategy<E> sortingStrategy, IntegerFieldExtractor<E> extractor) {
+    public EvenNumbersSortDecorator(SortingStrategy<E> sortingStrategy, ToIntFunction<E> extractor) {
         super(sortingStrategy);
         this.extractor = requireNonNull(extractor, "Extractor must not be null");
     }
@@ -33,11 +34,6 @@ public class EvenNumbersSortDecorator<E> extends SortDecorator<E> {
     }
 
     private boolean numberIsEven(E elem) {
-        return extractor.getValue(elem) % 2 == 0;
-    }
-
-    @FunctionalInterface
-    public static interface IntegerFieldExtractor<T> {
-        int getValue(T elem);
+        return extractor.applyAsInt(elem) % 2 == 0;
     }
 }
