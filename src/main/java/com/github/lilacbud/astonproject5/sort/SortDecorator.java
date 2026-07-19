@@ -1,5 +1,6 @@
 package com.github.lilacbud.astonproject5.sort;
 
+import com.github.lilacbud.astonproject5.app.SortingStrategy;
 import java.util.Comparator;
 import java.util.List;
 import static java.util.Objects.requireNonNull;

@@ -1,4 +1,4 @@
-package com.github.lilacbud.astonproject5.movie.save;
+package com.github.lilacbud.astonproject5.app;
 
 import com.github.lilacbud.astonproject5.movie.Movie;
 import java.nio.file.StandardOpenOption;

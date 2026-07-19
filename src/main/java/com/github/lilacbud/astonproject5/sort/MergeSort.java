@@ -1,5 +1,6 @@
 package com.github.lilacbud.astonproject5.sort;
 
+import com.github.lilacbud.astonproject5.app.SortingStrategy;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,7 +19,7 @@ public class MergeSort<E> implements SortingStrategy<E> {
         list.addAll(result);
     }
 
-    private <E> List<E> doMergeSort(List<E> list, Comparator<E> comp) {
+    private List<E> doMergeSort(List<E> list, Comparator<E> comp) {
         final int size = list.size();
         if (size <= 1) {
             return list;
@@ -29,7 +30,7 @@ public class MergeSort<E> implements SortingStrategy<E> {
         return merge(left, right, comp);
     }
 
-    private <E> List<E> merge(List<E> left, List<E> right, Comparator<E> comp) {
+    private List<E> merge(List<E> left, List<E> right, Comparator<E> comp) {
         final List<E> result = new ArrayList<>();
         final ListIterator<E> leftIt = left.listIterator(), rightIt = right.listIterator();
         while (rightIt.hasNext()) {

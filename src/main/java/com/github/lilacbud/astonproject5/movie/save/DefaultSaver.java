@@ -1,5 +1,6 @@
 package com.github.lilacbud.astonproject5.movie.save;
 
+import com.github.lilacbud.astonproject5.app.MoviesSaver;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.user.Menu;
 import java.io.BufferedWriter;
@@ -14,10 +15,10 @@ import java.util.Scanner;
 public class DefaultSaver implements MoviesSaver {
     private final Path filePath;
     private final Scanner scanner;
-    private final Menu<MoviesSaver> setSaveOptionMenu;
+    private final Menu<? super DefaultSaver> setSaveOptionMenu;
     private StandardOpenOption saveOption = StandardOpenOption.TRUNCATE_EXISTING;
 
-    public DefaultSaver(String filepath, Scanner scanner, Menu<MoviesSaver> setSaveOptionMenu) {
+    public DefaultSaver(String filepath, Scanner scanner, Menu<? super DefaultSaver> setSaveOptionMenu) {
         this.filePath = Path.of(requireNonNull(filepath, "Filepath must not be null"));
         this.scanner = requireNonNull(scanner, "Scanner must not be null");
         this.setSaveOptionMenu = setSaveOptionMenu;

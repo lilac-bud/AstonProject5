@@ -1,15 +1,15 @@
 package com.github.lilacbud.astonproject5;
 
 import com.github.lilacbud.astonproject5.app.App;
+import com.github.lilacbud.astonproject5.app.MoviesSaver;
+import com.github.lilacbud.astonproject5.app.SortingStrategy;
 import com.github.lilacbud.astonproject5.movie.FromFileFiller;
 import com.github.lilacbud.astonproject5.movie.ManualFiller;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.movie.RandomFiller;
 import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
-import com.github.lilacbud.astonproject5.movie.save.MoviesSaver;
 import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
-import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
 import com.github.lilacbud.astonproject5.util.InputRequest;
 import java.nio.file.StandardOpenOption;

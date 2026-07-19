@@ -3,7 +3,6 @@ package com.github.lilacbud.astonproject5.movie.sort;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
-import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -55,7 +54,7 @@ public class EvenNumbersSortDecoratorTest {
         System.out.println("sort");
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy<Movie> sortingStrategy = 
+        EvenNumbersSortDecorator<Movie> sortingStrategy = 
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
@@ -72,7 +71,7 @@ public class EvenNumbersSortDecoratorTest {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy<Movie> sortingStrategy = 
+        EvenNumbersSortDecorator<Movie> sortingStrategy = 
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
@@ -89,7 +88,7 @@ public class EvenNumbersSortDecoratorTest {
 
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy<Movie> sortingStrategy = 
+        EvenNumbersSortDecorator<Movie> sortingStrategy = 
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
@@ -103,7 +102,7 @@ public class EvenNumbersSortDecoratorTest {
         movies.clear();
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy<Movie> sortingStrategy = 
+        EvenNumbersSortDecorator<Movie> sortingStrategy = 
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         sortingStrategy.sort(movies, comparator);
 
@@ -116,7 +115,7 @@ public class EvenNumbersSortDecoratorTest {
         movies = null;
         Comparator<Movie> comparator = Comparator.comparing(Movie::getYearOfRelease);
 
-        SortingStrategy<Movie> sortingStrategy = 
+        EvenNumbersSortDecorator<Movie> sortingStrategy = 
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         var thrown = assertThrows(NullPointerException.class, () -> sortingStrategy.sort(movies, comparator));
 

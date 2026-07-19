@@ -24,7 +24,7 @@ class DefaultSaverTest {
     @Mock
     private Movie movie1, movie2, movie3;
     @Mock
-    private Menu<MoviesSaver> setSaveOptionMenu;
+    private Menu<DefaultSaver> setSaveOptionMenu;
 
     private void configureMovieMock1() {
         when(movie1.getName()).thenReturn("Криминальное чтиво");
@@ -47,7 +47,7 @@ class DefaultSaverTest {
     private void configureSetSaveOptionMenuMock() {
         doAnswer(i -> {
             Scanner scanner = i.getArgument(0);
-            MoviesSaver client = i.getArgument(1);
+            DefaultSaver client = i.getArgument(1);
             while (true) {
                 switch (scanner.nextLine()) {
                     case "1" -> { 
