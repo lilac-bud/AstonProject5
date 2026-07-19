@@ -6,6 +6,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Menu<T> {
@@ -49,17 +50,19 @@ public class Menu<T> {
     
     public static class MenuOption<T> {
         private final Optional<String> title;
-        private final MenuCommand<T> command;
+        private final Consumer<T> command;
         
-        public MenuOption(String title, MenuCommand<T> command) {
+        public MenuOption(String title, Consumer<T> command) {
             this.title = Optional.ofNullable(title);
             this.command = requireNonNull(command, "Command must not be null");
         }
-        public MenuOption(MenuCommand<T> command) {
+        
+        public MenuOption(Consumer<T> command) {
             this(null, command);
         }
+        
         public void execute(T client) {
-            command.execute(client);
+            command.accept(client);
         }
     }
     
@@ -68,6 +71,7 @@ public class Menu<T> {
         public OptionBuilder<T> withPrompt(String prompt);
         public StepBuilder<T> withOption(MenuOption<T> option);
     }
+    
     public static class StepBuilder<T> implements OptionBuilder<T> {
         private String title;
         private String prompt;
@@ -78,21 +82,25 @@ public class Menu<T> {
         public static <T> OptionBuilder<T> newBuilder() {
             return new StepBuilder<>();
         }
+        
         @Override
         public OptionBuilder<T> withTitle(String title) {
             this.title = title;
             return this;
         }
+        
         @Override
         public OptionBuilder<T> withPrompt(String prompt) {
             this.prompt = prompt;
             return this;
         }
+        
         @Override
         public StepBuilder<T> withOption(MenuOption<T> option) {
             options.add(requireNonNull(option, "Option must not be null"));
             return this;
         }
+        
         public Menu<T> build() {
             return new Menu<>(this);
         }

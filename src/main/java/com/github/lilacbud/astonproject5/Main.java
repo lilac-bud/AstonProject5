@@ -11,10 +11,10 @@ import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
 import com.github.lilacbud.astonproject5.sort.SortingStrategy;
 import com.github.lilacbud.astonproject5.user.Menu;
-import com.github.lilacbud.astonproject5.user.MenuCommand;
 import com.github.lilacbud.astonproject5.util.InputRequest;
 import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 public class Main {
 
@@ -86,18 +86,18 @@ public class Main {
                 }))
                 .build();
         
-        MenuCommand<App> fillCommand = (client) -> {
+        Consumer<App> fillCommand = (client) -> {
             setFillerMenu.chooseOptionAndExecute(scanner, client);
             client.fillMovies();
         };
         
-        MenuCommand<App> sortCommand = (client) -> {
+        Consumer<App> sortCommand = (client) -> {
             setSortMenu.chooseOptionAndExecute(scanner, client);
             setCompMenu.chooseOptionAndExecute(scanner, client);
             client.sortMovies();
         };
         
-        MenuCommand<App> saveCommand = (client) -> {
+        Consumer<App> saveCommand = (client) -> {
             setSaverMenu.chooseOptionAndExecute(scanner, client);
             client.saveMovies();
         };
