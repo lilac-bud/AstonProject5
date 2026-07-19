@@ -9,6 +9,8 @@ import static java.util.Objects.requireNonNull;
 import java.util.stream.Stream;
 
 public class FromFileFiller implements MoviesFiller {
+    private final static String LINE_SEPARATOR = ";";
+    private final static int ARGS_NUMBER = 3;
     private final Path path;
     private final Movie.Builder builder = new Movie.Builder();
 
@@ -33,19 +35,16 @@ public class FromFileFiller implements MoviesFiller {
     }
 
     private Movie parseMovie(String line) {
-        final String[] arrStrings = line.split(";");
-
-        if (arrStrings.length != 3) {
+        final String[] arrStrings = line.split(LINE_SEPARATOR);
+        if (arrStrings.length != ARGS_NUMBER) {
             throw new IllegalArgumentException("Invalid string format: " + line);
         }
-
         String name = MovieInputValidation.validateName(arrStrings[0])
                 .orElseThrow(() -> new IllegalArgumentException("Invalid name: " + arrStrings[0]));
         int yearOfRelease = MovieInputValidation.validateYearOfRelease(arrStrings[1])
                 .orElseThrow(() -> new IllegalArgumentException("Invalid year: " + arrStrings[1]));
         float hourLength = MovieInputValidation.validateHourLength(arrStrings[2])
                 .orElseThrow(() -> new IllegalArgumentException("Invalid hour: " + arrStrings[2]));
-
         return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)
