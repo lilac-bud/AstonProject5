@@ -27,7 +27,7 @@ class MovieTest {
     @Test
     public void testToString() {
         System.out.println("toString");
-        String expected = String.format("Movie {название=%-35s год=%d длительность=%.1f ч }", 
+        String expected = String.format("Movie {Name: %s Year of release: %d Hour length: %f }", 
                 "Криминальное чтиво", 1994, 2.5F);
         assertEquals(expected, movie.toString());
     }
