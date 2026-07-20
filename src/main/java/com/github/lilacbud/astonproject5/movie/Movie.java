@@ -13,9 +13,9 @@ public class Movie {
     private final float hourLength;
 
     private Movie (Builder builder) {
-        this.name= builder.name;
-        this.yearOfRelease=builder.yearOfRelease;
-        this.hourLength= builder.hourLength;
+        this.name = builder.name;
+        this.yearOfRelease = builder.yearOfRelease;
+        this.hourLength = builder.hourLength;
     }
 
     public String getName() {
@@ -36,22 +36,22 @@ public class Movie {
     }
 
     public static class Builder {
-        private String name="";
+        private String name = "";
         private int yearOfRelease;
         private float hourLength;
 
         public Builder withName(String name) {
-            this.name= requireNonNullElse(name, "");
+            this.name = requireNonNullElse(name, "");
             return this;
         }
 
         public Builder withYearOfRelease(int year) {
-            this.yearOfRelease=year;
+            this.yearOfRelease = year;
             return this;
         }
 
         public Builder withHourLength(float hourLength) {
-            this.hourLength=hourLength;
+            this.hourLength = hourLength;
             return this;
         }
 
