@@ -15,34 +15,34 @@ public class RandomFillerTest {
     }
 
     @Test
-    public void testCreateRandomFillerWithSizeLessThanZero() {
-        System.out.println("RandomFiller with size set to less than zero");
-        var thrown = assertThrows(IllegalArgumentException.class, () -> new RandomFiller(-10));
-        assertEquals(thrown.getMessage(), RandomFiller.SIZE_NEGATIVE_MESSAGE);
+    public void givenNegativeIntegerAsSize_whenCreatingRandomFiller_thenThrow() {
+        final int size = -10;
+        final var thrown = assertThrows(IllegalArgumentException.class, () -> new RandomFiller(size));
+        assertEquals(RandomFiller.SIZE_NEGATIVE_MESSAGE, thrown.getMessage());
     }
     
     @Test
-    public void testFillMoviesWithSizeZero() {
-        System.out.println("fillMovies with size set to zero");
-        RandomFiller rf = new RandomFiller(0);
+    public void givenThatRandomFillerHasZeroAsSize_whenFillingCollection_thenCollectionShouldBeEmpty() {
+        final int size = 0;
+        final RandomFiller rf = new RandomFiller(size);
         rf.fillMovies(movies);
         assertTrue(movies.isEmpty());
     }
     
     @Test
-    public void testFillMoviesWithSizeMoreThanZero() {
-        System.out.println("fillMovies with size set to more than zero");
-        RandomFiller rf = new RandomFiller(10);
+    public void givenThatRandomFillerHasSizeTen_whenFillingCollection_thenFillCollectionWithTenNonNullObjects() {
+        final int size = 10;
+        final RandomFiller rf = new RandomFiller(size);
         rf.fillMovies(movies);
-        assertEquals(movies.size(), 10);
+        assertEquals(size, movies.size());
         assertFalse(movies.contains(null));
     }
 
     @Test
-    void testFillMoviesWithNullMoviesArgument() {
-        System.out.println("fillMovies with null movies argument");
-        RandomFiller rf = new RandomFiller(10);
-        var thrown = assertThrows(NullPointerException.class, () -> rf.fillMovies(null));
+    public void givenNullAsCollection_whenFillingCollection_thenThrow() {
+        final int size = 10;
+        final RandomFiller rf = new RandomFiller(size);
+        final var thrown = assertThrows(NullPointerException.class, () -> rf.fillMovies(null));
         assertEquals(RandomFiller.COLLECTION_NULL_MESSAGE, thrown.getMessage());
     }
 }
