@@ -146,7 +146,7 @@ public class FromFileFillerTest {
     @Test
     void testFillMoviesWhenFileHasInvalidSecondField() {
         System.out.println("fillMovies when file has invalid second field");
-        String line = "qwerty";
+        String line = "The Shawshank Redemption;qwerty;2.4";
         FromFileFiller fff = createFiller("invalidSecondField.txt");
         Collection<Movie> movies = new ArrayList<>();
         var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
@@ -156,7 +156,7 @@ public class FromFileFillerTest {
     @Test
     void testFillMoviesWhenFileHasInvalidThirdField() {
         System.out.println("fillMovies when file has invalid third field");
-        String line = "qwerty";
+        String line = "The Shawshank Redemption;1994;qwerty";
         FromFileFiller fff = createFiller("invalidThirdField.txt");
         Collection<Movie> movies = new ArrayList<>();
         var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));

@@ -19,13 +19,14 @@ public class FromFileFiller implements MoviesFiller {
     public static final String FILE_NOT_READABLE_MESSAGE = "File is not readable";
     public static final String COLLECTION_NULL_MESSAGE = "Collection must not be null";
     public static final String INVALID_LINE_FORMAT_MESSAGE_FORMAT = "Invalid line format: %s";
-    public static final String INVALID_VALUE_MESSAGE_FORMAT = "Invalid value: %s";
+    public static final String INVALID_VALUE_MESSAGE_FORMAT = "Invalid value in the line: %s";
     public static final String FILE_LOAD_FAIL_MESSAGE = "Failed to load collection from file";
     
     private static final String LINE_SEPARATOR = ";";
     private static final int ARGS_NUMBER = 3;
     private final Path path;
     private final Movie.Builder builder = new Movie.Builder();
+    private String invalidValueMessage;
 
     public FromFileFiller(String filepath ) {
         path = Paths.get(requireNonNull(filepath, FILEPATH_NULL_MESSAGE));
@@ -52,12 +53,10 @@ public class FromFileFiller implements MoviesFiller {
         if (args.size() != ARGS_NUMBER) {
             throw new IllegalArgumentException(String.format(INVALID_LINE_FORMAT_MESSAGE_FORMAT, line));
         }
-        String name = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, args.get(0)), 
-                () -> MovieInputValidation.validateName(args.get(0)));
-        int yearOfRelease = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, args.get(1)), 
-                () -> MovieInputValidation.validateYearOfRelease(args.get(1)));
-        float hourLength = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, args.get(2)), 
-                () -> MovieInputValidation.validateHourLength(args.get(2)));
+        invalidValueMessage = String.format(INVALID_VALUE_MESSAGE_FORMAT, line);
+        String name = parseValue(() -> MovieInputValidation.validateName(args.get(0)));
+        int yearOfRelease = parseValue(() -> MovieInputValidation.validateYearOfRelease(args.get(1)));
+        float hourLength = parseValue(() -> MovieInputValidation.validateHourLength(args.get(2)));
         return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)
@@ -65,7 +64,7 @@ public class FromFileFiller implements MoviesFiller {
                 .build();
     }
     
-    private <T> T parseValue(String exceptionMesssage, Supplier<Optional<T>> validator) {
-        return validator.get().orElseThrow(() -> new IllegalArgumentException(exceptionMesssage));
+    private <T> T parseValue(Supplier<Optional<T>> validator) {
+        return validator.get().orElseThrow(() -> new IllegalArgumentException(invalidValueMessage));
     }
 }
