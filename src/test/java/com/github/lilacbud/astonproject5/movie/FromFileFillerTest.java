@@ -37,7 +37,7 @@ public class FromFileFillerTest {
     }
     
     private FromFileFiller createFiller(String filename) {
-        URL resource = getClass().getClassLoader().getResource(filename);
+        URL resource = getClass().getResource(filename);
         requireNonNull(resource, "resource must be non null to save");
         try {
             return new FromFileFiller(Paths.get(resource.toURI()).toString());
