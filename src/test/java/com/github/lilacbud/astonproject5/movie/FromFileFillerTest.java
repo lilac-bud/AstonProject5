@@ -36,13 +36,13 @@ public class FromFileFillerTest {
         when(movie.getHourLength()).thenReturn(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
     }
     
-    private FromFileFiller createFiller(String filepath) {
-        URL resource = getClass().getClassLoader().getResource(filepath);
+    private FromFileFiller createFiller(String filename) {
+        URL resource = getClass().getClassLoader().getResource(filename);
         requireNonNull(resource, "resource must be non null to save");
         try {
             return new FromFileFiller(Paths.get(resource.toURI()).toString());
         } catch (URISyntaxException e) {
-            throw new IllegalStateException("Cannot load test resource: " + filepath, e);
+            throw new IllegalStateException("Cannot load test resource: " + filename, e);
         }
     }
     
@@ -78,34 +78,31 @@ public class FromFileFillerTest {
     }
 
     @Test
-    void testCreateFromFileFillerWithNullFilepath() {
-        System.out.println("FromFileFiller with null filepath");
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new FromFileFiller(null));
-        assertEquals(FromFileFiller.FILEPATH_NULL_MESSAGE, exception.getMessage());
+    public void givenNullAsFilepath_whenCreatingFromFileFiller_thenThrow() {
+        final var thrown = assertThrows(NullPointerException.class, () -> new FromFileFiller(null));
+        assertEquals(FromFileFiller.FILEPATH_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
     @SuppressWarnings("ThrowableResultIgnored")
-    public void testCreateFromFileFillerWithInvalidPath() {
-        System.out.println("FromFileFiller with invalid path");
-        assertThrows(InvalidPathException.class, () -> new FromFileFiller("Name:InvalidFile.txt"));
+    public void givenInvalidPath_whenCreatingFromFileFiller_thenThrow() {
+        final String filename = "Name:InvalidFile.txt";
+        assertThrows(InvalidPathException.class, () -> new FromFileFiller(filename));
     }
     
     @Test
-    void testCreateFromFileFillerWhenFileExistsNot() {
-        System.out.println("FromFileFiller when file exists not");
-        String filepath = "NotExistFile.txt";
-        var thrown = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller(filepath));
+    public void givenThatFileExistsNot_whenCreatingFromFileFiller_thenThrow() {
+        final String filename = "NotExistFile.txt";
+        final var thrown = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller(filename));
         assertEquals(FromFileFiller.FILE_EXISTS_NOT_MESSAGE, thrown.getMessage());
     }
 
     @Test
-    void testFillMoviesCorrect() {
+    public void givenThatFileIsCorrect_whenFillingCollection_thenCollectionShouldBeFilled() {
         configureMovieMock();
-        System.out.println("fillMovies correct");
-        
-        FromFileFiller fff = createFillerWithMockedBuilder("correctMovies.txt");
-        List<Movie> movies = new ArrayList<>();
+        final String filename = "correctMovies.txt";
+        final FromFileFiller fff = createFillerWithMockedBuilder(filename);
+        final List<Movie> movies = new ArrayList<>();
         fillMovies(fff, movies);
 
         assertEquals(5, movies.size());
@@ -115,59 +112,59 @@ public class FromFileFillerTest {
     }
 
     @Test
-    void testFillMoviesWhenEmptyFile() {
-        System.out.println("fillMovies when empty file");
-        FromFileFiller fff = createFiller("emptyFile.txt");
-        Collection<Movie> movies = new ArrayList<>();
+    public void givenThatFileIsEmpty_whenFillingCollection_thenCollectionShouldBeEmpty() {
+        final String filename = "emptyFile.txt";
+        final FromFileFiller fff = createFiller(filename);
+        final Collection<Movie> movies = new ArrayList<>();
         fff.fillMovies(movies);
         assertTrue(movies.isEmpty());
     }
 
     @Test
-    void testFillMoviesWhenFileHasExtraFields() {
-        System.out.println("fillMovies when file has extra fields");
-        String line = "The Shawshank Redemption;1994;2.4;1972";
-        FromFileFiller fff = createFiller("extraField.txt");
-        Collection<Movie> movies = new ArrayList<>();
-        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+    public void givenThatFileHasExtraFields_whenFillingCollection_thenThrow() {
+        final String filename = "extraField.txt";
+        final String line = "The Shawshank Redemption;1994;2.4;1972";
+        final FromFileFiller fff = createFiller(filename);
+        final Collection<Movie> movies = new ArrayList<>();
+        final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
         assertEquals(String.format(FromFileFiller.INVALID_LINE_FORMAT_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
-    void testFillMoviesWhenFileMissingFields() {
-        System.out.println("fillMovies when file missing fields");
-        String line = "The Shawshank Redemption;1994";
-        FromFileFiller fff = createFiller("missingField.txt");
-        Collection<Movie> movies = new ArrayList<>();
-        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+    public void givenThatFileHasMissingFields_whenFillingCollection_thenThrow() {
+        final String filename = "missingField.txt";
+        final String line = "The Shawshank Redemption;1994";
+        final FromFileFiller fff = createFiller(filename);
+        final Collection<Movie> movies = new ArrayList<>();
+        final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
         assertEquals(String.format(FromFileFiller.INVALID_LINE_FORMAT_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
-    void testFillMoviesWhenFileHasInvalidSecondField() {
-        System.out.println("fillMovies when file has invalid second field");
-        String line = "The Shawshank Redemption;qwerty;2.4";
-        FromFileFiller fff = createFiller("invalidSecondField.txt");
-        Collection<Movie> movies = new ArrayList<>();
-        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+    public void givenThatFileHasInvalidSecondField_whenFillingCollection_thenThrow() {
+        final String filename = "invalidSecondField.txt";
+        final String line = "The Shawshank Redemption;qwerty;2.4";
+        final FromFileFiller fff = createFiller(filename);
+        final Collection<Movie> movies = new ArrayList<>();
+        final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
         assertEquals(String.format(FromFileFiller.INVALID_VALUE_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
-    void testFillMoviesWhenFileHasInvalidThirdField() {
-        System.out.println("fillMovies when file has invalid third field");
-        String line = "The Shawshank Redemption;1994;qwerty";
-        FromFileFiller fff = createFiller("invalidThirdField.txt");
-        Collection<Movie> movies = new ArrayList<>();
-        var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
+    public void givenThatFileHasInvalidThirdField_whenFillingCollection_thenThrow() {
+        final String filename = "invalidThirdField.txt";
+        final String line = "The Shawshank Redemption;1994;qwerty";
+        final FromFileFiller fff = createFiller(filename);
+        final Collection<Movie> movies = new ArrayList<>();
+        final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
         assertEquals(String.format(FromFileFiller.INVALID_VALUE_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
-    void testFillMoviesGivenNullMovies() {
-        System.out.println("fillMovies given null movies");
-        FromFileFiller fff = createFiller("correctMovies.txt");
-        var thrown = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
+    public void givenNullAsCollection_whenFillingCollection_thenThrow() {
+        final String filename = "correctMovies.txt";
+        final FromFileFiller fff = createFiller(filename);
+        final var thrown = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
         assertEquals(FromFileFiller.COLLECTION_NULL_MESSAGE, thrown.getMessage());
     }
 }
