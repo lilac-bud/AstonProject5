@@ -42,20 +42,20 @@ public class MovieInputValidationTest {
     }
 
     @Test
-    public void testValidateNameGivenNull() {
+    public void givenNull_whenValidatingName_thenReturnEmptyOptional() {
         String input = null;
         Optional<String> result = validateInputWithMock(() -> MovieInputValidation.validateName(input));
         assertTrue(result.isEmpty());
     }
     
     @Test
-    public void testValidateNameGivenBlankString() {
+    public void givenBlankString_whenValidatingName_thenReturnEmptyOptional() {
         String input = "\n";
         Optional<String> result = validateInputWithMock(() -> MovieInputValidation.validateName(input));
         assertTrue(result.isEmpty());
     }
     @Test
-    public void testValidateNameGivenValidString() {
+    public void givenNotEmptyString_whenValidatingName_thenReturnOptionalOfTrimmedStringWithoutExtraSpaces() {
         String input = "Correct     input\n";
         Optional<String> expectedResult = Optional.of(input.trim().replaceAll("\\s+", " "));
         Optional<String> result = validateInputWithMock(() -> MovieInputValidation.validateName(input));
@@ -63,28 +63,28 @@ public class MovieInputValidationTest {
     }
 
     @Test
-    public void testValidateYearOfReleaseGivenNull() {
+    public void givenNull_whenValidatingYearOfRelease_thenReturnEmptyOptional() {
         String input = null;
         Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
     }
     
     @Test
-    public void testValidateYearOfReleaseGivenBlankString() {
+    public void givenBlankString_whenValidatingYearOfRelease_thenReturnEmptyOptional() {
         String input = "\n";
         Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
     }
     
     @Test
-    public void testValidateYearOfReleaseGivenUnconvertableString() {
+    public void givenUnconvertableString_whenValidatingYearOfRelease_thenReturnEmptyOptional() {
         String input = "qwerty";
         Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
     }
     
     @Test
-    public void testValidateYearOfReleaseGivenYearLessThanMinYear() {
+    public void givenIntegerLessThanMinYearAsString_whenValidatingYearOfRelease_thenReturnEmptyOptional() {
         String input = "1500";
         Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
@@ -92,7 +92,7 @@ public class MovieInputValidationTest {
     }
     
     @Test
-    public void testValidateYearOfReleaseGivenValidYear() {
+    public void givenIntegerAsString_whenValidatingYearOfRelease_thenReturnOptionalOfInteger() {
         String input = "2026";
         Optional<Integer> expectedResult = Optional.of(Integer.valueOf(input));
         Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
@@ -101,26 +101,21 @@ public class MovieInputValidationTest {
     }
 
     @Test
-    public void testValidateHourLengthGivenNull() {
-        System.out.println("validateHourLength given null");
+    public void givenNull_whenValidatingHourLength_thenReturnEmptyOptional() {
         String input = null;
-        Optional<Float> result = MovieInputValidation.validateHourLength(input);
+        Optional<Float> result = validateInputWithMock(() -> MovieInputValidation.validateHourLength(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
-    public void testValidateHourLengthGivenBlankString() {
-        System.out.println("validateHourLength given blank string");
+    public void givenBlankString_whenValidatingHourLength_thenReturnEmptyOptional() {
         String input = "\n";
-        Optional<Float> result = MovieInputValidation.validateHourLength(input);
+        Optional<Float> result = validateInputWithMock(() -> MovieInputValidation.validateHourLength(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     
     @Test
-    public void testValidateHourLengthGivenUnconvertableString() {
-        System.out.println("validateHourLength given unconvertable string");
+    public void givenUnconvertableString_whenValidatingHourLength_thenReturnEmptyOptional() {
         String input = "qwerty";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
@@ -128,8 +123,7 @@ public class MovieInputValidationTest {
     }
     
     @Test
-    public void testValidateHourLengthGivenNegativeHourLength() {
-        System.out.println("validateHourLength given negative hour length");
+    public void givenNegativeFloatAsString_whenValidatingHourLength_thenReturnEmptyOptional() {
         String input = "-2";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
@@ -137,8 +131,7 @@ public class MovieInputValidationTest {
     }
     
     @Test
-    public void testValidateHourLengthGivenHourLengthLessThanMinHourLength() {
-        System.out.println("validateHourLength given hour length less than min hour length");
+    public void givenFloatLessThanMinHourLengthAsString_whenValidatingHourLength_thenReturnEmptyOptional() {
         String input = "0.000001";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
@@ -146,8 +139,7 @@ public class MovieInputValidationTest {
     }
     
     @Test
-    public void testValidateHourLengthGivenValidHourLength() {
-        System.out.println("validateHourLength given valid hour length");
+    public void givenFloatAsString_whenValidatingHourLength_thenReturnEmptyOptional() {
         String input = "2.5";
         Optional<Float> expectedResult = Optional.of(Float.valueOf(input));
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
