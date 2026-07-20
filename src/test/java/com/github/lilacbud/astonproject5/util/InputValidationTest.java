@@ -28,7 +28,7 @@ public class InputValidationTest {
         String input = null;
         Optional<String> result = InputValidation.validateInput(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -37,7 +37,7 @@ public class InputValidationTest {
         String input = "\n";
         Optional<String> result = InputValidation.validateInput(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -57,7 +57,7 @@ public class InputValidationTest {
         String input = null;
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -66,7 +66,7 @@ public class InputValidationTest {
         String input = "\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -75,7 +75,7 @@ public class InputValidationTest {
         String input = "qwerty\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input must be a whole number", errContent.toString().trim());
+        assertEquals(InputValidation.INTEGER_INPUT_INVALID_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -84,7 +84,7 @@ public class InputValidationTest {
         String input = "-2\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be negative", errContent.toString().trim());
+        assertEquals(InputValidation.INTEGER_INPUT_NEGATIVE_MESSAGE, errContent.toString().trim());
     }
     
     @Test

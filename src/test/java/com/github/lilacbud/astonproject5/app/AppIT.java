@@ -3,12 +3,14 @@ package com.github.lilacbud.astonproject5.app;
 import com.github.lilacbud.astonproject5.movie.FromFileFiller;
 import com.github.lilacbud.astonproject5.movie.ManualFiller;
 import com.github.lilacbud.astonproject5.movie.Movie;
+import com.github.lilacbud.astonproject5.movie.MovieInputValidation;
 import com.github.lilacbud.astonproject5.movie.RandomFiller;
 import com.github.lilacbud.astonproject5.movie.save.DefaultSaver;
 import com.github.lilacbud.astonproject5.sort.EvenNumbersSortDecorator;
 import com.github.lilacbud.astonproject5.sort.MergeSort;
 import com.github.lilacbud.astonproject5.user.Menu;
 import com.github.lilacbud.astonproject5.util.InputRequest;
+import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -46,11 +48,11 @@ public class AppIT {
     private final String expectedOutContent = String.join(newline, expectedFileLines).replace(".", ",")
             + newline + "2";
     private final String expectedErrContent = String.join(newline, List.of(
-            "Input must be a whole number", 
-            "Input cannot be negative", 
-            "No such option", 
-            "No such option", 
-            "There were no films in that year"));
+            InputValidation.INTEGER_INPUT_INVALID_MESSAGE, 
+            InputValidation.INTEGER_INPUT_NEGATIVE_MESSAGE, 
+            Menu.NO_OPTION_MESSAGE, 
+            Menu.NO_OPTION_MESSAGE, 
+            MovieInputValidation.YEAR_LESS_THAN_MIN_MESSAGE));
 
     private final String printFormat = "%s;%d;%.1f";
     

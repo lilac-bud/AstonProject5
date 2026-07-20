@@ -68,14 +68,14 @@ class DefaultSaverTest {
     public void testCreateSaverWithNullFilepath() {
         System.out.println("DefaultSaver with null filepath");
         var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, new Scanner(""), null));
-        assertEquals("Filepath must not be null", thrown.getMessage());
+        assertEquals(DefaultSaver.FILEPATH_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
     public void testCreateSaverWithNullScanner() {
         System.out.println("DefaultSaver with null scanner");
         var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver("", null, null));
-        assertEquals("Scanner must not be null", thrown.getMessage());
+        assertEquals(DefaultSaver.SCANNER_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
@@ -144,6 +144,6 @@ class DefaultSaverTest {
         DefaultSaver ds = new DefaultSaver(file.toString(), new Scanner(""), null);
 
         var thrown = assertThrows(NullPointerException.class, () -> ds.save(movies));
-        assertEquals("Movies must not be null", thrown.getMessage());
+        assertEquals(DefaultSaver.COLLECTION_NULL_MESSAGE, thrown.getMessage());
     }
 }

@@ -10,42 +10,50 @@ import static java.util.Objects.requireNonNull;
 import java.util.stream.Stream;
 
 public class FromFileFiller implements MoviesFiller {
-    private final static String LINE_SEPARATOR = ";";
-    private final static int ARGS_NUMBER = 3;
+    public static final String FILEPATH_NULL_MESSAGE = "Filepath must not be null";
+    public static final String FILE_EXISTS_NOT_MESSAGE = "File does not exist";
+    public static final String FILE_NOT_READABLE_MESSAGE = "File is not readable";
+    public static final String COLLECTION_NULL_MESSAGE = "Collection must not be null";
+    public static final String INVALID_LINE_FORMAT_MESSAGE_FORMAT = "Invalid line format: %s";
+    public static final String INVALID_VALUE_MESSAGE_FORMAT = "Invalid value: %s";
+    public static final String FILE_LOAD_FAIL_MESSAGE = "Failed to load collection from file";
+    
+    private static final String LINE_SEPARATOR = ";";
+    private static final int ARGS_NUMBER = 3;
     private final Path path;
     private final Movie.Builder builder = new Movie.Builder();
 
     public FromFileFiller(String filepath ) {
-        path = Paths.get(requireNonNull(filepath, "Filepath must not be null"));
+        path = Paths.get(requireNonNull(filepath, FILEPATH_NULL_MESSAGE));
         if (!Files.exists(path)) {
-            throw new IllegalArgumentException("File does not exist: " + filepath);
+            throw new IllegalArgumentException(FILE_EXISTS_NOT_MESSAGE);
         }
         if (!Files.isReadable(path)) {
-            throw new IllegalArgumentException("File is not readable: " + filepath);
+            throw new IllegalArgumentException(FILE_NOT_READABLE_MESSAGE);
         }
     }
 
     @Override
     public void fillMovies(Collection<Movie> movies) {
-        requireNonNull(movies, "Movies must not be null").clear();
+        requireNonNull(movies, COLLECTION_NULL_MESSAGE).clear();
         try (Stream<String> lines = Files.lines(path)) {
             lines.map(this::parseMovie).forEach(movies::add);
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot load movies from file: " + path, e);
+            throw new RuntimeException(FILE_LOAD_FAIL_MESSAGE, e);
         }
     }
 
     private Movie parseMovie(String line) {
         final String[] arrStrings = line.split(LINE_SEPARATOR);
         if (arrStrings.length != ARGS_NUMBER) {
-            throw new IllegalArgumentException("Invalid string format: " + line);
+            throw new IllegalArgumentException(String.format(INVALID_LINE_FORMAT_MESSAGE_FORMAT, line));
         }
-        String name = MovieInputValidation.validateName(arrStrings[0])
-                .orElseThrow(() -> new IllegalArgumentException("Invalid name: " + arrStrings[0]));
-        int yearOfRelease = MovieInputValidation.validateYearOfRelease(arrStrings[1])
-                .orElseThrow(() -> new IllegalArgumentException("Invalid year: " + arrStrings[1]));
-        float hourLength = MovieInputValidation.validateHourLength(arrStrings[2])
-                .orElseThrow(() -> new IllegalArgumentException("Invalid hour: " + arrStrings[2]));
+        String name = MovieInputValidation.validateName(arrStrings[0]).orElseThrow(() 
+                -> new IllegalArgumentException(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[0])));
+        int yearOfRelease = MovieInputValidation.validateYearOfRelease(arrStrings[1]).orElseThrow(() 
+                -> new IllegalArgumentException(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[1])));
+        float hourLength = MovieInputValidation.validateHourLength(arrStrings[2]).orElseThrow(() 
+                -> new IllegalArgumentException(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[2])));
         return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)

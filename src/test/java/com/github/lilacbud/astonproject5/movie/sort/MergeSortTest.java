@@ -102,7 +102,7 @@ public class MergeSortTest {
         MergeSort<Movie> mergeSort = new MergeSort<>();
         
         var thrown = assertThrows(NullPointerException.class, () -> mergeSort.sort(null, comparator));
-        assertEquals("List must not be null", thrown.getMessage());
+        assertEquals(MergeSort.LIST_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test

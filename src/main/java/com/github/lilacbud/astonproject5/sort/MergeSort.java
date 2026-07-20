@@ -8,10 +8,11 @@ import java.util.ListIterator;
 import static java.util.Objects.requireNonNull;
 
 public class MergeSort<E> implements SortingStrategy<E> {
-
+    public static final String LIST_NULL_MESSAGE = "List must not be null";
+    
     @Override
     public void sort(List<E> list, Comparator<E> comp) {
-        if (requireNonNull(list, "List must not be null").size() <= 1) {
+        if (requireNonNull(list, LIST_NULL_MESSAGE).size() <= 1) {
             return;
         }
         final List<E> result = doMergeSort(list, comp);

@@ -56,7 +56,7 @@ public class MenuTest {
     public void testCreateMenuOptionWithNullCommand() {
         System.out.println("MenuOption given null command");
         final var thrown = assertThrows(NullPointerException.class, () -> new Menu.MenuOption<MenuTest>("Title", null));
-        assertEquals("Command must not be null", thrown.getMessage());
+        assertEquals(Menu.MenuOption.COMMAND_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
@@ -72,7 +72,7 @@ public class MenuTest {
         System.out.println("StepBuilder with null option");
         final var thrown = assertThrows(NullPointerException.class, () 
                 -> Menu.StepBuilder.newBuilder().withTitle("Title").withPrompt("Prompt").withOption(null));
-        assertEquals("Option must not be null", thrown.getMessage());
+        assertEquals(Menu.StepBuilder.OPTION_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
@@ -89,7 +89,7 @@ public class MenuTest {
     public void testChooseOptionGivenNullScanner() {
         System.out.println("chooseOption given null scanner");
         final var thrown = assertThrows(NullPointerException.class, () -> menu.chooseOptionAndExecute(null, this));
-        assertEquals("Scanner must not be null", thrown.getMessage());
+        assertEquals(Menu.SCANNER_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
@@ -99,7 +99,7 @@ public class MenuTest {
         System.setOut(new PrintStream(outContent));
         
         final String newline = System.lineSeparator();
-        final String expectedErrContent = ("No such option" + newline).repeat(2);
+        final String expectedErrContent = (Menu.NO_OPTION_MESSAGE + newline).repeat(2);
         final String expectedMenuOutput = """
                                           Title
                                           1. Set value to 1

@@ -13,14 +13,19 @@ import static java.util.Objects.requireNonNull;
 import java.util.Scanner;
 
 public class DefaultSaver implements MoviesSaver {
+    public static final String FILEPATH_NULL_MESSAGE = "Filepath must not be null";
+    public static final String SCANNER_NULL_MESSAGE = "Scanner must not be null";
+    public static final String COLLECTION_NULL_MESSAGE = "Collection must not be null";
+    public static final String FILE_SAVE_FAIL_MESSAGE = "File save failed";
+    
     private final Path filePath;
     private final Scanner scanner;
     private final Menu<? super DefaultSaver> setSaveOptionMenu;
     private StandardOpenOption saveOption = StandardOpenOption.TRUNCATE_EXISTING;
 
     public DefaultSaver(String filepath, Scanner scanner, Menu<? super DefaultSaver> setSaveOptionMenu) {
-        this.filePath = Path.of(requireNonNull(filepath, "Filepath must not be null"));
-        this.scanner = requireNonNull(scanner, "Scanner must not be null");
+        this.filePath = Path.of(requireNonNull(filepath, FILEPATH_NULL_MESSAGE));
+        this.scanner = requireNonNull(scanner, SCANNER_NULL_MESSAGE);
         this.setSaveOptionMenu = setSaveOptionMenu;
     }
 
@@ -31,7 +36,7 @@ public class DefaultSaver implements MoviesSaver {
     
     @Override
     public void save(Collection<Movie> movies){
-        requireNonNull(movies, "Movies must not be null");
+        requireNonNull(movies, COLLECTION_NULL_MESSAGE);
         if (Files.exists(filePath) && setSaveOptionMenu != null) {
             setSaveOptionMenu.chooseOptionAndExecute(scanner, this);
         }
@@ -41,7 +46,7 @@ public class DefaultSaver implements MoviesSaver {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("File Save Error", e);
+            throw new RuntimeException(FILE_SAVE_FAIL_MESSAGE, e);
         }
     }
 }

@@ -10,6 +10,10 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ManualFiller implements MoviesFiller {
+    public static final String SIZE_NEGATIVE_MESSAGE = "Size must not be negative";
+    public static final String SCANNER_NULL_MESSAGE = "Scanner must not be null";
+    public static final String COLLECTION_NULL_MESSAGE = "Collection must not be null";
+    
     private final int size;
     private final Scanner scanner;
     private final Prompts prompts;
@@ -17,16 +21,16 @@ public class ManualFiller implements MoviesFiller {
 
     public ManualFiller(int size, Scanner scanner, Prompts prompts) {
         if (size < 0) {
-            throw new IllegalArgumentException("Size cannot be negative");
+            throw new IllegalArgumentException(SIZE_NEGATIVE_MESSAGE);
         }
         this.size = size;
-        this.scanner = requireNonNull(scanner, "Scanner cannot be null");
+        this.scanner = requireNonNull(scanner, SCANNER_NULL_MESSAGE);
         this.prompts = Objects.requireNonNullElse(prompts, new Prompts(null, null, null));
     }
 
     @Override
     public void fillMovies(Collection<Movie> movies) {
-        requireNonNull(movies, "Movies must not be null").clear();
+        requireNonNull(movies, COLLECTION_NULL_MESSAGE).clear();
         Stream.generate(this::createMovie)
                 .limit(size)
                 .forEach(movies::add);

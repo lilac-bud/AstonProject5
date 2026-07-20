@@ -81,7 +81,7 @@ public class FromFileFillerTest {
     void testCreateFromFileFillerWithNullFilepath() {
         System.out.println("FromFileFiller with null filepath");
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new FromFileFiller(null));
-        assertEquals("Filepath must not be null", exception.getMessage());
+        assertEquals(FromFileFiller.FILEPATH_NULL_MESSAGE, exception.getMessage());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class FromFileFillerTest {
         System.out.println("FromFileFiller when file exists not");
         String filepath = "NotExistFile.txt";
         var thrown = assertThrows(IllegalArgumentException.class, () -> new FromFileFiller(filepath));
-        assertEquals("File does not exist: " + filepath, thrown.getMessage());
+        assertEquals(FromFileFiller.FILE_EXISTS_NOT_MESSAGE, thrown.getMessage());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class FromFileFillerTest {
         FromFileFiller fff = createFiller("extraField.txt");
         Collection<Movie> movies = new ArrayList<>();
         var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
-        assertEquals("Invalid string format: " + line, thrown.getMessage());
+        assertEquals(String.format(FromFileFiller.INVALID_LINE_FORMAT_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class FromFileFillerTest {
         FromFileFiller fff = createFiller("missingField.txt");
         Collection<Movie> movies = new ArrayList<>();
         var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
-        assertEquals("Invalid string format: " + line, thrown.getMessage());
+        assertEquals(String.format(FromFileFiller.INVALID_LINE_FORMAT_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class FromFileFillerTest {
         FromFileFiller fff = createFiller("invalidSecondField.txt");
         Collection<Movie> movies = new ArrayList<>();
         var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
-        assertEquals("Invalid year: " + line, thrown.getMessage());
+        assertEquals(String.format(FromFileFiller.INVALID_VALUE_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class FromFileFillerTest {
         FromFileFiller fff = createFiller("invalidThirdField.txt");
         Collection<Movie> movies = new ArrayList<>();
         var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
-        assertEquals("Invalid hour: " + line, thrown.getMessage());
+        assertEquals(String.format(FromFileFiller.INVALID_VALUE_MESSAGE_FORMAT, line), thrown.getMessage());
     }
 
     @Test
@@ -168,6 +168,6 @@ public class FromFileFillerTest {
         System.out.println("fillMovies given null movies");
         FromFileFiller fff = createFiller("correctMovies.txt");
         var thrown = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
-        assertEquals("Movies must not be null", thrown.getMessage());
+        assertEquals(FromFileFiller.COLLECTION_NULL_MESSAGE, thrown.getMessage());
     }
 }

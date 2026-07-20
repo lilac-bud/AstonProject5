@@ -10,6 +10,12 @@ import static java.util.Objects.requireNonNull;
 import java.util.function.Consumer;
 
 public class App {
+    public static final String FILLER_NULL_MESSAGE = "Filler must not be null";
+    public static final String SAVER_NULL_MESSAGE = "Saver must not be null";
+    public static final String SORTSTRAT_NULL_MESSAGE = "Sorting strategy must not be null";
+    public static final String COMP_NULL_MESSAGE = "Comparator must not be null";
+    public static final String COMMAND_NULL_MESSAGE = "Command must not be null";
+    
     private final List<Movie> movies = new ArrayList<>();
     
     private final MoviesSorter sorter = new MoviesSorter();
@@ -25,19 +31,19 @@ public class App {
     }
     
     public void setFiller(MoviesFiller filler) {
-        this.filler = requireNonNull(filler, "Filler must not be null");
+        this.filler = requireNonNull(filler, FILLER_NULL_MESSAGE);
     }
     
     public void setSaver(MoviesSaver saver) {
-        this.saver = requireNonNull(saver, "Saver must not be null");
+        this.saver = requireNonNull(saver, SAVER_NULL_MESSAGE);
     }
     
     public void setSortingStrategy(SortingStrategy<Movie> sortStrategy) {
-        sorter.setSortingStrategy(requireNonNull(sortStrategy, "Sorting strategy must not be null"));
+        sorter.setSortingStrategy(requireNonNull(sortStrategy, SORTSTRAT_NULL_MESSAGE));
     }
     
     public void setComparator(Comparator<Movie> comp) {
-        sorter.setComparator(requireNonNull(comp, "Comparator must not be null"));
+        sorter.setComparator(requireNonNull(comp, COMP_NULL_MESSAGE));
     }
     
     public boolean moviesIsEmpty() {
@@ -96,7 +102,7 @@ public class App {
     }
 
     public void tryCommandTillSuccess(String successMessage, Consumer<App> command) {
-        requireNonNull(command, "Command must not be null");
+        requireNonNull(command, COMMAND_NULL_MESSAGE);
         while (true) {
             try {
                 command.accept(this);
@@ -116,6 +122,11 @@ public class App {
     }
     
     private static class MoviesSorter {
+        public static final String SORTER_SORTSTRAT_NULL_MESSAGE = 
+                "Sorting strategy must not be null to perform sorting";
+        public static final String SORTER_COMP_NULL_MESSAGE = 
+                "Comparator must not be null to perform sorting";
+        
         private SortingStrategy<Movie> sortStrategy;
         private Comparator<Movie> comp;
 
@@ -128,8 +139,12 @@ public class App {
         }
 
         public void performSorting(List<Movie> movies) {
-            requireNonNull(sortStrategy, "Sorting strategy must not be null to perform sorting");
-            requireNonNull(comp, "Comparator must not be null to perform sorting");
+            if (sortStrategy == null) {
+                throw new IllegalStateException(SORTER_SORTSTRAT_NULL_MESSAGE);
+            }
+            if (comp == null) {
+                throw new IllegalStateException(SORTER_COMP_NULL_MESSAGE);
+            }
             sortStrategy.sort(movies, comp);
         }
     }

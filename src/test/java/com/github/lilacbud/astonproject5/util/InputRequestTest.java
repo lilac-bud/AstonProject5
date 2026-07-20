@@ -24,7 +24,7 @@ public class InputRequestTest {
     public void testAskStringGivenNullScanner() {
         System.out.println("askString given null scanner");
         var thrown = assertThrows(NullPointerException.class, () -> InputRequest.askString(null));
-        assertEquals("Scanner must not be null", thrown.getMessage());
+        assertEquals(InputRequest.SCANNER_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
@@ -49,7 +49,7 @@ public class InputRequestTest {
     public void testAskIntegerGivenNullScanner() {
         System.out.println("askInteger given null scanner");
         var thrown = assertThrows(NullPointerException.class, () -> InputRequest.askInteger(null));
-        assertEquals("Scanner must not be null", thrown.getMessage());
+        assertEquals(InputRequest.SCANNER_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test

@@ -10,16 +10,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class EvenNumbersSortDecorator<E> extends SortDecorator<E> {
+    public static final String EXTRACTOR_NULL_MESSAGE = "Extractor must not be null";
+    public static final String LIST_NULL_MESSAGE = "List must not be null";
+    
     private final ToIntFunction<E> extractor;
 
     public EvenNumbersSortDecorator(SortingStrategy<E> sortingStrategy, ToIntFunction<E> extractor) {
         super(sortingStrategy);
-        this.extractor = requireNonNull(extractor, "Extractor must not be null");
+        this.extractor = requireNonNull(extractor, EXTRACTOR_NULL_MESSAGE);
     }
 
     @Override
     public void sort(List<E> list, Comparator<E> comp) {
-        if (requireNonNull(list, "List must not be null").isEmpty()) {
+        if (requireNonNull(list, LIST_NULL_MESSAGE).isEmpty()) {
             return;
         }
         final List<Integer> evenIndices = IntStream.range(0, list.size()).boxed()

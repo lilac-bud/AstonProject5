@@ -40,11 +40,19 @@ public class EvenNumbersSortDecoratorTest {
     }
     
     @Test
+    void testCreateEvenNumbersSortDecoratorWithNullSortStrategy() {
+        System.out.println("EvenNumbersSortDecorator with null sort strategy");
+        var thrown = assertThrows(NullPointerException.class, () -> 
+                new EvenNumbersSortDecorator<Movie>(null, Movie::getYearOfRelease));
+        assertEquals(EvenNumbersSortDecorator.SORTSTRAT_NULL_MESSAGE, thrown.getMessage());
+    }
+    
+    @Test
     void createEvenNumbersSortDecoratorWithNullExtractor() {
         System.out.println("EvenNumbersSortDecorator with null extractor");
         var thrown = assertThrows(NullPointerException.class, () -> 
                 new EvenNumbersSortDecorator<Movie>(new MergeSort<>(), null));
-        assertEquals("Extractor must not be null", thrown.getMessage());
+        assertEquals(EvenNumbersSortDecorator.EXTRACTOR_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
@@ -119,7 +127,7 @@ public class EvenNumbersSortDecoratorTest {
                 new EvenNumbersSortDecorator<>(new MergeSort<>(),Movie::getYearOfRelease);
         var thrown = assertThrows(NullPointerException.class, () -> sortingStrategy.sort(movies, comparator));
 
-        assertEquals("List must not be null", thrown.getMessage());
+        assertEquals(EvenNumbersSortDecorator.LIST_NULL_MESSAGE, thrown.getMessage());
     }
 
 }

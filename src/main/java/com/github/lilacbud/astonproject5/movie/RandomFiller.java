@@ -10,6 +10,11 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class RandomFiller implements MoviesFiller {
+    public static final String SIZE_NEGATIVE_MESSAGE = "Size cannot be negative";
+    public static final String COLLECTION_NULL_MESSAGE = "Collection must not be null";
+    
+    private static final String PRECISION_NEGATIVE_MESSAGE = "Precision must not be negative";
+    
     private static final Random RANDOM = new Random();
     private static final int MIN_NAME_LENGTH = 5;
     private static final int MAX_NAME_LENGTH = 10;
@@ -23,14 +28,14 @@ public class RandomFiller implements MoviesFiller {
     
     public RandomFiller(int size) {
         if (size < 0) {
-            throw new IllegalArgumentException("Size cannot be negative");
+            throw new IllegalArgumentException(SIZE_NEGATIVE_MESSAGE);
         }
         this.size = size;
     }
     
     @Override
     public void fillMovies(Collection<Movie> movies) {
-        requireNonNull(movies, "Movies must not be null").clear();
+        requireNonNull(movies, COLLECTION_NULL_MESSAGE).clear();
         Stream.generate(this::generateMovie)
                 .limit(size)
                 .forEach(movies::add);
@@ -76,7 +81,7 @@ public class RandomFiller implements MoviesFiller {
     
     private float generateFloatWithPrecision(float minIncl, float maxExcl, int precision) {
         if (precision < 0) {
-            throw new IllegalArgumentException("Precision must not be negative");
+            throw new IllegalArgumentException(PRECISION_NEGATIVE_MESSAGE);
         }
         BigDecimal temp = new BigDecimal(Float.toString(generateFloat(minIncl, maxExcl)));
         temp = temp.setScale(precision, RoundingMode.HALF_UP);

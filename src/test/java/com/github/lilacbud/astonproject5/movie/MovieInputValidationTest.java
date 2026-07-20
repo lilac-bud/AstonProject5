@@ -1,5 +1,6 @@
 package com.github.lilacbud.astonproject5.movie;
 
+import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class MovieInputValidationTest {
         String input = null;
         Optional<String> result = MovieInputValidation.validateName(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -38,7 +39,7 @@ public class MovieInputValidationTest {
         String input = "\n";
         Optional<String> result = MovieInputValidation.validateName(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     @Test
     public void testValidateNameGivenValidString() {
@@ -57,7 +58,7 @@ public class MovieInputValidationTest {
         String input = null;
         Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -66,7 +67,7 @@ public class MovieInputValidationTest {
         String input = "\n";
         Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -75,7 +76,7 @@ public class MovieInputValidationTest {
         String input = "qwerty";
         Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input must be a whole number", errContent.toString().trim());
+        assertEquals(InputValidation.INTEGER_INPUT_INVALID_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -84,7 +85,7 @@ public class MovieInputValidationTest {
         String input = "1500";
         Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
         assertTrue(result.isEmpty());
-        assertEquals("There were no films in that year", errContent.toString().trim());
+        assertEquals(MovieInputValidation.YEAR_LESS_THAN_MIN_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -103,7 +104,7 @@ public class MovieInputValidationTest {
         String input = null;
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -112,7 +113,7 @@ public class MovieInputValidationTest {
         String input = "\n";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
-        assertEquals("Input cannot be empty", errContent.toString().trim());
+        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -121,7 +122,7 @@ public class MovieInputValidationTest {
         String input = "qwerty";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
-        assertEquals("That's not an hour length", errContent.toString().trim());
+        assertEquals(MovieInputValidation.HOUR_LENGTH_INVALID_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -130,7 +131,7 @@ public class MovieInputValidationTest {
         String input = "-2";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
-        assertEquals("Hour length cannot be negative", errContent.toString().trim());
+        assertEquals(MovieInputValidation.HOUR_LENGTH_NEGATIVE_MESSAGE, errContent.toString().trim());
     }
     
     @Test
@@ -139,7 +140,7 @@ public class MovieInputValidationTest {
         String input = "0.000001";
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
         assertTrue(result.isEmpty());
-        assertEquals("Hour length cannot be that small", errContent.toString().trim());
+        assertEquals(MovieInputValidation.HOUR_LENGTH_LESS_THAN_MIN_MESSAGE, errContent.toString().trim());
     }
     
     @Test

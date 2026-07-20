@@ -18,21 +18,22 @@ public class RandomFillerTest {
     public void testCreateRandomFillerWithSizeLessThanZero() {
         System.out.println("RandomFiller with size set to less than zero");
         var thrown = assertThrows(IllegalArgumentException.class, () -> new RandomFiller(-10));
-        assertEquals(thrown.getMessage(), "Size cannot be negative");
-        assertTrue(movies.isEmpty());
+        assertEquals(thrown.getMessage(), RandomFiller.SIZE_NEGATIVE_MESSAGE);
     }
     
     @Test
     public void testFillMoviesWithSizeZero() {
         System.out.println("fillMovies with size set to zero");
-        new RandomFiller(0).fillMovies(movies);
+        RandomFiller rf = new RandomFiller(0);
+        rf.fillMovies(movies);
         assertTrue(movies.isEmpty());
     }
     
     @Test
     public void testFillMoviesWithSizeMoreThanZero() {
         System.out.println("fillMovies with size set to more than zero");
-        new RandomFiller(10).fillMovies(movies);
+        RandomFiller rf = new RandomFiller(10);
+        rf.fillMovies(movies);
         assertEquals(movies.size(), 10);
         assertFalse(movies.contains(null));
     }
@@ -42,6 +43,6 @@ public class RandomFillerTest {
         System.out.println("fillMovies with null movies argument");
         RandomFiller rf = new RandomFiller(10);
         var thrown = assertThrows(NullPointerException.class, () -> rf.fillMovies(null));
-        assertEquals("Movies must not be null", thrown.getMessage());
+        assertEquals(RandomFiller.COLLECTION_NULL_MESSAGE, thrown.getMessage());
     }
 }

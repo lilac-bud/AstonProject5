@@ -10,6 +10,9 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Menu<T> {
+    public static final String SCANNER_NULL_MESSAGE = "Scanner must not be null";
+    public static final String NO_OPTION_MESSAGE = "No such option";
+    
     private final Optional<String> title;
     private final Optional<String> prompt;
     private final List<MenuOption<T>> options;
@@ -24,7 +27,7 @@ public class Menu<T> {
         if (options.size() == 1) {
             return options.get(0);
         }
-        requireNonNull(scanner, "Scanner must not be null");
+        requireNonNull(scanner, SCANNER_NULL_MESSAGE);
         Optional<Integer> validatedInput;
         while (true) {
             do {
@@ -39,7 +42,7 @@ public class Menu<T> {
             try {
                 return options.get(validatedInput.get() - 1);
             } catch (IndexOutOfBoundsException e) {
-                System.err.println("No such option");
+                System.err.println(NO_OPTION_MESSAGE);
             }
         }
     }
@@ -49,12 +52,14 @@ public class Menu<T> {
     }
     
     public static class MenuOption<T> {
+        public static final String COMMAND_NULL_MESSAGE = "Command must not be null";
+        
         private final Optional<String> title;
         private final Consumer<T> command;
         
         public MenuOption(String title, Consumer<T> command) {
             this.title = Optional.ofNullable(title);
-            this.command = requireNonNull(command, "Command must not be null");
+            this.command = requireNonNull(command, COMMAND_NULL_MESSAGE);
         }
         
         public MenuOption(Consumer<T> command) {
@@ -73,6 +78,8 @@ public class Menu<T> {
     }
     
     public static class StepBuilder<T> implements OptionBuilder<T> {
+        public static final String OPTION_NULL_MESSAGE = "Option must not be null";
+        
         private String title;
         private String prompt;
         private final List<MenuOption<T>> options = new ArrayList<>();

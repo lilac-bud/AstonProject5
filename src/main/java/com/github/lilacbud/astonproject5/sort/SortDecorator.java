@@ -6,10 +6,12 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 public abstract class SortDecorator<E> implements SortingStrategy<E> {
+    public static final String SORTSTRAT_NULL_MESSAGE = "Sorting strategy must not be null";
+    
     protected final SortingStrategy<E> sortingStrategy;
 
     public SortDecorator(SortingStrategy<E> sortingStrategy) {
-        this.sortingStrategy = requireNonNull(sortingStrategy, "Sorting strategy must not be null");
+        this.sortingStrategy = requireNonNull(sortingStrategy, SORTSTRAT_NULL_MESSAGE);
     }
 
     @Override

@@ -142,28 +142,28 @@ public class AppTest {
     public void testSetFillerGivenNull() {
         System.out.println("setFiller given null");
         final var thrown = assertThrows(NullPointerException.class, () -> app.setFiller(null));
-        assertEquals("Filler must not be null", thrown.getMessage());
+        assertEquals(App.FILLER_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
     public void testSetSaverGivenNull() {
         System.out.println("setSaver given null");
         final var thrown = assertThrows(NullPointerException.class, () -> app.setSaver(null));
-        assertEquals("Saver must not be null", thrown.getMessage());
+        assertEquals(App.SAVER_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
     public void testSetSortingStrategyGivenNull() {
         System.out.println("setSortingStrategy given null");
         final var thrown = assertThrows(NullPointerException.class, () -> app.setSortingStrategy(null));
-        assertEquals("Sorting strategy must not be null", thrown.getMessage());
+        assertEquals(App.SORTSTRAT_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
     public void testSetComparatorGivenNull() {
         System.out.println("setComparator given null");
         final var thrown = assertThrows(NullPointerException.class, () -> app.setComparator(null));
-        assertEquals("Comparator must not be null", thrown.getMessage());
+        assertEquals(App.COMP_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
