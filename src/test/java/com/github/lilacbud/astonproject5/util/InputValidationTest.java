@@ -23,8 +23,7 @@ public class InputValidationTest {
     }
 
     @Test
-    public void testValidateInputGivenNull() {
-        System.out.println("validateInput given null");
+    public void givenNull_whenValindatingInput_thenReturnEmptyOptional() {
         String input = null;
         Optional<String> result = InputValidation.validateInput(input);
         assertTrue(result.isEmpty());
@@ -32,8 +31,7 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateInputGivenBlankString() {
-        System.out.println("validateInput given blank string");
+    public void givenBlankString_whenValidatingInput_thenReturnEmptyOptional() {
         String input = "\n";
         Optional<String> result = InputValidation.validateInput(input);
         assertTrue(result.isEmpty());
@@ -41,10 +39,9 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateInputGivenValidString() {
-        System.out.println("validateInput given valid string");
+    public void givenNotEmptyString_whenValidatingInput_thenReturnOptionalOfTrimmedString() {
         String input = "Correct input\n";
-        Optional<String> expectedResult = Optional.of("Correct input");
+        Optional<String> expectedResult = Optional.of(input.trim());
         Optional<String> result = InputValidation.validateInput(input);
         assertTrue(result.isPresent());
         assertEquals(expectedResult, result);
@@ -52,8 +49,7 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateIntegerInputGivenNull() {
-        System.out.println("validateIntegerInput given null");
+    public void givenNull_whenValidatingIntegerInput_thenReturnEmptyOptional() {
         String input = null;
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
@@ -61,8 +57,7 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateIntegerInputGivenBlankString() {
-        System.out.println("validateIntegerInput given blank string");
+    public void givenBlankString_whenValidatingIntegerInput_thenReturnEmptyOptional() {
         String input = "\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
@@ -70,8 +65,7 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateIntegerInputGivenUnconvertableString() {
-        System.out.println("validateIntegerInput given unconvertable string");
+    public void givenUnconvertableString_whenValidatingIntegerInput_thenReturnEmptyOptional() {
         String input = "qwerty\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
@@ -79,8 +73,7 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateIntegerInputGivenNegativeInteger() {
-        System.out.println("validateIntegerInput given negative integer");
+    public void givenNegativeIntegerAsString_whenValidatingIntegerInput_thenReturnEmptyOptional() {
         String input = "-2\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
         assertTrue(result.isEmpty());
@@ -88,12 +81,11 @@ public class InputValidationTest {
     }
     
     @Test
-    public void testValidateIntegerInputGivenValidInteger() {
-        System.out.println("validateIntegerInput given valid integer");
-        String input = "2\n";
+    public void givenPositiveIntegerAsString_whenValidatingIntegerInput_thenReturnOptionalOfInteger() {
+        int expectedNumber = 2;
+        String input = expectedNumber + "\n";
         Optional<Integer> result = InputValidation.validateIntegerInput(input);
-        assertTrue(result.isPresent());
-        assertEquals(2, result.get());
+        assertEquals(expectedNumber, result.orElseThrow());
         assertTrue(errContent.toString().isEmpty());
     }
 }
