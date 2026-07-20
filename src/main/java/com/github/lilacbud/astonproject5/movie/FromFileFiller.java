@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import static java.util.Objects.requireNonNull;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -46,16 +48,16 @@ public class FromFileFiller implements MoviesFiller {
     }
 
     private Movie parseMovie(String line) {
-        final String[] arrStrings = line.split(LINE_SEPARATOR);
-        if (arrStrings.length != ARGS_NUMBER) {
+        final List<String> args = Arrays.asList(line.split(LINE_SEPARATOR));
+        if (args.size() != ARGS_NUMBER) {
             throw new IllegalArgumentException(String.format(INVALID_LINE_FORMAT_MESSAGE_FORMAT, line));
         }
-        String name = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[0]), 
-                () -> MovieInputValidation.validateName(arrStrings[0]));
-        int yearOfRelease = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[1]), 
-                () -> MovieInputValidation.validateYearOfRelease(arrStrings[1]));
-        float hourLength = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[2]), 
-                () -> MovieInputValidation.validateHourLength(arrStrings[2]));
+        String name = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, args.get(0)), 
+                () -> MovieInputValidation.validateName(args.get(0)));
+        int yearOfRelease = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, args.get(1)), 
+                () -> MovieInputValidation.validateYearOfRelease(args.get(1)));
+        float hourLength = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, args.get(2)), 
+                () -> MovieInputValidation.validateHourLength(args.get(2)));
         return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)
