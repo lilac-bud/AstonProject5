@@ -28,6 +28,7 @@ public class ManualFillerTest {
     private Movie movie;
     
     private final ArrayList<Movie> movies = new ArrayList<>();
+    private final int size = 3;
     private final String input = "Фильм1\nqwerty\n2000\nqwerty\n2\nФильм2\n2005\n2.5\nФильм3\n2010\n3\n";
     private final List<String> expectedNames = List.of("Фильм1", "Фильм2", "Фильм3");
     private final List<Integer> expectedYears = List.of(2000, 2005, 2010);
@@ -81,56 +82,55 @@ public class ManualFillerTest {
     }
     
     @Test
-    public void testCreateManualFillerWithNullScanner() {
-        System.out.println("ManualFiller with null scanner");
-        var thrown = assertThrows(NullPointerException.class, () -> new ManualFiller(10, null, null));
+    public void givenNullAsScanner_whenCreatingManualFiller_thenThrow() {
+        final var thrown = assertThrows(NullPointerException.class, () -> new ManualFiller(size, null, null));
         assertEquals(ManualFiller.SCANNER_NULL_MESSAGE, thrown.getMessage());
     }
     
     @Test
-    public void testCreateManualFillerWithSizeLessThanZero() {
-        System.out.println("ManualFiller with size set to less than zero");
-        var thrown = assertThrows(IllegalArgumentException.class, 
-                () -> new ManualFiller(-10, new Scanner(input), null));
+    public void givenNegativeIntegerAsSize_whenCreatingManualFiller_thenThrow() {
+        final var thrown = assertThrows(IllegalArgumentException.class, 
+                () -> new ManualFiller(-size, new Scanner(input), null));
         assertEquals(ManualFiller.SIZE_NEGATIVE_MESSAGE, thrown.getMessage());
     }
 
     @Test
-    public void testFillMoviesWithSizeZero() {
-        System.out.println("fillMovies with size set to zero");
-        ManualFiller manualFiller = new ManualFiller(0, new Scanner(input), null);
-        manualFiller.fillMovies(movies);
+    public void givenThatFillerHasZeroAsSize_whenFillingCollection_thenCollectionShouldBeEmpty() {
+        final int size = 0;
+        final ManualFiller mf = new ManualFiller(size, new Scanner(input), null);
+        mf.fillMovies(movies);
         assertTrue(movies.isEmpty());
     }
-
+    
     @Test
-    public void testFillMoviesWithSizeMoreThanZero() {
-        configureMovieMock();
-        System.out.println("fillMovies with size set to more than zero");
+    public void givenThatFillerHasPrompts_whenFillingCollection_thenPromptsShouldBePrinted() {
         System.setOut(new PrintStream(outContent));
-        
-        String prompt1 = "Prompt1";
-        String prompt2 = "Prompt2";
-        String prompt3 = "Prompt3";
-        String expectedOutContent = String.format("%s%s%s", prompt1, prompt2.repeat(2), prompt3.repeat(2))
+        final String prompt1 = "Prompt1";
+        final String prompt2 = "Prompt2";
+        final String prompt3 = "Prompt3";
+        final String expectedOutContent = String.format("%s%s%s", prompt1, prompt2.repeat(2), prompt3.repeat(2))
                 + String.format("%s%s%s", prompt1, prompt2, prompt3).repeat(2);
-        
-        ManualFiller manualFiller = createFillerWithMockedBuilder(3, new Scanner(input), 
-                new ManualFiller.Prompts(prompt1, prompt2, prompt3));
-        fillMoviesMock(manualFiller, movies);
-        
-        assertEquals(3, movies.size());
-        assertEquals(expectedNames, movies.stream().map(Movie::getName).toList());
-        assertEquals(expectedYears, movies.stream().map(Movie::getYearOfRelease).toList());
-        assertEquals(expectedLengths, movies.stream().map(Movie::getHourLength).toList());
+        final ManualFiller.Prompts prompts = new ManualFiller.Prompts(prompt1, prompt2, prompt3);
+        final ManualFiller mf = createFillerWithMockedBuilder(size, new Scanner(input), prompts);
+        fillMoviesMock(mf, movies);
         assertEquals(expectedOutContent, outContent.toString());
     }
 
     @Test
-    void testFillMoviesGivenNullMovies() {
-        System.out.println("fillMovies given null movies");
-        ManualFiller manualFiller = new ManualFiller(3, new Scanner(input), null);
-        var thrown = assertThrows(NullPointerException.class, () -> manualFiller.fillMovies(null));
+    public void givenThatFillerHasPositiveSize_whenFillingCollection_thenFillCollectionWithRequestedValues() {
+        configureMovieMock();
+        final ManualFiller mf = createFillerWithMockedBuilder(size, new Scanner(input), null);
+        fillMoviesMock(mf, movies);
+        assertEquals(size, movies.size());
+        assertEquals(expectedNames, movies.stream().map(Movie::getName).toList());
+        assertEquals(expectedYears, movies.stream().map(Movie::getYearOfRelease).toList());
+        assertEquals(expectedLengths, movies.stream().map(Movie::getHourLength).toList());
+    }
+
+    @Test
+    void givenNullAsCollection_whenFillingCollection_thenThrow() {
+        final ManualFiller mf = new ManualFiller(size, new Scanner(input), null);
+        final var thrown = assertThrows(NullPointerException.class, () -> mf.fillMovies(null));
         assertEquals(ManualFiller.COLLECTION_NULL_MESSAGE, thrown.getMessage());
     }
 }
