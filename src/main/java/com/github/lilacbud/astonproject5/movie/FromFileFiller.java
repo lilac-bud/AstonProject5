@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import static java.util.Objects.requireNonNull;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class FromFileFiller implements MoviesFiller {
@@ -48,16 +50,20 @@ public class FromFileFiller implements MoviesFiller {
         if (arrStrings.length != ARGS_NUMBER) {
             throw new IllegalArgumentException(String.format(INVALID_LINE_FORMAT_MESSAGE_FORMAT, line));
         }
-        String name = MovieInputValidation.validateName(arrStrings[0]).orElseThrow(() 
-                -> new IllegalArgumentException(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[0])));
-        int yearOfRelease = MovieInputValidation.validateYearOfRelease(arrStrings[1]).orElseThrow(() 
-                -> new IllegalArgumentException(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[1])));
-        float hourLength = MovieInputValidation.validateHourLength(arrStrings[2]).orElseThrow(() 
-                -> new IllegalArgumentException(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[2])));
+        String name = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[0]), 
+                () -> MovieInputValidation.validateName(arrStrings[0]));
+        int yearOfRelease = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[1]), 
+                () -> MovieInputValidation.validateYearOfRelease(arrStrings[1]));
+        float hourLength = parseValue(String.format(INVALID_VALUE_MESSAGE_FORMAT, arrStrings[2]), 
+                () -> MovieInputValidation.validateHourLength(arrStrings[2]));
         return builder
                 .withName(name)
                 .withYearOfRelease(yearOfRelease)
                 .withHourLength(hourLength)
                 .build();
+    }
+    
+    private <T> T parseValue(String exceptionMesssage, Supplier<Optional<T>> validator) {
+        return validator.get().orElseThrow(() -> new IllegalArgumentException(exceptionMesssage));
     }
 }
