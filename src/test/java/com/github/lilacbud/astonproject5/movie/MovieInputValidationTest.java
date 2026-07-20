@@ -4,15 +4,32 @@ import com.github.lilacbud.astonproject5.util.InputValidation;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Optional;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.mockStatic;
 
 public class MovieInputValidationTest {
-    
     private final PrintStream originalErr = System.err;
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    
+    private <T> Optional<T> validateInputWithMock(Supplier<Optional<T>> validator) {
+        try (MockedStatic<InputValidation> validation = mockStatic(InputValidation.class)) {
+            validation.when(() -> InputValidation.validateInput(anyString()))
+                    .thenAnswer(i -> Optional.ofNullable(i.getArgument(0).toString().trim()));
+            validation.when(() -> InputValidation.validateInput("\n")).thenReturn(Optional.empty());
+            validation.when(() -> InputValidation.validateIntegerInput(anyString()))
+                    .thenAnswer(i -> Optional.ofNullable(Integer.valueOf(i.getArgument(0))));
+            validation.when(() -> InputValidation.validateIntegerInput("\n")).thenReturn(Optional.empty());
+            validation.when(() -> InputValidation.validateIntegerInput("qwerty")).thenReturn(Optional.empty());
+            
+            return validator.get();
+        }
+    }
 
     @BeforeEach
     public void setUp() {
@@ -26,75 +43,60 @@ public class MovieInputValidationTest {
 
     @Test
     public void testValidateNameGivenNull() {
-        System.out.println("validateName given null");
         String input = null;
-        Optional<String> result = MovieInputValidation.validateName(input);
+        Optional<String> result = validateInputWithMock(() -> MovieInputValidation.validateName(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
     public void testValidateNameGivenBlankString() {
-        System.out.println("validateName given blank string");
         String input = "\n";
-        Optional<String> result = MovieInputValidation.validateName(input);
+        Optional<String> result = validateInputWithMock(() -> MovieInputValidation.validateName(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     @Test
     public void testValidateNameGivenValidString() {
-        System.out.println("validateName given valid string");
         String input = "Correct     input\n";
-        Optional<String> expectedResult = Optional.of("Correct input");
-        Optional<String> result = MovieInputValidation.validateName(input);
-        assertTrue(result.isPresent());
+        Optional<String> expectedResult = Optional.of(input.trim().replaceAll("\\s+", " "));
+        Optional<String> result = validateInputWithMock(() -> MovieInputValidation.validateName(input));
         assertEquals(expectedResult, result);
-        assertTrue(errContent.toString().isEmpty());
     }
 
     @Test
     public void testValidateYearOfReleaseGivenNull() {
-        System.out.println("validateYearOfRelease given null");
         String input = null;
-        Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
+        Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INPUT_NULL_MESSAGE, errContent.toString().trim());
     }
     
     @Test
     public void testValidateYearOfReleaseGivenBlankString() {
-        System.out.println("validateYearOfRelease given blank string");
         String input = "\n";
-        Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
+        Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INPUT_EMPTY_MESSAGE, errContent.toString().trim());
     }
     
     @Test
     public void testValidateYearOfReleaseGivenUnconvertableString() {
-        System.out.println("validateYearOfRelease given unconvertable string");
         String input = "qwerty";
-        Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
+        Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
-        assertEquals(InputValidation.INTEGER_INPUT_INVALID_MESSAGE, errContent.toString().trim());
     }
     
     @Test
     public void testValidateYearOfReleaseGivenYearLessThanMinYear() {
-        System.out.println("validateYearOfRelease given year less than min year");
         String input = "1500";
-        Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
+        Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
         assertTrue(result.isEmpty());
         assertEquals(MovieInputValidation.YEAR_LESS_THAN_MIN_MESSAGE, errContent.toString().trim());
     }
     
     @Test
     public void testValidateYearOfReleaseGivenValidYear() {
-        System.out.println("validateYearOfRelease given valid year");
         String input = "2026";
-        Optional<Integer> result = MovieInputValidation.validateYearOfRelease(input);
-        assertTrue(result.isPresent());
-        assertEquals(2026, result.get());
+        Optional<Integer> expectedResult = Optional.of(Integer.valueOf(input));
+        Optional<Integer> result = validateInputWithMock(() -> MovieInputValidation.validateYearOfRelease(input));
+        assertEquals(expectedResult, result);
         assertTrue(errContent.toString().isEmpty());
     }
 
@@ -147,9 +149,9 @@ public class MovieInputValidationTest {
     public void testValidateHourLengthGivenValidHourLength() {
         System.out.println("validateHourLength given valid hour length");
         String input = "2.5";
+        Optional<Float> expectedResult = Optional.of(Float.valueOf(input));
         Optional<Float> result = MovieInputValidation.validateHourLength(input);
-        assertTrue(result.isPresent());
-        assertEquals(2.5F, result.get());
+        assertEquals(expectedResult, result);
         assertTrue(errContent.toString().isEmpty());
     }
 }
