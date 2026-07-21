@@ -47,8 +47,9 @@ public class ManualFiller implements MoviesFiller {
     private <T> T askValue(String prompt, Supplier<Optional<T>> validator) {
         Optional<T> validatedValue;
         do {
-            if (prompt != null)
+            if (prompt != null) {
                 System.out.print(prompt);
+            }
             validatedValue = validator.get();
         }
         while (validatedValue.isEmpty());
