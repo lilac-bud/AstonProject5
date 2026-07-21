@@ -1,11 +1,8 @@
 package com.github.lilacbud.astonproject5.movie;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +12,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalAnswers;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
@@ -28,13 +24,42 @@ public class FromFileFillerTest {
     @Mock
     private Movie movie;
     
-    private FromFileFiller createFiller(String filename) throws URISyntaxException {
-        return new FromFileFiller(getPath(filename).toString());
+    private final List<String> expectedNames = List.of("The Shawshank Redemption", "The Godfather", 
+            "The Matrix", "Inception", "Interstellar");
+    private final List<Integer> expectedYears = List.of(1994, 1972, 1999, 2010, 2014);
+    private final List<Float> expectedLengths = List.of(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
+    
+    private void configureMovieMock() {
+        when(movie.getName()).thenReturn("The Shawshank Redemption", "The Godfather", 
+                "The Matrix", "Inception", "Interstellar");
+        when(movie.getYearOfRelease()).thenReturn(1994, 1972, 1999, 2010, 2014);
+        when(movie.getHourLength()).thenReturn(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
     }
     
-    private Path getPath(String filename) throws URISyntaxException {
+    private FromFileFiller createFiller(String filename) {
         URL resource = getClass().getResource(filename);
-        return Paths.get(requireNonNull(resource).toURI());
+        requireNonNull(resource, "resource must be non null to save");
+        try {
+            return new FromFileFiller(Paths.get(resource.toURI()).toString());
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("Cannot load test resource: " + filename, e);
+        }
+    }
+    
+    private FromFileFiller createFillerWithMockedBuilder(String filepath) {
+        try (MockedConstruction<Movie.Builder> mockBuilder = mockConstruction(Movie.Builder.class, 
+                    withSettings().defaultAnswer(Answers.RETURNS_DEEP_STUBS))) {
+            FromFileFiller fff = createFiller(filepath);
+            
+            Movie.Builder builder = mockBuilder.constructed().get(0);
+            for (int i = 0; i < 5; ++i)
+                when(builder.withName(expectedNames.get(i))
+                        .withYearOfRelease(expectedYears.get(i))
+                        .withHourLength(expectedLengths.get(i))
+                        .build())
+                        .thenReturn(movie);
+            return fff;
+        }
     }
 
     private void fillMovies(FromFileFiller fff, Collection<Movie> movies) {
@@ -73,43 +98,21 @@ public class FromFileFillerTest {
     }
 
     @Test
-    public void givenThatFileIsCorrect_whenFillingCollection_thenCollectionShouldBeFilled() 
-            throws IOException, URISyntaxException {
+    public void givenThatFileIsCorrect_whenFillingCollection_thenCollectionShouldBeFilled() {
+        configureMovieMock();
         final String filename = "correctMovies.txt";
+        final FromFileFiller fff = createFillerWithMockedBuilder(filename);
         final List<Movie> movies = new ArrayList<>();
-        final List<String> expectedNames = new ArrayList<>();
-        final List<Integer> expectedYears = new ArrayList<>();
-        final List<Float> expectedLengths = new ArrayList<>();
-        Files.lines(getPath(filename))
-                .map(line -> line.split(";"))
-                .forEach(args -> {
-                    expectedNames.add(args[0]);
-                    expectedYears.add(Integer.valueOf(args[1]));
-                    expectedLengths.add(Float.valueOf(args[2]));
-                });
-        when(movie.getName()).thenAnswer(AdditionalAnswers.returnsElementsOf(expectedNames));
-        when(movie.getYearOfRelease()).thenAnswer(AdditionalAnswers.returnsElementsOf(expectedYears));
-        when(movie.getHourLength()).thenAnswer(AdditionalAnswers.returnsElementsOf(expectedLengths));
-        try (MockedConstruction<Movie.Builder> mockBuilder = mockConstruction(Movie.Builder.class, 
-                    withSettings().defaultAnswer(Answers.RETURNS_DEEP_STUBS))) {
-            final FromFileFiller fff = createFiller(filename);
-            Movie.Builder builder = mockBuilder.constructed().get(0);
-            for (int i = 0; i < 5; ++i)
-                when(builder.withName(expectedNames.get(i))
-                        .withYearOfRelease(expectedYears.get(i))
-                        .withHourLength(expectedLengths.get(i))
-                        .build())
-                        .thenReturn(movie);
-            fillMovies(fff, movies);
-        }
-        assertEquals(expectedNames.size(), movies.size());
+        fillMovies(fff, movies);
+
+        assertEquals(5, movies.size());
         assertEquals(expectedNames, movies.stream().map(Movie::getName).toList());
         assertEquals(expectedYears, movies.stream().map(Movie::getYearOfRelease).toList());
         assertEquals(expectedLengths, movies.stream().map(Movie::getHourLength).toList());
     }
 
     @Test
-    public void givenThatFileIsEmpty_whenFillingCollection_thenCollectionShouldBeEmpty() throws URISyntaxException {
+    public void givenThatFileIsEmpty_whenFillingCollection_thenCollectionShouldBeEmpty() {
         final String filename = "emptyFile.txt";
         final FromFileFiller fff = createFiller(filename);
         final Collection<Movie> movies = new ArrayList<>();
@@ -118,10 +121,9 @@ public class FromFileFillerTest {
     }
 
     @Test
-    public void givenThatFileHasExtraFields_whenFillingCollection_thenThrow() 
-            throws URISyntaxException, IOException {
+    public void givenThatFileHasExtraFields_whenFillingCollection_thenThrow() {
         final String filename = "extraField.txt";
-        final String line = Files.readAllLines(getPath(filename)).get(0);
+        final String line = "The Shawshank Redemption;1994;2.4;1972";
         final FromFileFiller fff = createFiller(filename);
         final Collection<Movie> movies = new ArrayList<>();
         final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
@@ -129,10 +131,9 @@ public class FromFileFillerTest {
     }
 
     @Test
-    public void givenThatFileHasMissingFields_whenFillingCollection_thenThrow() 
-            throws URISyntaxException, IOException {
+    public void givenThatFileHasMissingFields_whenFillingCollection_thenThrow() {
         final String filename = "missingField.txt";
-        final String line = Files.readAllLines(getPath(filename)).get(0);
+        final String line = "The Shawshank Redemption;1994";
         final FromFileFiller fff = createFiller(filename);
         final Collection<Movie> movies = new ArrayList<>();
         final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
@@ -140,10 +141,9 @@ public class FromFileFillerTest {
     }
 
     @Test
-    public void givenThatFileHasInvalidSecondField_whenFillingCollection_thenThrow() 
-            throws URISyntaxException, IOException {
+    public void givenThatFileHasInvalidSecondField_whenFillingCollection_thenThrow() {
         final String filename = "invalidSecondField.txt";
-        final String line = Files.readAllLines(getPath(filename)).get(0);
+        final String line = "The Shawshank Redemption;qwerty;2.4";
         final FromFileFiller fff = createFiller(filename);
         final Collection<Movie> movies = new ArrayList<>();
         final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
@@ -151,10 +151,9 @@ public class FromFileFillerTest {
     }
 
     @Test
-    public void givenThatFileHasInvalidThirdField_whenFillingCollection_thenThrow() 
-            throws URISyntaxException, IOException {
+    public void givenThatFileHasInvalidThirdField_whenFillingCollection_thenThrow() {
         final String filename = "invalidThirdField.txt";
-        final String line = Files.readAllLines(getPath(filename)).get(0);
+        final String line = "The Shawshank Redemption;1994;qwerty";
         final FromFileFiller fff = createFiller(filename);
         final Collection<Movie> movies = new ArrayList<>();
         final var thrown = assertThrows(IllegalArgumentException.class, () -> fillMovies(fff, movies));
@@ -162,7 +161,7 @@ public class FromFileFillerTest {
     }
 
     @Test
-    public void givenNullAsCollection_whenFillingCollection_thenThrow() throws URISyntaxException {
+    public void givenNullAsCollection_whenFillingCollection_thenThrow() {
         final String filename = "correctMovies.txt";
         final FromFileFiller fff = createFiller(filename);
         final var thrown = assertThrows(NullPointerException.class, () -> fillMovies(fff, null));
