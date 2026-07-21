@@ -135,7 +135,7 @@ public class AppIT {
                 .build();
         Menu<App> setSaverMenu = Menu.StepBuilder.<App>newBuilder()
                 .withOption(new Menu.MenuOption<>((client) -> 
-                        client.setSaver(new DefaultSaver(InputRequest.askString(scanner), scanner, setSaveOptionMenu))))
+                        client.setSaver(new DefaultSaver(InputRequest.askString(scanner), setSaveOptionMenu, scanner))))
                 .build();
         Menu<App> mainMenu = Menu.StepBuilder.<App>newBuilder()
                 .withOption(new Menu.MenuOption<>((client) -> client.tryCommandTillSuccess((_client) -> {

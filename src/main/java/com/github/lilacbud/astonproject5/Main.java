@@ -81,7 +81,7 @@ public class Main {
                 .withPrompt("Выберите одну из опций: ")
                 .withOption(new Menu.MenuOption<>("В текстовый файл", (client) -> {
                     String filepath = InputRequest.askString(scanner, "Укажите путь к файлу: ");
-                    client.setSaver(new DefaultSaver(filepath, scanner, setSaveOptionMenu));
+                    client.setSaver(new DefaultSaver(filepath, setSaveOptionMenu, scanner));
                 }))
                 .build();
         

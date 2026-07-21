@@ -67,7 +67,7 @@ class DefaultSaverTest {
     @Test
     public void testCreateSaverWithNullFilepath() {
         System.out.println("DefaultSaver with null filepath");
-        var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, new Scanner(""), null));
+        var thrown = assertThrows(NullPointerException.class, () -> new DefaultSaver(null, null, new Scanner("")));
         assertEquals(DefaultSaver.FILEPATH_NULL_MESSAGE, thrown.getMessage());
     }
     
@@ -88,7 +88,7 @@ class DefaultSaverTest {
         Path file = tempDir.resolve("movies.txt");
         List<Movie> movies = List.of(movie1,movie2,movie3);
 
-        new DefaultSaver(file.toString(), new Scanner(""), null).save(movies);
+        new DefaultSaver(file.toString(), null, new Scanner("")).save(movies);
 
         assertTrue(Files.exists(file));
         assertEquals(List.of("Криминальное чтиво;1994;2.5", "Интерстеллар;2014;3.0","Начало;2010;2.5"),
@@ -104,7 +104,7 @@ class DefaultSaverTest {
         Path file = tempDir.resolve("movies.txt");
         Files.writeString(file, "old text\n");
 
-        new DefaultSaver(file.toString(), new Scanner("1\n"), setSaveOptionMenu).save(List.of(movie1));
+        new DefaultSaver(file.toString(), setSaveOptionMenu, new Scanner("1\n")).save(List.of(movie1));
 
         List<String> lines = Files.readAllLines(file);
         assertEquals(1, lines.size());
@@ -120,7 +120,7 @@ class DefaultSaverTest {
         Path file = tempDir.resolve("movies.txt");
         Files.writeString(file,"Дюна;2021;2.6\n");
 
-        new DefaultSaver(file.toString(), new Scanner("2\n"), setSaveOptionMenu).save(List.of(movie1));
+        new DefaultSaver(file.toString(), setSaveOptionMenu, new Scanner("2\n")).save(List.of(movie1));
 
         List<String> lines = Files.readAllLines(file);
         assertEquals(2,lines.size());
@@ -132,7 +132,7 @@ class DefaultSaverTest {
     @SuppressWarnings("ThrowableResultIgnored")
     public void testSaveGivenInvalidFilepath() {
         System.out.println("save given invalid filepath");
-        assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:InvalidFile.txt", new Scanner(""), null));
+        assertThrows(InvalidPathException.class, () -> new DefaultSaver("Name:InvalidFile.txt", null, new Scanner("")));
     }
 
     @Test
@@ -141,7 +141,7 @@ class DefaultSaverTest {
         Path file = tempDir.resolve("movies.txt");
         List<Movie> movies = null;
 
-        DefaultSaver ds = new DefaultSaver(file.toString(), new Scanner(""), null);
+        DefaultSaver ds = new DefaultSaver(file.toString(), null, new Scanner(""));
 
         var thrown = assertThrows(NullPointerException.class, () -> ds.save(movies));
         assertEquals(DefaultSaver.COLLECTION_NULL_MESSAGE, thrown.getMessage());

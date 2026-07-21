@@ -14,19 +14,26 @@ import java.util.Scanner;
 
 public class DefaultSaver implements MoviesSaver {
     public static final String FILEPATH_NULL_MESSAGE = "Filepath must not be null";
-    public static final String SCANNER_NULL_MESSAGE = "Scanner must not be null";
+    public static final String SCANNER_NULL_MESSAGE = "If menu is not null scanner also must not be null";
     public static final String COLLECTION_NULL_MESSAGE = "Collection must not be null";
     public static final String FILE_SAVE_FAIL_MESSAGE = "File save failed";
     
     private final Path filePath;
-    private final Scanner scanner;
     private final Menu<? super DefaultSaver> setSaveOptionMenu;
+    private final Scanner scanner;
     private StandardOpenOption saveOption = StandardOpenOption.TRUNCATE_EXISTING;
-
-    public DefaultSaver(String filepath, Scanner scanner, Menu<? super DefaultSaver> setSaveOptionMenu) {
+    
+    public DefaultSaver(String filepath, Menu<? super DefaultSaver> setSaveOptionMenu, Scanner scanner) {
         this.filePath = Path.of(requireNonNull(filepath, FILEPATH_NULL_MESSAGE));
-        this.scanner = requireNonNull(scanner, SCANNER_NULL_MESSAGE);
+        if (setSaveOptionMenu != null) {
+            requireNonNull(scanner, SCANNER_NULL_MESSAGE);
+        }
         this.setSaveOptionMenu = setSaveOptionMenu;
+        this.scanner = scanner;
+    }
+    
+    public DefaultSaver(String filepath) {
+        this(filepath, null, null);
     }
 
     @Override
