@@ -12,6 +12,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
@@ -30,10 +31,9 @@ public class FromFileFillerTest {
     private final List<Float> expectedLengths = List.of(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
     
     private void configureMovieMock() {
-        when(movie.getName()).thenReturn("The Shawshank Redemption", "The Godfather", 
-                "The Matrix", "Inception", "Interstellar");
-        when(movie.getYearOfRelease()).thenReturn(1994, 1972, 1999, 2010, 2014);
-        when(movie.getHourLength()).thenReturn(2.4F, 2.9F, 2.3F, 2.5F, 2.8F);
+        when(movie.getName()).thenAnswer(AdditionalAnswers.returnsElementsOf(expectedNames));
+        when(movie.getYearOfRelease()).thenAnswer(AdditionalAnswers.returnsElementsOf(expectedYears));
+        when(movie.getHourLength()).thenAnswer(AdditionalAnswers.returnsElementsOf(expectedLengths));
     }
     
     private FromFileFiller createFiller(String filename) {
