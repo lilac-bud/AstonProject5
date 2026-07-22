@@ -122,7 +122,7 @@ class DefaultSaverTest {
         Files.writeString(path, existingLine);
         final String input = "2\n";
         final DefaultSaver ds = new DefaultSaver(path.toString(), setSaveOptionMenu, new Scanner(input));
-        final List<String> expectedLines = List.of(existingLine, "Криминальное чтиво;1994;2.5");
+        final List<String> expectedLines = List.of(existingLine.trim(), "Криминальное чтиво;1994;2.5");
         ds.save(List.of(movie1));
         final List<String> lines = Files.readAllLines(path);
         assertEquals(expectedLines, lines);
