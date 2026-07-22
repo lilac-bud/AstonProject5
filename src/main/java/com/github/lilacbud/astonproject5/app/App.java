@@ -31,23 +31,27 @@ public class App {
     }
     
     public void setFiller(MoviesFiller filler) {
-        this.filler = requireNonNull(filler, FILLER_NULL_MESSAGE);
+        this.filler = filler;
     }
     
     public void setSaver(MoviesSaver saver) {
-        this.saver = requireNonNull(saver, SAVER_NULL_MESSAGE);
+        this.saver = saver;
     }
     
     public void setSortingStrategy(SortingStrategy<Movie> sortStrategy) {
-        sorter.setSortingStrategy(requireNonNull(sortStrategy, SORTSTRAT_NULL_MESSAGE));
+        sorter.setSortingStrategy(sortStrategy);
     }
     
     public void setComparator(Comparator<Movie> comp) {
-        sorter.setComparator(requireNonNull(comp, COMP_NULL_MESSAGE));
+        sorter.setComparator(comp);
     }
     
     public boolean moviesIsEmpty() {
         return movies.isEmpty();
+    }
+    
+    public void fillMovies() {
+        requireNonNull(filler, FILLER_NULL_MESSAGE).fillMovies(movies);
     }
     
     public void printMovies(String printFormat, String successMessage) {
@@ -73,11 +77,7 @@ public class App {
     }
     
     public void saveMovies() {
-        saver.save(movies);
-    }
-    
-    public void fillMovies() {
-        filler.fillMovies(movies);
+        requireNonNull(saver, SAVER_NULL_MESSAGE).save(movies);
     }
     
     public void sortMovies() {
@@ -122,11 +122,6 @@ public class App {
     }
     
     private static class MoviesSorter {
-        public static final String SORTER_SORTSTRAT_NULL_MESSAGE = 
-                "Sorting strategy must not be null to perform sorting";
-        public static final String SORTER_COMP_NULL_MESSAGE = 
-                "Comparator must not be null to perform sorting";
-        
         private SortingStrategy<Movie> sortStrategy;
         private Comparator<Movie> comp;
 
@@ -139,13 +134,7 @@ public class App {
         }
 
         public void performSorting(List<Movie> movies) {
-            if (sortStrategy == null) {
-                throw new IllegalStateException(SORTER_SORTSTRAT_NULL_MESSAGE);
-            }
-            if (comp == null) {
-                throw new IllegalStateException(SORTER_COMP_NULL_MESSAGE);
-            }
-            sortStrategy.sort(movies, comp);
+            requireNonNull(sortStrategy, SORTSTRAT_NULL_MESSAGE).sort(movies, requireNonNull(comp, COMP_NULL_MESSAGE));
         }
     }
 }

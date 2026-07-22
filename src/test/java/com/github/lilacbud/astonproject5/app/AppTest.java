@@ -3,6 +3,7 @@ package com.github.lilacbud.astonproject5.app;
 import com.github.lilacbud.astonproject5.movie.Movie;
 import com.github.lilacbud.astonproject5.util.MovieCounter;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +29,6 @@ public class AppTest {
     @Mock 
     private Movie movie1, movie2, movie3;
     private List<Movie> mockMovies;
-    private List<Movie> sortedMockMovies;
 
     private List<Movie> actualMovies;
     
@@ -111,7 +111,6 @@ public class AppTest {
     @BeforeEach
     public void setUp() {
         mockMovies = List.of(movie1, movie2, movie3);
-        sortedMockMovies = List.of(movie1, movie3, movie2);
     }
     
     @AfterEach
@@ -121,7 +120,7 @@ public class AppTest {
     }
 
     @Test
-    public void testRun() {
+    public void givenCommand_whenRunningApp_thenExecuteCommand() {
         System.out.println("run");
         System.setOut(new PrintStream(outContent));
         
@@ -137,41 +136,30 @@ public class AppTest {
         
         assertEquals(expectedOutContent, outContent.toString().trim());
     }
-
+    
     @Test
-    public void testSetFillerGivenNull() {
-        System.out.println("setFiller given null");
-        final var thrown = assertThrows(NullPointerException.class, () -> app.setFiller(null));
+    public void givenThatFillerIsNull_whenFillingList_thenThrow() {
+        final var thrown = assertThrows(NullPointerException.class, () -> app.fillMovies());
         assertEquals(App.FILLER_NULL_MESSAGE, thrown.getMessage());
     }
-
+    
     @Test
-    public void testSetSaverGivenNull() {
-        System.out.println("setSaver given null");
-        final var thrown = assertThrows(NullPointerException.class, () -> app.setSaver(null));
-        assertEquals(App.SAVER_NULL_MESSAGE, thrown.getMessage());
+    public void givenThatFillerIsSet_whenFillingList_thenFillList() {
+        configureFillerMock();
+
+        app.setFiller(filler);
+        app.fillMovies();
+
+        assertFalse(app.moviesIsEmpty());
+        verify(filler).fillMovies(anyList());
+        assertEquals(mockMovies, actualMovies);
     }
 
     @Test
-    public void testSetSortingStrategyGivenNull() {
-        System.out.println("setSortingStrategy given null");
-        final var thrown = assertThrows(NullPointerException.class, () -> app.setSortingStrategy(null));
-        assertEquals(App.SORTSTRAT_NULL_MESSAGE, thrown.getMessage());
-    }
-
-    @Test
-    public void testSetComparatorGivenNull() {
-        System.out.println("setComparator given null");
-        final var thrown = assertThrows(NullPointerException.class, () -> app.setComparator(null));
-        assertEquals(App.COMP_NULL_MESSAGE, thrown.getMessage());
-    }
-
-    @Test
-    public void testPrintMoviesGivenNullFormat() {
+    public void givenNullAsPrintFormat_whenPrintingMovies_thenUseToString() {
         configureMovieMocksToString();
         configureFillerMock();
-        
-        System.out.println("printMovies given null print format");
+
         System.setOut(new PrintStream(outContent));
 
         final String successMessage = printSuccessMessage;
@@ -186,11 +174,10 @@ public class AppTest {
     }
     
     @Test
-    public void testPrintMoviesGivenIllegalFormat() {
+    public void givenIllegalPrintFormat_whenPrintingList_thenUseToString() {
         configureMovieMocksToString();
         configureFillerMock();
         
-        System.out.println("printMovies given illegal print format");
         System.setOut(new PrintStream(outContent));
 
         final String successMessage = printSuccessMessage;
@@ -206,11 +193,10 @@ public class AppTest {
     }
     
     @Test
-    public void testPrintMoviesGivenCorrectFormat() {
+    public void givenPrintFormat_whenPrintingList_thenUsePrintFormat() {
         configureMovieMocks();
         configureFillerMock();
         
-        System.out.println("printMovies given illegal print format");
         System.setOut(new PrintStream(outContent));
 
         final String successMessage = printSuccessMessage;
@@ -228,14 +214,18 @@ public class AppTest {
 
         assertEquals(expectedOutContent, outContent.toString().trim());
     }
+    
+    @Test
+    public void givenSaverIsNull_whenSavingList_thenThrow() {
+        final var thrown = assertThrows(NullPointerException.class, () -> app.saveMovies());
+        assertEquals(App.SAVER_NULL_MESSAGE, thrown.getMessage());
+    }
 
     @Test
-    public void testSaveMovies() throws Exception {
+    public void givenSaverIsSet_whenSavingList_thenSaveList() throws IOException {
         configureMovieMocksToString();
         configureFillerMock();
         configureSaverMock();
-
-        System.out.println("saveMovies");
 
         final Path filepath = tempDir.resolve("movies.txt");
         final List<String> expectedLines = mockMovies.stream().map(Movie::toString).toList();
@@ -251,28 +241,27 @@ public class AppTest {
         assertEquals(3, lines.size());
         assertEquals(expectedLines, lines);
     }
-
+    
     @Test
-    public void testFillMovies() {
-        configureFillerMock();
-
-        System.out.println("fillMovies");
-
-        app.setFiller(filler);
-        app.fillMovies();
-
-        assertFalse(app.moviesIsEmpty());
-        verify(filler).fillMovies(anyList());
-
-        assertEquals(mockMovies, actualMovies);
+    public void givenThatSortStrategyIsNull_whenSortingList_thenThrow() {
+        app.setComparator(comparator);
+        final var thrown = assertThrows(NullPointerException.class, () -> app.sortMovies());
+        assertEquals(App.SORTSTRAT_NULL_MESSAGE, thrown.getMessage());
+    }
+    
+    @Test
+    public void givenThatComparatorIsNull_whenSortingList_thenThrow() {
+        app.setSortingStrategy(sortStrategy);
+        final var thrown = assertThrows(NullPointerException.class, () -> app.sortMovies());
+        assertEquals(App.COMP_NULL_MESSAGE, thrown.getMessage());
     }
 
     @Test
-    public void testSortMovies() {
+    public void givenThatSortStratAndCompAreSet_whenSortingList_thenSortList() {
         configureMovieMocksGetYearOfRelease();
         configureFillerMock();
-
-        System.out.println("sortMovies");
+        
+        final List<Movie> expectedList = List.of(movie1, movie3, movie2);
         
         app.setFiller(filler);
         app.fillMovies();
@@ -280,62 +269,57 @@ public class AppTest {
         app.setComparator(comparator);
         app.sortMovies();
 
-        assertEquals(sortedMockMovies, actualMovies);
+        assertEquals(expectedList, actualMovies);
     }
 
     @Test
-    public void testCountMovieGivenCorrectFormat(){
+    public void givenPrintFormat_whenCounting_thenPrintResultUsingFormat(){
         when(movie1.getName()).thenReturn("Криминальное чтиво");
         configureFillerMock();
-        
-        System.out.println("countMovie given correct format");
         System.setOut(new PrintStream(outContent));
         
         final String target = movie1.getName();
         final String successFormat = "Фильм \"%s\" встречается %d раз(а)";
         final int expectedCount = 1;
+        final String expectedOutContent = String.format(successFormat, target, expectedCount);
         
         app.setFiller (filler);
         app.fillMovies();
         appCountMovieWithMockedCounter(app, target, successFormat);
         
-        assertEquals(String.format(successFormat, target, expectedCount), outContent.toString().trim());
+        assertEquals(expectedOutContent, outContent.toString().trim());
     }
 
     @Test
-    public void testCountMovieGivenIllegalFormat() {
+    public void givenIllegalPrintFormat_whenCounting_thenPrintResultDirectly() {
         when(movie1.getName()).thenReturn("Криминальное чтиво");
         configureFillerMock();
-        
-        System.out.println("countMovie given illegal format");
         System.setOut(new PrintStream(outContent));
         
         final String target = movie1.getName();
         final String successFormat = "%d, %d";
-        final int expectedCount = 1;
+        final String expectedOutContent = "1";
         
         app.setFiller(filler);
         app.fillMovies();
         appCountMovieWithMockedCounter(app, target, successFormat);
         
-        assertEquals(String.valueOf(expectedCount), outContent.toString().trim());
+        assertEquals(expectedOutContent, outContent.toString().trim());
     }
 
     @Test
-    public void testCountMovieGivenNullFormat() {
+    public void givenNullAsPrintFormat_whenCounting_thenPrintResultDirectly() {
         when(movie1.getName()).thenReturn("Криминальное чтиво");
         configureFillerMock();
-        
-        System.out.println("countMovie given null format");
         System.setOut(new PrintStream(outContent));
         
         final String target = movie1.getName();
-        final int expectedCount = 1;
+        final String expectedOutContent = "1";
 
         app.setFiller(filler);
         app.fillMovies();
         appCountMovieWithMockedCounter(app, target, null);
         
-        assertEquals(String.valueOf(expectedCount), outContent.toString().trim());
+        assertEquals(expectedOutContent, outContent.toString().trim());
     }
 }
